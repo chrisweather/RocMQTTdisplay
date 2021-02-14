@@ -10,7 +10,7 @@ This is work in progress.
 
 
 
-![Roc-MQTT-display][doc](RocMQTTdisplay_Wiring.jpg "Wiring")  
+![Roc-MQTT-display](doc/RocMQTTdisplay_Wiring.jpg "Wiring")  
 
 
 **To Do List**
