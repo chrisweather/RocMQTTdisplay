@@ -6,7 +6,7 @@ controlled by Rocrail via MQTT
 
 Version 0.91  February 16, 2021
 
-This is work in progress.
+This is work in progress. Updates will follow soon.
 
 
  
