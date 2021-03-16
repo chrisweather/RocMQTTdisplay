@@ -31,5 +31,6 @@ Thank you for your interest in the Roc-MQTT-Display project.
 If you like the project please consider donating if you want to support further development.
 Donations are more than welcome and I will use them to buy new hardware, devices, sensors and a lot of coffee...
 
-[![PayPal donate button](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)
+[![PayPal donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)
+
 
