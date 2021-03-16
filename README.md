@@ -16,24 +16,20 @@ The goal of this project is to provide simple to use and inexpensive displays to
 - Messages can be static or dynamic
 - Formatting is saved in templates so the user can focus on only sending the right data to the display.
 - The architecture is extremely scalable:
-	1-8 displays per ESP8266 based controller
-	Theoretically unlimited number of controllers (didn't have so many for testing :-) )
-	Up to 10 Fonts
-	Up to 10 Templates
-	Up to 10 Logos
-	Clock available for all displays (NTP time or Rocrail time)
-	Display rotation
-	Screensaver
-	
+	* 1-8 displays per ESP8266 based controller
+	* Theoretically unlimited number of controllers (didn't have so many for testing :-) )
+	* Up to 10 Fonts
+	* Up to 10 Templates
+	* Up to 10 Logos
+	* Clock available for all displays (NTP time or Rocrail time)
+	* Display rotation
+	* Screensaver
+
 
 
 Thank you for your interest in the Roc-MQTT-Display project.
 If you like the project please consider donating if you want to support further development.
 Donations are more than welcome and I will use them to buy new hardware, devices, sensors and a lot of coffee...
 
-<form action="https://www.paypal.com/donate" method="post" target="_top">
-<input type="hidden" name="hosted_button_id" value="XC7T2ECBQYNJ2" />
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-<img alt="" border="0" src="https://www.paypal.com/en_DE/i/scr/pixel.gif" width="1" height="1" />
-</form>
+[![PayPal donate button](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)
 
