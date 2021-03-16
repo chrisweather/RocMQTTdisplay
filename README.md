@@ -3,14 +3,37 @@
 Copyright (c) 2020-2021, Christian Heinrichs.
 All rights reserved.
 
-Dynamic Passenger Information for Model Railroad Stations controlled by Rocrail.
-Based on Wemos D1 mini ESP8266, TCA9548A I2C Multiplexer, up to 8 0.91" I2C OLED
-displays 128x32 connected with Rocrail via MQTT. Scalable up to 99 displays.
-
-Version 0.97  March 12, 2021     
-
-
-This is work in progress. Updates will follow soon.
+Dynamic Passenger Information system for Model Railroad Stations controlled by Rocrail.
+Wireless communication with Rocrail via MQTT messages.
+A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to eight 0.91" 128x32
+I2C OLED displays. 
+Several D1 mini can run together so the total number of displays is not limited.
 
 
- 
+Latest Version 0.98  March 15, 2021     
+
+The goal of this project is to provide simple to use and inexpensive displays to run in a Model Railroad environment.
+- Messages can be static or dynamic
+- Formatting is saved in templates so the user can focus on only sending the right data to the display.
+- The architecture is extremely scalable:
+	1-8 displays per ESP8266 based controller
+	Theoretically unlimited number of controllers (didn't have so many for testing :-) )
+	Up to 10 Fonts
+	Up to 10 Templates
+	Up to 10 Logos
+	Clock available for all displays (NTP time or Rocrail time)
+	Display rotation
+	Screensaver
+	
+
+
+Thank you for your interest in the Roc-MQTT-Display project.
+If you like the project please consider donating if you want to support further development.
+Donations are more than welcome and I will use them to buy new hardware, devices, sensors and a lot of coffee...
+
+<form action="https://www.paypal.com/donate" method="post" target="_top">
+<input type="hidden" name="hosted_button_id" value="XC7T2ECBQYNJ2" />
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<img alt="" border="0" src="https://www.paypal.com/en_DE/i/scr/pixel.gif" width="1" height="1" />
+</form>
+
