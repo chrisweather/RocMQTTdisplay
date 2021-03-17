@@ -15,8 +15,9 @@ Latest Version 0.98  March 15, 2021
 
 
 The goal of this project is to provide simple to use and inexpensive displays to run in a Model Railroad environment.
+
 - Messages can be static or dynamic
-- Formatting is saved in templates so the user can focus on only sending the right data to the display.
+- Formatting is saved in templates so the user can focus on only sending the right data to the display and just pick a template.
 - The architecture is extremely scalable:
 	* 1-8 displays per ESP8266 based controller
 	* Theoretically unlimited number of controllers (didn't have so many for testing :-) )
@@ -27,12 +28,13 @@ The goal of this project is to provide simple to use and inexpensive displays to
 	* Display rotation
 	* Screensaver
 
-
+Serveral more ideas and features are still on the to do list.
+Please share your experience and ideas for improvements.
 
 Thank you for your interest in the Roc-MQTT-Display project.
 If you like the project please consider donating if you want to support further development.
-Donations are more than welcome and I will use them to buy new hardware, devices, sensors and a lot of coffee...
+Donations are more than welcome and I will use them to buy new hardware, devices, sensors for development and testing and of course a lot of coffee...
 
-[![PayPal donate button](https://img.shields.io/badge/Donate-PayPal-green.svg))](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)
+[![PayPal donate button](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)
 
 
