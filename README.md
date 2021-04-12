@@ -28,7 +28,7 @@ The goal of this project is to provide simple to use and inexpensive displays to
 	* Display rotation
 	* Screensaver
 
-Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the Wiki.
+Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [Wiki](https://github.com/chrisweather/RocMQTTdisplay/wiki).
 
 Serveral more ideas and features are still on the to do list.
 Please share your experience and ideas for improvements via Issues.
