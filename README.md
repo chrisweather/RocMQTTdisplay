@@ -28,6 +28,8 @@ The goal of this project is to provide simple to use and inexpensive displays to
 	* Display rotation
 	* Screensaver
 
+<img src="doc/RMD002.jpg" width="30%" alt="Displays"/>
+
 Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [Wiki](https://github.com/chrisweather/RocMQTTdisplay/wiki).
 
 Several more ideas and features are still on the to do list.
