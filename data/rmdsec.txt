@@ -1,0 +1,1 @@
+{"WIFI_SSID":"Your WIFI SSID","WIFI_PW":"Your WIFI Password","OTA_PW":"","OTA_HASH":"","MQTT_USER":"","MQTT_PW":""}

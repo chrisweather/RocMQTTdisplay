@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Roc-MQTT-Display</title>
+<link rel="stylesheet" type="text/css" href="rmd.css">
+</head>
+<body>
+<H1>Roc-MQTT-Display</H1>
+<p><strong>%VER%</strong></p>
+<p><strong>%WIFI_DEVICENAME%</strong></p>
+<button class='button' onclick='buttonSecret()'>Secrets</button>   
+<button class='button' onclick='buttonConfig()'>Configuration</button>   
+<button class='button' onclick='buttonTemplate1()'>Templates 1</button>   
+<button class='button' onclick='buttonTemplate2()'>Templates 2</button>   
+<button type='button' class='button' onclick='buttonRestart()'>Restart</button>
+</br>
+</br>
+</br>
+<script>
+function buttonSecret() {
+ window.open('/sec','_self');
+}
+function buttonConfig() {
+ window.open('/config','_self');
+}
+function buttonTemplate1() {
+ window.open('/tpl1','_self');
+}
+function buttonTemplate2() {
+ window.open('/tpl2','_self');
+}
+function buttonRestart() {
+ window.open('/restart','_self');
+}
+</script>
+<footer>
+<p>Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.</p>
+<p><a href='https://github.com/chrisweather/RocMQTTdisplay'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
+</footer>
+</body>
+</html>

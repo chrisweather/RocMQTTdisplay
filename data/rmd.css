@@ -1,0 +1,117 @@
+html {
+  font-family: Arial, Helvetica, sans-serif;
+  display: inline-block;
+  margin: 0px auto;
+  text-align: center;
+  }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align:center;
+  }
+
+H1 {
+  font-size: 32px;
+  }
+
+H2 {
+  font-size: 28px;
+  }
+
+.button {
+  background-color: #008CBA;
+  border: none;
+  border-radius: 4px;
+  width: 110px;
+  color: white;
+  padding: 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 6px;
+  cursor: pointer;
+  }
+
+.infield {
+  border: none;
+  background: none;
+  font-size: 18px;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding: 4px;
+  }
+
+.infield2 {
+  border: none;
+  background: none;
+  font-size: 16px;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding: 4px;
+  width: 80%;
+  }
+
+input[type="radio"] + label {
+  color: #008CBA;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 22px;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding: 2px;
+}
+
+#tbl1 {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  }
+
+#tbl1 td, th {
+  border: 1px solid #ddd;
+  padding: 2px;
+  text-align: left;
+  min-width: 60px;
+  }
+
+#tbl1 tr:nth-child(even){
+  background-color: #f2f2f2;
+  tr:hover {background-color: #ddd;
+  }
+
+#tbl1 th {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+  }
+
+#tbl2 {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  }
+
+#tbl2 td, th {
+  border: 1px solid #ddd;
+  padding: 4px;
+  text-align:left;
+  width: 12%;
+  }
+
+footer {
+  padding: 10px;
+  text-align: center;
+  color: black;
+  font-size: 10px;
+  }

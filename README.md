@@ -11,7 +11,7 @@ I2C OLED displays.
 Several D1 mini can run together so the total number of displays is not limited.
 
 
-Latest Version 0.98  March 15, 2021     
+Latest Version 0.99  April 12, 2021     
 
 
 The goal of this project is to provide simple to use and inexpensive displays to run in a Model Railroad environment.
@@ -28,12 +28,14 @@ The goal of this project is to provide simple to use and inexpensive displays to
 	* Display rotation
 	* Screensaver
 
+Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the Wiki.
+
 Serveral more ideas and features are still on the to do list.
-Please share your experience and ideas for improvements.
+Please share your experience and ideas for improvements via Issues.
 
 Thank you for your interest in the Roc-MQTT-Display project.
 If you like the project please consider donating if you want to support further development.
-Donations are more than welcome and I will use them to buy new hardware, devices, sensors for development and testing and of course a lot of coffee...
+Donations are more than welcome and I will use them to buy new displays, controllers and sensors for development and testing and of course for a lot of coffee... :-)
 
 [![PayPal donate button](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)
 

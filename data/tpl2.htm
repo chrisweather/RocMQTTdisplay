@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Roc-MQTT-Display</title>
+<link rel="stylesheet" type="text/css" href="rmd.css">
+</head>
+<body>
+<H1>Roc-MQTT-Display - Templates 2</H1>
+<p><strong>%VER%</strong></p>
+<p><strong>%WIFI_DEVICENAME%</strong></p>
+<script>
+function buttonHome() {
+ window.open('/','_self');
+}
+function SelTpl() {
+ document.getElementById("formSelTpl").submit();
+}
+function CheckTplRadio() {
+  tplradiobtn = document.getElementById("%TPL_ID0%");
+  tplradiobtn.checked = true;
+}
+window.onload = CheckTplRadio;
+body.onload = CheckTplRadio;
+</script>
+<button type='button' class='button' onclick='buttonHome()'>Home</button>   
+
+<table id='tbl1'>
+<tr><td><br>Template</td><td><br>
+<form name='formSelTpl' action='/tpl2sel' method='POST'>
+  <input type="radio" id="T0" name="f_TPL_NO" value="0" onchange="this.form.submit()"> 
+  <label for="T0">T0</label> 
+  <input type="radio" id="T1" name="f_TPL_NO" value="1" onchange="this.form.submit()"> 
+  <label for="T1">T1</label> 
+  <input type="radio" id="T2" name="f_TPL_NO" value="2" onchange="this.form.submit()"> 
+  <label for="T2">T2</label>
+  <input type="radio" id="T3" name="f_TPL_NO" value="3" onchange="this.form.submit()"> 
+  <label for="T3">T3</label>
+  <input type="radio" id="T4" name="f_TPL_NO" value="4" onchange="this.form.submit()"> 
+  <label for="T4">T4</label>
+  <input type="radio" id="T5" name="f_TPL_NO" value="5" onchange="this.form.submit()"> 
+  <label for="T5">T5</label>
+  <input type="radio" id="T6" name="f_TPL_NO" value="6" onchange="this.form.submit()"> 
+  <label for="T6">T6</label>
+  <input type="radio" id="T7" name="f_TPL_NO" value="7" onchange="this.form.submit()"> 
+  <label for="T7">T7</label>
+  <input type="radio" id="T8" name="f_TPL_NO" value="8" onchange="this.form.submit()"> 
+  <label for="T8">T8</label>
+  <input type="radio" id="T9" name="f_TPL_NO" value="9" onchange="this.form.submit()"> 
+  <label for="T9">T9</label>
+  <br>
+</form>
+</td></tr>
+
+<form name='formData' action='/submittpl2' method='POST'>
+<input type='submit' class='button' value='Save'>
+<table id='tbl1'>
+<tr><td></td><td>Name</td><td><input type='text' class='infield' name='f_TPL_NAME0' value='%TPL_NAME0%' size='31' maxlength='30' ></td></tr>
+<tr><td></td><td>Side</td><td><input type='number' class='infield' name='f_TPL_SIDE0' value='%TPL_SIDE0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+
+<tr><td>Field 0 - Station</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_0FONT0' value='%TPL_0FONT0%' size='1' maxlength='1' min='0'></td></tr>
+<tr><td></td><td>MaxWidth</td><td><input type='number' class='infield' name='f_TPL_0MAXWIDTH0' value='%TPL_0MAXWIDTH0%' size='3' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>Font2</td><td><input type='number' class='infield' name='f_TPL_0FONT20' value='%TPL_0FONT20%' size='1' maxlength='1' min='0'></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_0DRAWCOLOR0' value='%TPL_0DRAWCOLOR0%' size='1' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_0FONTMODE0' value='%TPL_0FONTMODE0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_0POSX0' value='%TPL_0POSX0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_0POSY0' value='%TPL_0POSY0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>Scroll</td><td><input type='number' class='infield' name='f_TPL_0SCROLL0' value='%TPL_0SCROLL0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+
+<tr><td>Field 1 - Track</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_1FONT0' value='%TPL_1FONT0%' size='1' maxlength='1' min='0'></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_1DRAWCOLOR0' value='%TPL_1DRAWCOLOR0%' size='1' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_1FONTMODE0' value='%TPL_1FONTMODE0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_1POSX0' value='%TPL_1POSX0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_1POSY0' value='%TPL_1POSY0%' size='3' maxlength='3' ></td></tr>
+
+<tr><td>Field 2 - Destination</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_2FONT0' value='%TPL_2FONT0%' size='1' maxlength='1' min='0'></td></tr>
+<tr><td></td><td>MaxWidth</td><td><input type='number' class='infield' name='f_TPL_2MAXWIDTH0' value='%TPL_2MAXWIDTH0%' size='3' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>Font2</td><td><input type='number' class='infield' name='f_TPL_2FONT20' value='%TPL_2FONT20%' size='1' maxlength='1' min='0'></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_2DRAWCOLOR0' value='%TPL_2DRAWCOLOR0%' size='1' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_2FONTMODE0' value='%TPL_2FONTMODE0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_2POSX0' value='%TPL_2POSX0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_2POSY0' value='%TPL_2POSY0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>Scroll</td><td><input type='number' class='infield' name='f_TPL_2SCROLL0' value='%TPL_2SCROLL0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+
+<tr><td>Field 3 - Departure</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_3FONT0' value='%TPL_3FONT0%' size='1' maxlength='1' min='0'></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_3DRAWCOLOR0' value='%TPL_3DRAWCOLOR0%' size='1' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_3FONTMODE0' value='%TPL_3FONTMODE0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_3POSX0' value='%TPL_3POSX0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_3POSY0' value='%TPL_3POSY0%' size='3' maxlength='3' ></td></tr>
+
+<tr><td>Field 4 - Train</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_4FONT0' value='%TPL_4FONT0%' size='1' maxlength='1' min='0'></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_4DRAWCOLOR0' value='%TPL_4DRAWCOLOR0%' size='1' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_4FONTMODE0' value='%TPL_4FONTMODE0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_4POSX0' value='%TPL_4POSX0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_4POSY0' value='%TPL_4POSY0%' size='3' maxlength='3' ></td></tr>
+
+<tr><td>Field 5 - TrainType</td><td>LogoX</td><td><input type='number' class='infield' name='f_TPL_5LOGOX0' value='%TPL_5LOGOX0%' size='3' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>LogoY</td><td><input type='number' class='infield' name='f_TPL_5LOGOY0' value='%TPL_5LOGOY0%' size='3' maxlength='3' ></td></tr>
+
+<tr><td>Field 6 - Message</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_6FONT0' value='%TPL_6FONT0%' size='1' maxlength='1' min='0'></td></tr>
+<tr><td></td><td>MaxWidth</td><td><input type='number' class='infield' name='f_TPL_6MAXWIDTH0' value='%TPL_6MAXWIDTH0%' size='3' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>Font2</td><td><input type='number' class='infield' name='f_TPL_6FONT20' value='%TPL_6FONT20%' size='1' maxlength='1' min='0'></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_6DRAWCOLOR0' value='%TPL_6DRAWCOLOR0%' size='1' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_6FONTMODE0' value='%TPL_6FONTMODE0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_6POSX0' value='%TPL_6POSX0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_6POSY0' value='%TPL_6POSY0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>Scroll</td><td><input type='number' class='infield' name='f_TPL_6SCROLL0' value='%TPL_6SCROLL0%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+
+<tr><td>Field 6 - Scrollbox</td><td>BoxX</td><td><input type='number' class='infield' name='f_TPL_6BOXX0' value='%TPL_6BOXX0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>BoxY</td><td><input type='number' class='infield' name='f_TPL_6BOXY0' value='%TPL_6BOXY0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>BoxW</td><td><input type='number' class='infield' name='f_TPL_6BOXW0' value='%TPL_6BOXW0%' size='3' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>BoxH</td><td><input type='number' class='infield' name='f_TPL_6BOXH0' value='%TPL_6BOXH0%' size='3' maxlength='3' min='0' ></td></tr>
+
+<tr><td>Field 6 - Blackbox</td><td>DrawColor2</td><td><input type='number' class='infield' name='f_TPL_6DRAWCOLOR20' value='%TPL_6DRAWCOLOR20%' size='1' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode2</td><td><input type='number' class='infield' name='f_TPL_6FONTMODE20' value='%TPL_6FONTMODE20%' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>Box2X</td><td><input type='number' class='infield' name='f_TPL_6BOX2X0' value='%TPL_6BOX2X0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>Box2Y</td><td><input type='number' class='infield' name='f_TPL_6BOX2Y0' value='%TPL_6BOX2Y0%' size='3' maxlength='3' ></td></tr>
+<tr><td></td><td>Box2W</td><td><input type='number' class='infield' name='f_TPL_6BOX2W0' value='%TPL_6BOX2W0%' size='3' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>Box2H</td><td><input type='number' class='infield' name='f_TPL_6BOX2H0' value='%TPL_6BOX2H0%' size='3' maxlength='3' min='0' ></td></tr>
+</table>
+</form>
+
+<footer>
+<p>Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.</p>
+<p><a href='https://github.com/chrisweather/RocMQTTdisplay'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
+</footer>
+</body>
+</html>
