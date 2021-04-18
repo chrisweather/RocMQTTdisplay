@@ -21,12 +21,12 @@ function buttonHome() {
 
 <p><strong>%WIFI_STATUS%</strong></p>
 <table id='tbl1'>
-<tr><td>WIFI SSID</td><td><input type='text' class='infield' name='f_WIFI_SSID' value='%WIFI_SSID%' size='51' maxlength='50' ></td></tr>
-<tr><td>WIFI PW</td><td><input type='password' class='infield' name='f_WIFI_PW' value='' size='51' maxlength='50' ></td></tr>
-<tr><td>OTA PW (PW or Hash)</td><td><input type='password' class='infield' name='f_OTA_PW' value='' size='51' maxlength='50' ></td></tr>
-<tr><td>OTA Hash (PW or Hash)</td><td><input type='password' class='infield' name='f_OTA_HASH' value='' size='51' maxlength='50' ></td></tr>
-<tr><td>MQTT User (Optional)</td><td><input type='text' class='infield' name='f_MQTT_USER' value='%MQTT_USER%' size='19' maxlength='18' ></td></tr>
-<tr><td>MQTT PW (Optional)</td><td><input type='password' class='infield' name='f_MQTT_PW' value='' size='51' maxlength='50' ></td></tr>
+<tr><td>WIFI SSID</td><td><input type='text' class='infield' name='f_WIFI_SSID' value='%WIFI_SSID%' title='Name of your Wifi network' size='51' maxlength='50' ></td></tr>
+<tr><td>WIFI PW</td><td><input type='password' class='infield' name='f_WIFI_PW' value='' title='Your Wifi password' size='51' maxlength='50' ></td></tr>
+<tr><td>OTA PW (PW or Hash)</td><td><input type='password' class='infield' name='f_OTA_PW' value='' title='Password for Over the Air updates (optional). Configure Password OR Hash, not both.' size='51' maxlength='50' ></td></tr>
+<tr><td>OTA Hash (PW or Hash)</td><td><input type='password' class='infield' name='f_OTA_HASH' value='' title='Password Hash for Over the Air updates (optional). Configure Password OR Hash, not both.' size='51' maxlength='50' ></td></tr>
+<tr><td>MQTT User (Optional)</td><td><input type='text' class='infield' name='f_MQTT_USER' value='%MQTT_USER%' title='Username for your MQTT server (optional)' size='19' maxlength='18' ></td></tr>
+<tr><td>MQTT PW (Optional)</td><td><input type='password' class='infield' name='f_MQTT_PW' value='' title='Password for your MQTT server (optional)' size='51' maxlength='50' ></td></tr>
 </table>
 </form>
 <footer>

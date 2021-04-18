@@ -20,62 +20,62 @@ function buttonHome() {
 </br>
 
 <table id='tbl1'>
-<tr><td>WIFI Devicename</td><td><input type='text' class='infield' name='f_WIFI_DEVICENAME' value='%WIFI_DEVICENAME%' size='19' maxlength='18' ></td></tr>
-<tr><td>WIFI reconnect delay (ms)</td><td><input type='number' class='infield' name='f_WIFI_RECONDELAY' value='%WIFI_RECONDELAY%' size='7' maxlength='6' min='5000' ></td></tr>
-<tr><td>OTA Hostname</td><td><input type='text' class='infield' name='f_OTA_HOSTNAME' value='%OTA_HOSTNAME%' size='19' maxlength='18' ></td></tr>
-<tr><td>OTA Port</td><td><input type='number' class='infield' name='f_OTA_PORT' value='%OTA_PORT%' size='6' maxlength='5' min='0' ></td></tr>
-<tr><td>NTP Time Server pool</td><td><input type='text' class='infield' name='f_NTP_SERVER' value='%NTP_SERVER%' size='51' maxlength='50' ></td></tr>
-<tr><td>NTP Timezone and DST</td><td><input type='text' class='infield' name='f_NTP_TZ' value='%NTP_TZ%' size='51' maxlength='50' ></td></tr>
-<tr><td>MQTT server IP address</td><td><input type='text' class='infield' name='f_MQTT_IP' value='%MQTT_IP%' size='17' maxlength='16' ></td></tr>
-<tr><td>MQTT Port</td><td><input type='number' class='infield' name='f_MQTT_PORT' value='%MQTT_PORT%' size='6' maxlength='5' min='0' ></td></tr>
-<tr><td>MQTT Message Size (byte)</td><td><input type='number' class='infield' name='f_MQTT_MSGSIZE' value='%MQTT_MSGSIZE%' size='5' maxlength='4' min='128' ></td></tr>
-<tr><td>MQTT keep alive (sec)</td><td><input type='number' class='infield' name='f_MQTT_KEEPALIVE' value='%MQTT_KEEPALIVE%' size='5' maxlength='4' min='0' ></td></tr>
-<tr><td>MQTT time between reconnects (ms)</td><td><input type='number' class='infield' name='f_MQTT_RECONDELAY' value='%MQTT_RECONDELAY%' size='5' maxlength='4' min='10000' ></td></tr>
-<tr><td>MQTT debug messages</td><td><input type='number' class='infield' name='f_MQTT_DEBUG' value='%MQTT_DEBUG%' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td>I2C Multiplexer address</td><td><input type='text' class='infield' name='f_MUX' value='%MUX%' size='9' maxlength='8' ></td></tr>
-<tr><td>Number of connected displays</td><td><input type='number' class='infield' name='f_NUMDISP' value='%NUMDISP%' size='5' maxlength='4' min='1' max='8' ></td></tr>
-<tr><td>Show start screens longer (ms)</td><td><input type='number' class='infield' name='f_STARTDELAY' value='%STARTDELAY%' size='5' maxlength='4' min='1' ></td></tr>
-<tr><td>Increase display update intervall (ms)</td><td><input type='number' class='infield' name='f_UPDSPEED' value='%UPDSPEED%' size='5' maxlength='4' min='1' ></td></tr>
-<tr><td>Screensaver (min)</td><td><input type='number' class='infield' name='f_SCREENSAVER' value='%SCREENSAVER%' size='5' maxlength='4' min='0' max='600' ></td></tr>
+<tr><td>WIFI Devicename</td><td><input type='text' class='infield' name='f_WIFI_DEVICENAME' value='%WIFI_DEVICENAME%' title='' size='19' maxlength='18' ></td></tr>
+<tr><td>WIFI reconnect delay (ms)</td><td><input type='number' class='infield' name='f_WIFI_RECONDELAY' value='%WIFI_RECONDELAY%' title='' size='7' maxlength='6' min='5000' ></td></tr>
+<tr><td>OTA Hostname</td><td><input type='text' class='infield' name='f_OTA_HOSTNAME' value='%OTA_HOSTNAME%' title='' size='19' maxlength='18' ></td></tr>
+<tr><td>OTA Port</td><td><input type='number' class='infield' name='f_OTA_PORT' value='%OTA_PORT%' title='' size='6' maxlength='5' min='0' ></td></tr>
+<tr><td>NTP Time Server pool</td><td><input type='text' class='infield' name='f_NTP_SERVER' value='%NTP_SERVER%' title='' size='51' maxlength='50' ></td></tr>
+<tr><td>NTP Timezone and DST</td><td><input type='text' class='infield' name='f_NTP_TZ' value='%NTP_TZ%' title='' size='51' maxlength='50' ></td></tr>
+<tr><td>MQTT server IP address</td><td><input type='text' class='infield' name='f_MQTT_IP' value='%MQTT_IP%' title='' size='17' maxlength='16' ></td></tr>
+<tr><td>MQTT Port</td><td><input type='number' class='infield' name='f_MQTT_PORT' value='%MQTT_PORT%' title='' size='6' maxlength='5' min='0' ></td></tr>
+<tr><td>MQTT Message Size (byte)</td><td><input type='number' class='infield' name='f_MQTT_MSGSIZE' value='%MQTT_MSGSIZE%' title='' size='5' maxlength='4' min='128' ></td></tr>
+<tr><td>MQTT keep alive (sec)</td><td><input type='number' class='infield' name='f_MQTT_KEEPALIVE' value='%MQTT_KEEPALIVE%' title='' size='5' maxlength='4' min='0' ></td></tr>
+<tr><td>MQTT time between reconnects (ms)</td><td><input type='number' class='infield' name='f_MQTT_RECONDELAY' value='%MQTT_RECONDELAY%' title='' size='5' maxlength='4' min='10000' ></td></tr>
+<tr><td>MQTT debug messages</td><td><input type='number' class='infield' name='f_MQTT_DEBUG' value='%MQTT_DEBUG%' title='0=off, 1= show debug messages in serial monitor' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td>I2C Multiplexer address</td><td><input type='text' class='infield' name='f_MUX' value='%MUX%' title='' size='9' maxlength='8' ></td></tr>
+<tr><td>Number of connected displays</td><td><input type='number' class='infield' name='f_NUMDISP' value='%NUMDISP%' title='Number (1-8) of displays connected to this controller' size='5' maxlength='4' min='1' max='8' ></td></tr>
+<tr><td>Show start screens longer (ms)</td><td><input type='number' class='infield' name='f_STARTDELAY' value='%STARTDELAY%' title='Set e.g. to 10000 to show the start up screens longer during installation' size='5' maxlength='4' min='1' ></td></tr>
+<tr><td>Increase display update intervall (ms)</td><td><input type='number' class='infield' name='f_UPDSPEED' value='%UPDSPEED%' title='' size='5' maxlength='4' min='1' ></td></tr>
+<tr><td>Screensaver (min)</td><td><input type='number' class='infield' name='f_SCREENSAVER' value='%SCREENSAVER%' title='Screensaver switches all displays off when no new messages has been received for x minutes' size='5' maxlength='4' min='0' max='600' ></td></tr>
 <tr><td>Display IDs</td><td><table id='tbl2'><tr>
-<td><input type='text' class='infield2' name='f_DPL_ID0' value='%DPL_ID0%' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID1' value='%DPL_ID1%' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID2' value='%DPL_ID2%' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID3' value='%DPL_ID3%' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID4' value='%DPL_ID4%' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID5' value='%DPL_ID5%' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID6' value='%DPL_ID6%' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID7' value='%DPL_ID7%' size='3' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID0' value='%DPL_ID0%' title='Name of display 1 connected to this controller, e.g. D01' size='3' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID1' value='%DPL_ID1%' title='Name of display 2 connected to this controller, e.g. D02' size='3' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID2' value='%DPL_ID2%' title='Name of display 3 connected to this controller, e.g. D03' size='3' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID3' value='%DPL_ID3%' title='Name of display 4 connected to this controller, e.g. D04' size='3' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID4' value='%DPL_ID4%' title='Name of display 5 connected to this controller, e.g. D05' size='3' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID5' value='%DPL_ID5%' title='Name of display 6 connected to this controller, e.g. D06' size='3' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID6' value='%DPL_ID6%' title='Name of display 7 connected to this controller, e.g. D07' size='3' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID7' value='%DPL_ID7%' title='Name of display 8 connected to this controller, e.g. D08' size='3' maxlength='3' ></td>
 </tr></table></td></tr>
 <tr><td>Flip</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_FLIP0' value='%DPL_FLIP0%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP1' value='%DPL_FLIP1%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP2' value='%DPL_FLIP2%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP3' value='%DPL_FLIP3%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP4' value='%DPL_FLIP4%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP5' value='%DPL_FLIP5%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP6' value='%DPL_FLIP6%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP7' value='%DPL_FLIP7%' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP0' value='%DPL_FLIP0%' title='1 = Flip this display by 180°' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP1' value='%DPL_FLIP1%' title='1 = Flip this display by 180°' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP2' value='%DPL_FLIP2%' title='1 = Flip this display by 180°' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP3' value='%DPL_FLIP3%' title='1 = Flip this display by 180°' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP4' value='%DPL_FLIP4%' title='1 = Flip this display by 180°' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP5' value='%DPL_FLIP5%' title='1 = Flip this display by 180°' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP6' value='%DPL_FLIP6%' title='1 = Flip this display by 180°' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP7' value='%DPL_FLIP7%' title='1 = Flip this display by 180°' size='3' maxlength='1' min='0' max='1' ></td>
 </tr></table></td></tr>
 <tr><td>Contrast</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST0' value='%DPL_CONTRAST0%' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST1' value='%DPL_CONTRAST1%' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST2' value='%DPL_CONTRAST2%' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST3' value='%DPL_CONTRAST3%' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST4' value='%DPL_CONTRAST4%' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST5' value='%DPL_CONTRAST5%' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST6' value='%DPL_CONTRAST6%' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST7' value='%DPL_CONTRAST7%' size='3' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST0' value='%DPL_CONTRAST0%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST1' value='%DPL_CONTRAST1%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST2' value='%DPL_CONTRAST2%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST3' value='%DPL_CONTRAST3%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST4' value='%DPL_CONTRAST4%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST5' value='%DPL_CONTRAST5%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST6' value='%DPL_CONTRAST6%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST7' value='%DPL_CONTRAST7%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
 </tr></table></td></tr>
 <tr><td>Display Side</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_SIDE0' value='%DPL_SIDE0%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE1' value='%DPL_SIDE1%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE2' value='%DPL_SIDE2%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE3' value='%DPL_SIDE3%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE4' value='%DPL_SIDE4%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE5' value='%DPL_SIDE5%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE6' value='%DPL_SIDE6%' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE7' value='%DPL_SIDE7%' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE0' value='%DPL_SIDE0%' title='0=Side A, 1=Side B' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE1' value='%DPL_SIDE1%' title='0=Side A, 1=Side B' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE2' value='%DPL_SIDE2%' title='0=Side A, 1=Side B' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE3' value='%DPL_SIDE3%' title='0=Side A, 1=Side B' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE4' value='%DPL_SIDE4%' title='0=Side A, 1=Side B' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE5' value='%DPL_SIDE5%' title='0=Side A, 1=Side B' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE6' value='%DPL_SIDE6%' title='0=Side A, 1=Side B' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE7' value='%DPL_SIDE7%' title='0=Side A, 1=Side B' size='3' maxlength='1' min='0' max='1' ></td>
 </tr></table></td></tr>
 </table>
 </form>
