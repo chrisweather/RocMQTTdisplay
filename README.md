@@ -24,6 +24,7 @@ The goal of this project is to provide simple to use and inexpensive displays to
 	* Up to 10 Templates
 	* Up to 10 Logos
 	* Scrolltext
+	* German Umlaut support
 	* Clock available for all displays (NTP time or Rocrail time)
 	* Display rotation
 	* Screensaver
