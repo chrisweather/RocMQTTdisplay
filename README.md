@@ -24,14 +24,14 @@ The goal of this project is to provide simple to use and inexpensive displays to
 	* Up to 10 different Fonts
 	* Up to 10 Templates
 	* Up to 10 Logos
-	* Scrolltext for static or dynamic content
-	* Rocrail dynamic variables support
-	* German Umlaut support
-	* Clock/Date available for all displays (NTP time or Rocrail time)
-	* Display rotation
-	* Screensaver
-	* Webinterface for configuration
-	* Updates via OTA
+- Scrolltext for static or dynamic content
+- Rocrail dynamic variables support
+- German Umlaut support
+- Clock/Date available for all displays (NTP time or Rocrail time)
+- Display rotation
+- Screensaver
+- Webinterface for configuration
+- Updates via OTA
 
 <img src="doc/RMD002.jpg" width="30%" alt="Displays"/>
 
