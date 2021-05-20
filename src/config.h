@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 0.99
+// Version 1.00
 // Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -25,30 +25,34 @@ struct Sec {
 };
 
 struct Config {
-  const char* VER = "Version 0.99";
+  const char* VER = "Version 1.00";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
-  int      WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts. Default = 60000 ms
+  int      WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
 // OTA
   char     OTA_HOSTNAME[19];       // Unique OTA Controller Hostname, default when empty: esp8266-[ChipID]
-  int      OTA_PORT;               // OTA Port, default: 8266
+  int      OTA_PORT;               // OTA Port, default = 8266
 // NTP
   char     NTP_SERVER[51];         // NTP Time Server pool providing UTC time, Europe: europe.pool.ntp.org, Germany: de.pool.ntp.org
   char     NTP_TZ[51];             // NTP Timezone and Daylight Saving Time start/end  https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 // MQTT
-  char     MQTT_IP[18];            // <--- MQTT broker IP adress
-  uint16_t MQTT_PORT;              // MQTT broker port, default: 1883
-  uint16_t MQTT_MSGSIZE;           // Max. MQTT packet size. Default = 128 bytes
-  uint16_t MQTT_KEEPALIVE;         // MQTT keep alive. Default = 15 sec
-  int      MQTT_RECONDELAY;        // Delay between MQTT reconnection attempts. Default = 15000 ms
+  char     MQTT_IP[18];            // MQTT broker IP adress
+  uint16_t MQTT_PORT = 1883;       // MQTT broker port, default = 1883, currently hardcoded, change here if required
+  uint16_t MQTT_MSGSIZE;           // Max. MQTT packet size, default = 128 bytes
+  uint16_t MQTT_KEEPALIVE1;        // MQTT keep alive, default = 15 sec, min = 1 sec
+  int      MQTT_RECONDELAY;        // Delay between MQTT reconnection attempts, default = 15000 ms
   int      MQTT_DEBUG;             // Enable MQTT debugging messages sent to serial output, 0=off, 1=on
+  char     MQTT_TOPIC1[50];        // MQTT Topic 1, default = "rocrail/service/info/clock"
+  char     MQTT_TOPIC2[50];        // MQTT Topic 1, default = "rocrail/service/info/tx"
 // DISPLAYS
+  int      DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, default = 0
   int      MUX;                    // TCA9548A I2C Multiplexer address, default: 0x70 (112)
-  int      NUMDISP;                // <--- Number of I2C OLED displays connected to this controller, 1-8
+  int      NUMDISP;                // Number of I2C OLED displays connected to this controller, 1-8
   int      STARTDELAY;             // Show Controllername and Display Number x milliseconds longer at startup, helpful during setup
   int      UPDSPEED;               // Slow down display update intervall by increasing the number of ms, e.g. 10 = 100ms + 10
   int      SCREENSAVER;            // minutes without message received until screenSaver switches all displays into power save mode, 0=off
 };
+
 // Configuration for displays connected to this controller (Disp) 1-8
 //                         Disp1, Disp2, Disp3, Disp4, Disp5, Disp6, Disp7, Disp8
 char   DPL_id[8][4] =    { "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08" };  // ID's of Displays 1-8 connected to this controller, e.g. D01...D99
@@ -57,12 +61,7 @@ int    DPL_flip[] =      {     0,     1,     1,     0,     0,     1,     1,     
 int    DPL_contrast[] =  {     1,     1,     1,     1,     1,     1,     1,     1 };  // 0-255  0=display off, 255 max brightness
 int    DPL_side[] =      {     1,     0,     0,     1,     1,     0,     0,     1 };  // 0,1  0=Side A, 1=Side B
 
-// MQTT - Message Broker connection, currently use these variables as MQTT didn't work with the variables above, conversion issue to be fixed
-int16_t  CONFIG_MQTT_PORT = 1883;                            // MQTT broker port, default: 1883
-int16_t  CONFIG_MQTT_KEEPALIVE = 15;                         // MQTT keep alive. Default = 15 sec
-
 struct Template {
-  
 };
 
 const char *secfile = "/rmdsec.txt";         // 8.3 filename
@@ -110,8 +109,10 @@ void loadConfiguration(const char *configfile, Config &config)
   strlcpy(config.MQTT_IP, doc["MQTT_IP"] | "192.168.2.197", sizeof(config.MQTT_IP));
   config.MQTT_PORT = doc["MQTT_PORT"] | 1883;
   config.MQTT_MSGSIZE = doc["MQTT_MSGSIZE"] | 256;
-  config.MQTT_KEEPALIVE = doc["MQTT_KEEPALIVE"] | 15;
+  config.MQTT_KEEPALIVE1 = doc["MQTT_KEEPALIVE"] | 15;
   config.MQTT_RECONDELAY = doc["MQTT_RECONDELAY"] | 10000;
+  strlcpy(config.MQTT_TOPIC1, doc["MQTT_TOPIC1"] | "rocrail/service/info/clock", sizeof(config.MQTT_TOPIC1));
+  strlcpy(config.MQTT_TOPIC2, doc["MQTT_TOPIC2"] | "rocrail/service/info/tx", sizeof(config.MQTT_TOPIC2));
   config.MQTT_DEBUG = doc["MQTT_DEBUG"] | 0;
   config.MUX = doc["MUX"] | 0x70;
   config.NUMDISP = doc["NUMDISP"] | 8;
@@ -178,8 +179,10 @@ void saveConfiguration(const char *configfile, const Config &config)
   doc["MQTT_IP"] = config.MQTT_IP;
   doc["MQTT_PORT"] = config.MQTT_PORT;
   doc["MQTT_MSGSIZE"] = config.MQTT_MSGSIZE;
-  doc["MQTT_KEEPALIVE"] = config.MQTT_KEEPALIVE;
+  doc["MQTT_KEEPALIVE"] = config.MQTT_KEEPALIVE1;
   doc["MQTT_RECONDELAY"] = config.MQTT_RECONDELAY;
+  doc["MQTT_TOPIC1"] = config.MQTT_TOPIC1;
+  doc["MQTT_TOPIC2"] = config.MQTT_TOPIC2;
   doc["MQTT_DEBUG"] = config.MQTT_DEBUG;
   doc["MUX"] = config.MUX;
   doc["NUMDISP"] = config.NUMDISP;
@@ -224,6 +227,7 @@ void saveConfiguration(const char *configfile, const Config &config)
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
+  delay(1000);
 }
 
 
@@ -357,6 +361,7 @@ void saveTemplate(const char *templatefile, const Template &templ)
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
+  delay(1000);
 }
 
 
@@ -403,7 +408,7 @@ void loadTemplateFile(const char *templatexx)
   TPL_2drawcolor[TPL] = doc["TPL2DRAWCOLOR"] | 1;
   TPL_2fontmode[TPL] = doc["TPL2FONTMODE"] | 1;
   TPL_2posx[TPL] = doc["TPL2POSX"] | 20;
-  TPL_2posy[TPL] = doc["TPL2POSY"] | 30;
+  TPL_2posy[TPL] = doc["TPL2POSY"] | 29;
   TPL_2scroll[TPL] = doc["TPL2SCROLL"] | 0;
 // Field 3 - Departure
   TPL_3font[TPL] = doc["TPL3FONT"] | 4;
@@ -528,6 +533,7 @@ void saveTemplateFile(const char *templatexx)
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
+  delay(1000);
 }
 
 
@@ -582,6 +588,7 @@ void saveSec(const char *secfile, const Sec &sec)
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
+  delay(1000);
 }
 
 
@@ -607,6 +614,7 @@ void stopLittleFS()
   //LittleFS.end();
   delay(1000);
 }
+
 
 void clearEEPROM() 
 {

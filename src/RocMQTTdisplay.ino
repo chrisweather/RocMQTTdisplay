@@ -5,7 +5,7 @@ A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to eight 0.9
 I2C OLED displays. Several D1 mini can run together so the total number of displays is 
 not limited.
 
-Version 0.99  April 12, 2021
+Version 1.00  May 20, 2021
 
 Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
@@ -72,6 +72,13 @@ using namespace std;
 // Define OLED Display as disp (D2: SDA, D1: SCL) 128x32 OLED I2C Display
 U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
+// Define OLED Display as disp (D2: SDA, D1: SCL) 128x64 OLED I2C Display
+//U8G2_SSD1306_128X64_NONAME_F_HW_I2C disp(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
+// Define OLED Display as disp (D2: SDA, D1: SCL) 64x48 OLED I2C Display
+//U8G2_SSD1306_64X48_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+
+
 u8g2_uint_t offset1;  // current offset for the scrolling text
 u8g2_uint_t offset2;
 u8g2_uint_t offset3;
@@ -113,9 +120,7 @@ Task tS7(100 + config.UPDSPEED, TASK_FOREVER, &send2display7, &ts, true);  // Di
 Task tS8(100 + config.UPDSPEED, TASK_FOREVER, &send2display8, &ts, true);  // Display 8
 
 // Define WIFI/MQTT Client
-//EspMQTTClient client(SECRETS_SSID, SECRETS_PW, config.MQTT_IP, SECRETS_OPTIONAL_MQTTUSR, SECRETS_OPTIONAL_MQTTPW, config.WIFI_DEVICENAME, config.MQTT_PORT);
-//EspMQTTClient client(SECRETS_SSID, SECRETS_PW, CONFIG_MQTT_IP, SECRETS_OPTIONAL_MQTTUSR, SECRETS_OPTIONAL_MQTTPW, config.WIFI_DEVICENAME, CONFIG_MQTT_PORT);
-EspMQTTClient client(sec.WIFI_SSID, sec.WIFI_PW, config.MQTT_IP, sec.MQTT_USER, sec.MQTT_PW, config.WIFI_DEVICENAME, CONFIG_MQTT_PORT);
+EspMQTTClient client( sec.WIFI_SSID, sec.WIFI_PW, config.MQTT_IP, sec.MQTT_USER, sec.MQTT_PW, config.WIFI_DEVICENAME, config.MQTT_PORT );
 
 // Define global variables
 unsigned long lastMsg = 0;    // used by ScreenSaver
@@ -227,8 +232,9 @@ void setup()
 {
   Serial.begin(38400);
   while (!Serial) continue;
+  delay(1000);
 
-  delay(2000);
+  Serial.print(F("\n\n\nStarting Roc-MQTT-Display..."));
 
   // Initialize LittleFS File System
   if(!LittleFS.begin()){
@@ -426,7 +432,7 @@ void setup()
   digitalWrite(LED_BUILTIN, HIGH);
 
   delay(200);
-  Serial.println(F("\nRoc-MQTT-Display\n"));
+  Serial.println(F("\nRoc-MQTT-Display"));
   Serial.println(config.VER);
   Serial.print(F("\nController: "));
   Serial.println(config.WIFI_DEVICENAME);
@@ -441,22 +447,17 @@ void setup()
   // Optional functionalities of EspMQTTClient
   client.enableDebuggingMessages(config.MQTT_DEBUG);
   client.setMaxPacketSize(config.MQTT_MSGSIZE);
-  client.setKeepAlive(CONFIG_MQTT_KEEPALIVE);
-  //client.setKeepAlive(config.MQTT_KEEPALIVE);
-  //Serial.println(config.MQTT_KEEPALIVE);
+  client.setKeepAlive(config.MQTT_KEEPALIVE1);
   client.setMqttReconnectionAttemptDelay(config.MQTT_RECONDELAY);
   client.setWifiReconnectionAttemptDelay(config.WIFI_RECONDELAY);
 
   // Initialize NTP time client
-  //configTime(NTP_TZ, NTP_SERVER);
   configTime(config.NTP_TZ, config.NTP_SERVER);
 
   // OTA
   ArduinoOTA.setPort(config.OTA_PORT);
   ArduinoOTA.setHostname(config.OTA_HOSTNAME);
-  //ArduinoOTA.setPassword(SECRETS_OTAPW);
   ArduinoOTA.setPassword(sec.OTA_PW);
-  //ArduinoOTA.setPasswordHash(SECRETS_OTAPWHASH);
   ArduinoOTA.setPasswordHash(sec.OTA_HASH);
 
   ArduinoOTA.onStart([]() {
@@ -490,10 +491,11 @@ void setup()
     }
   });
   ArduinoOTA.begin();
-  Serial.println(F("\nOTA Ready"));
-  Serial.print(F("IP address: "));
+  Serial.print(F("\nOTA Ready -> Port: "));
+  Serial.print(config.OTA_HOSTNAME);
+  Serial.print(F(" at "));
   Serial.println(WiFi.localIP());
-  Serial.print(F("\nFor configuration go to: http://"));
+  Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
   Serial.println(WiFi.localIP());
 
   // WEBSERVER
@@ -557,6 +559,11 @@ void setup()
     loadSec();
   });
 
+  webserver.on("/download", []() {    // Define the handling function for the /download path
+    //webserver.send(204);
+    downloadFile();
+  });
+
   webserver.on("/restart", []() {      // Define the handling function for the /restart path
     webserver.send(204);
     delay(300);
@@ -611,7 +618,7 @@ void DisplayInit()
       disp.setFont(fontno[0]);
       disp.setFontMode(0);
       disp.setCursor(3,13);
-      disp.print(F("Roc-MQTT-display"));
+      disp.print(F("Roc-MQTT-Display"));
       disp.setCursor(3,31);
       disp.print(config.VER);
       disp.nextPage();
@@ -651,7 +658,9 @@ void send2display1(void)
 { 
   // Template number
   uint8_t t = ZZA1_Template.toInt();
-
+  if (t < 0 || t > 9){
+    t = 0;
+  }
   if (DPL_side[0] == 1){
     if (TPL_side[t] == 0 && TPL_side[t+1] == 1){
       t = t+1;
@@ -785,7 +794,9 @@ void send2display2(void)
 { 
   // Template number
   uint8_t t = ZZA2_Template.toInt();
-  
+  if (t < 0 || t > 9){
+    t = 0;
+  }
   if (DPL_side[1] == 1){
     if (TPL_side[t] == 0 && TPL_side[t+1] == 1){
       t = t+1;
@@ -885,7 +896,9 @@ void send2display3(void)
 { 
   // Template number
   uint8_t t = ZZA3_Template.toInt();
-
+  if (t < 0 || t > 9){
+    t = 0;
+  }
   if (DPL_side[2] == 1){
     if (TPL_side[t] == 0 && TPL_side[t+1] == 1){
       t = t+1;
@@ -985,7 +998,9 @@ void send2display4(void)
 { 
   // Template number
   uint8_t t = ZZA4_Template.toInt();
-  
+  if (t < 0 || t > 9){
+    t = 0;
+  }
   if (DPL_side[3] == 1){
     if (TPL_side[t] == 0 && TPL_side[t+1] == 1){
       t = t+1;
@@ -1085,7 +1100,9 @@ void send2display5(void)
 { 
   // Template number
   uint8_t t = ZZA5_Template.toInt();
-
+  if (t < 0 || t > 9){
+    t = 0;
+  }
   if (DPL_side[4] == 1){
     if (TPL_side[t] == 0 && TPL_side[t+1] == 1){
       t = t+1;
@@ -1185,7 +1202,9 @@ void send2display6(void)
 { 
   // Template number
   uint8_t t = ZZA6_Template.toInt();
-
+  if (t < 0 || t > 9){
+    t = 0;
+  }
   if (DPL_side[5] == 1){
     if (TPL_side[t] == 0 && TPL_side[t+1] == 1){
       t = t+1;
@@ -1285,7 +1304,9 @@ void send2display7(void)
 { 
   // Template number
   uint8_t t = ZZA7_Template.toInt();
-
+  if (t < 0 || t > 9){
+    t = 0;
+  }
   if (DPL_side[6] == 1){
     if (TPL_side[t] == 0 && TPL_side[t+1] == 1){
       t = t+1;
@@ -1385,7 +1406,9 @@ void send2display8(void)
 { 
   // Template number
   uint8_t t = ZZA8_Template.toInt();
-
+  if (t < 0 || t > 9){
+    t = 0;
+  }
   if (DPL_side[7] == 1){
     if (TPL_side[t] == 0 && TPL_side[t+1] == 1){
       t = t+1;
@@ -1624,7 +1647,8 @@ void runCmd(){
 void onConnectionEstablished()
 {
   // Subscribe MQTT client to topic: "rocrail/service/info/clock" to receive Rocrail time
-  client.subscribe("rocrail/service/info/clock", [](const String & payload1) {
+  //client.subscribe("rocrail/service/info/clock", [](const String & payload1) {
+  client.subscribe(config.MQTT_TOPIC1, [](const String & payload1) {
     //Serial.println(payload1);
     // <clock divider="1" hour="18" minute="40" wday="5" mday="12" month="2" year="2021" time="1613151626" temp="20" bri="255" lux="0" pressure="0" humidity="0" cmd="sync"/>
     String h = payload1.substring(payload1.indexOf("hour") + 6, payload1.indexOf("minute") - 2);
@@ -1640,7 +1664,7 @@ void onConnectionEstablished()
   }, 1);
 
   // Subscribe MQTT client to topic: "rocrail/service/info/tx" to receive messages sent by Rocrail text fields
-  client.subscribe("rocrail/service/info/tx", [](const String & payload2) {
+  client.subscribe(config.MQTT_TOPIC2, [](const String & payload2) {
     //Serial.println(payload2);
     String pld = payload2.substring(payload2.indexOf("ZZAMSG"), payload2.length() - 4);
 

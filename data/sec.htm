@@ -1,12 +1,18 @@
 <!DOCTYPE html>
+<!--
+Roc-MQTT-Display
+Version 1.00
+Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
+https://github.com/chrisweather/RocMQTTdisplay
+-->
 <html>
 <head>
+<meta charset="utf-8"/>
 <title>Roc-MQTT-Display</title>
-<link rel="stylesheet" type="text/css" href="rmd.css">
+<link rel='stylesheet' type='text/css' href='rmd.css'>
 </head>
 <body>
 <H1>Roc-MQTT-Display - Access Settings</H1>
-<p><strong>%VER%</strong></p>
 <p><strong>%WIFI_DEVICENAME%</strong></p>
 <script>
 function buttonHome() {
@@ -15,23 +21,22 @@ function buttonHome() {
 </script>
 
 <form action='/submitsec' method='POST'>
-<button type='button' class='button' onclick='buttonHome()'>Home</button>   
-<input type='submit' class='button' value='Save'>
+<button type='button' class='button' title='Home' onclick='buttonHome()'>Home</button>   
+<input type='submit' class='button' title='Save settings' value='Save'>
 </br>
 
-<p><strong>%WIFI_STATUS%</strong></p>
 <table id='tbl1'>
 <tr><td>WIFI SSID</td><td><input type='text' class='infield' name='f_WIFI_SSID' value='%WIFI_SSID%' title='Name of your Wifi network' size='51' maxlength='50' ></td></tr>
-<tr><td>WIFI PW</td><td><input type='password' class='infield' name='f_WIFI_PW' value='' title='Your Wifi password' size='51' maxlength='50' ></td></tr>
-<tr><td>OTA PW (PW or Hash)</td><td><input type='password' class='infield' name='f_OTA_PW' value='' title='Password for Over the Air updates (optional). Configure Password OR Hash, not both.' size='51' maxlength='50' ></td></tr>
-<tr><td>OTA Hash (PW or Hash)</td><td><input type='password' class='infield' name='f_OTA_HASH' value='' title='Password Hash for Over the Air updates (optional). Configure Password OR Hash, not both.' size='51' maxlength='50' ></td></tr>
+<tr><td>WIFI PW</td><td><input type='password' class='infield' name='f_WIFI_PW' value='' title='Your Wifi password' size='51' maxlength='50' required ></td></tr>
+<tr><td>OTA PW (PW or Hash)</td><td><input type='password' class='infield' name='f_OTA_PW' value='' title='Password for Over The Air updates (optional). Configure Password OR Hash, not both.' size='51' maxlength='50' ></td></tr>
+<tr><td>OTA Hash (PW or Hash)</td><td><input type='password' class='infield' name='f_OTA_HASH' value='' title='Password Hash for Over The Air updates (optional). Configure Password OR Hash, not both.' size='51' maxlength='50' ></td></tr>
 <tr><td>MQTT User (Optional)</td><td><input type='text' class='infield' name='f_MQTT_USER' value='%MQTT_USER%' title='Username for your MQTT server (optional)' size='19' maxlength='18' ></td></tr>
 <tr><td>MQTT PW (Optional)</td><td><input type='password' class='infield' name='f_MQTT_PW' value='' title='Password for your MQTT server (optional)' size='51' maxlength='50' ></td></tr>
 </table>
 </form>
 <footer>
 <p>Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.</p>
-<p><a href='https://github.com/chrisweather/RocMQTTdisplay'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
+<p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
 </footer>
 </body>
 </html>

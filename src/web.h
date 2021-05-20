@@ -1,5 +1,5 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 0.99
+// Version 1.00
 // Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -16,7 +16,7 @@ String buf = "";
 // ROOT
 void loadRoot()
 {
-  File htmlRoot = LittleFS.open("/index.htm", "r");
+  File htmlRoot = LittleFS.open( "/index.htm", "r" );
   buf = htmlRoot.readString();
   buf.replace("%VER%", config.VER);
   buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
@@ -28,25 +28,24 @@ void loadRoot()
 // CSS
 void loadCSS()
 {
-  File htmlCSS = LittleFS.open("/rmd.css", "r");
-  webserver.streamFile(htmlCSS, "text/css" );
+  File htmlCSS = LittleFS.open( "/rmd.css", "r" );
+  webserver.streamFile( htmlCSS, "text/css" );
   htmlCSS.close();
 }
 
 // 404 - NotFound
 void loadNotFound()
 {
-  File html404 = LittleFS.open("/404.htm", "r");
-  webserver.streamFile(html404, "text/html" );
+  File html404 = LittleFS.open( "/404.htm", "r" );
+  webserver.streamFile( html404, "text/html" );
   html404.close();
 }
 
 // CONFIGURATION
 void loadCfg()
 {
-  File htmlCfg = LittleFS.open("/config.htm", "r");
+  File htmlCfg = LittleFS.open( "/config.htm", "r" );
   buf = htmlCfg.readString();
-  buf.replace("%VER%", config.VER);
   buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
   buf.replace("%WIFI_RECONDELAY%", String(config.WIFI_RECONDELAY));
   buf.replace("%OTA_HOSTNAME%", String(config.OTA_HOSTNAME));
@@ -56,10 +55,18 @@ void loadCfg()
   buf.replace("%MQTT_IP%", String(config.MQTT_IP));
   buf.replace("%MQTT_PORT%", String(config.MQTT_PORT));
   buf.replace("%MQTT_MSGSIZE%", String(config.MQTT_MSGSIZE));
-  buf.replace("%MQTT_KEEPALIVE%", String(config.MQTT_KEEPALIVE));
+  buf.replace("%MQTT_KEEPALIVE%", String(config.MQTT_KEEPALIVE1));
   buf.replace("%MQTT_RECONDELAY%", String(config.MQTT_RECONDELAY));
+  buf.replace("%MQTT_TOPIC1%", String(config.MQTT_TOPIC1));
+  buf.replace("%MQTT_TOPIC2%", String(config.MQTT_TOPIC2));
   buf.replace("%MQTT_DEBUG%", String(config.MQTT_DEBUG));
   buf.replace("%MUX%", String(config.MUX));
+  if (config.MUX < 16){
+    buf.replace("%MUXHEX%", String("0x0") + String(config.MUX, HEX));
+  }
+  else {
+    buf.replace("%MUXHEX%", String("0x") + String(config.MUX, HEX));
+  }
   buf.replace("%NUMDISP%", String(config.NUMDISP));
   buf.replace("%STARTDELAY%", String(config.STARTDELAY));
   buf.replace("%UPDSPEED%", String(config.UPDSPEED));
@@ -112,10 +119,12 @@ void handleCfgSubmit()
       if (webserver.argName(i) == "f_NTP_SERVER") { webserver.arg(webserver.argName(i)).toCharArray(config.NTP_SERVER, sizeof(config.NTP_SERVER)); }
       if (webserver.argName(i) == "f_NTP_TZ") { webserver.arg(webserver.argName(i)).toCharArray(config.NTP_TZ, sizeof(config.NTP_TZ)); }
       if (webserver.argName(i) == "f_MQTT_IP") { webserver.arg(webserver.argName(i)).toCharArray(config.MQTT_IP, sizeof(config.MQTT_IP)); }
-      if (webserver.argName(i) == "f_MQTT_PORT") { CONFIG_MQTT_PORT = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_MQTT_PORT") { config.MQTT_PORT = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_MQTT_MSGSIZE") { config.MQTT_MSGSIZE = webserver.arg(webserver.argName(i)).toInt(); }
-      if (webserver.argName(i) == "f_MQTT_KEEPALIVE") { CONFIG_MQTT_KEEPALIVE = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_MQTT_KEEPALIVE") { config.MQTT_KEEPALIVE1 = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_MQTT_RECONDELAY") { config.MQTT_RECONDELAY = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_MQTT_TOPIC1") { webserver.arg(webserver.argName(i)).toCharArray(config.MQTT_TOPIC1, sizeof(config.MQTT_TOPIC1)); }
+      if (webserver.argName(i) == "f_MQTT_TOPIC2") { webserver.arg(webserver.argName(i)).toCharArray(config.MQTT_TOPIC2, sizeof(config.MQTT_TOPIC2)); }
       if (webserver.argName(i) == "f_MQTT_DEBUG") { config.MQTT_DEBUG = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_MUX") { config.MUX = webserver.arg(webserver.argName(i)).toInt(); }
       //if (webserver.argName(i) == "f_MUX") { webserver.arg(webserver.argName(i)).toCharArray(config.MUX, sizeof(config.MUX)); }
@@ -157,6 +166,7 @@ void handleCfgSubmit()
       if (webserver.argName(i) == "f_DPL_SIDE7") { DPL_side[7] = webserver.arg(webserver.argName(i)).toInt(); }
     }
     saveConfiguration(configfile, config);
+    delay(2000);
   }
 }
 
@@ -164,9 +174,8 @@ void handleCfgSubmit()
 // TEMPLATE 1 - Fonts, Logos
 void loadTpl1()
 {
-  File htmlTpl = LittleFS.open("/tpl1.htm", "r");
+  File htmlTpl = LittleFS.open( "/tpl1.htm", "r" );
   buf = htmlTpl.readString();
-  buf.replace("%VER%", config.VER);
   buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
 
   int i = 0;
@@ -391,15 +400,15 @@ void handleTpl1Submit()
 
     }
     saveTemplate(templatefile, templ);
+    delay(2000);
   }
 }
 
 // TEMPLATE data - Settings of template 0 - 9
 void loadTpl2()
 {
-  File htmlTpl = LittleFS.open("/tpl2.htm", "r");
+  File htmlTpl = LittleFS.open( "/tpl2.htm", "r" );
   buf = htmlTpl.readString();
-  buf.replace("%VER%", config.VER);
   buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
 
   buf.replace("%TPL_ID0%", String(TPL_id[TPL]));
@@ -569,6 +578,35 @@ void handleTpl2Submit()
             break;
     case 9: saveTemplateFile(template09);
     }
+    delay(2000);
+  }
+}
+
+void downloadFile(){
+  if (!LittleFS.begin()) {
+    Serial.println("LittleFS failed to mount !\r\n");                   
+  }
+  else {
+    String str = "";
+    File f = LittleFS.open(webserver.arg(0), "r");
+    if (!f) {
+      Serial.println("Can't open LittleFS file !\r\n");         
+    }
+    else {
+      char buf[1024];
+      int siz = f.size();
+      while(siz > 0) {
+        size_t len = std::min((int)(sizeof(buf) - 1), siz);
+        f.read((uint8_t *)buf, len);
+        buf[len] = 0;
+        str += buf;
+        siz -= sizeof(buf) - 1;
+      }
+      f.close();
+      //webserver.send(200, "text/plain", webserver.arg(0));
+      webserver.send(200, "text/plain", str);
+      //webserver.send(200, "application/json", str);
+    }
   }
 }
 
@@ -576,22 +614,31 @@ void handleTpl2Submit()
 // SEC
 void loadSec()
 {
-  File htmlSec = LittleFS.open("/sec.htm", "r");
+  File htmlSec = LittleFS.open( "/sec.htm", "r" );
   buf = htmlSec.readString();
-  buf.replace("%VER%", config.VER);
   buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
   buf.replace("%WIFI_SSID%", String(sec.WIFI_SSID));
   buf.replace("%MQTT_USER%", String(sec.MQTT_USER));
+/*
   switch (WiFi.status()){
+  case 0: buf.replace("%WIFI_STATUS%", "");
+          break;
   case 1: buf.replace("%WIFI_STATUS%", "SSID not available");
+          break;
+  case 2: buf.replace("%WIFI_STATUS%", "");
           break;
   case 3: buf.replace("%WIFI_STATUS%", "WIFI successfully connected");
           break;
   case 4: buf.replace("%WIFI_STATUS%", "WIFI connection failed");
           break;
+  case 5: buf.replace("%WIFI_STATUS%", "");
+          break;
   case 6: buf.replace("%WIFI_STATUS%", "WIFI password incorrect");
           break;
+  case 255: buf.replace("%WIFI_STATUS%", "");
+          break;
   }
+*/
   webserver.send( 200, "text/html", buf );
   htmlSec.close();
   buf = "";
@@ -609,6 +656,7 @@ void handleSecSubmit()
       if (webserver.argName(i) == "f_MQTT_PW") { webserver.arg(webserver.argName(i)).toCharArray(sec.MQTT_PW, sizeof(sec.MQTT_PW)); }
     }
     saveSec(secfile, sec);
+    delay(2000);
   }
 }
 

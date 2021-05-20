@@ -1,18 +1,26 @@
 <!DOCTYPE html>
+<!--
+Roc-MQTT-Display
+Version 1.00
+Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
+https://github.com/chrisweather/RocMQTTdisplay
+-->
 <html>
 <head>
+<meta charset="utf-8"/>
 <title>Roc-MQTT-Display</title>
-<link rel="stylesheet" type="text/css" href="rmd.css">
+<link rel='stylesheet' type='text/css' href='rmd.css'>
 </head>
 <body>
 <H1>Roc-MQTT-Display</H1>
 <p><strong>%VER%</strong></p>
 <p><strong>%WIFI_DEVICENAME%</strong></p>
-<button class='button' onclick='buttonSecret()'>Secrets</button>   
-<button class='button' onclick='buttonConfig()'>Configuration</button>   
-<button class='button' onclick='buttonTemplate1()'>Templates 1</button>   
-<button class='button' onclick='buttonTemplate2()'>Templates 2</button>   
-<button type='button' class='button' onclick='buttonRestart()'>Restart</button>
+<button type='button' class='button' title='WiFi and MQTT access settings' onclick='buttonSecret()'>Access</button>   
+<button type='button' class='button' title='General configuration' onclick='buttonConfig()'>Configuration</button>   
+<button type='button' class='button' title='Template settings for Fonts, Logos' onclick='buttonTemplate1()'>Templates 1</button>   
+<button type='button' class='button' title='Template settings for Template 0-9' onclick='buttonTemplate2()'>Templates 2</button>   
+<button type='button' class='button' title='Documentation Wiki' onclick='buttonManual()'>Manual</button>   
+<button type='button' class='button' title='Restart the controller' onclick='buttonRestart()'>Restart</button>
 </br>
 </br>
 </br>
@@ -29,13 +37,16 @@ function buttonTemplate1() {
 function buttonTemplate2() {
  window.open('/tpl2','_self');
 }
+function buttonManual() {
+ window.open('https://github.com/chrisweather/RocMQTTdisplay/wiki','_blank');
+}
 function buttonRestart() {
  window.open('/restart','_self');
 }
 </script>
 <footer>
 <p>Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.</p>
-<p><a href='https://github.com/chrisweather/RocMQTTdisplay'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
+<p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
 </footer>
 </body>
 </html>

@@ -1,5 +1,5 @@
 // Roc-MQTT-Display TEMPLATES
-// Version 0.99
+// Version 1.00
 // Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -9,8 +9,8 @@
 
 // TEMPLATES Part 2
 // TEMPLATES T0 - T9
-char TPL_id[10][3] =    {"T0","T1","T2","T3","T4","T5","T6","T7","T8","T9"};
-char TPL_name[10][30] = { "Train Announcement - Side A", "Train Announcement - Side B",  "Local Train - Side A",  "Local Train - Side B",  "Message Only, 1 Line - Side A",   "Message Only, 1 Line - Side B",   "Stationname, 1 Line - Side A",   "",    "",    "" };
+char TPL_id[10][3] =    { "T0","T1","T2","T3","T4","T5","T6","T7","T8","T9" }; // do not change TPL_id here!
+char TPL_name[10][30] = { "Train Announcement - Side A", "Train Announcement - Side B", "Local Train - Side A", "Local Train - Side B", "Message Only, 1 Line - Side A", "Message Only, 1 Line - Side B", "Stationname, 1 Line - Side A", "Template 7", "Template 8", "Template 9" };
 
 // TEMPLATE SETTINGS       T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
 int TPL_side[] =        {   0,   1,   0,   1,   0,   1,   0,   0,   0,   0 };  // 0,1    0=Side A, 1= Side B
@@ -85,19 +85,19 @@ int TPL_6box2h[] =      {  10,  10,   0,   0,   0,   0,   0,   0,   0,   0 };  /
 
 // TEMPLATES Part 1
 // FONTS 0 - 9
-char fonts[10][40] = { "u8g2_font_7x13_tf", "u8g2_font_crox3hb_tf", "u8g2_font_9x15_tf", "u8g2_font_rosencrantz_nbp_tf", "u8g2_font_helvR08_tf", "u8g2_font_5x7_tf", "u8g2_font_6x10_tf", "u8g2_font_6x10_tf", "u8g2_font_6x10_tf", "u8g2_font_6x10_tf" };
+char fonts[10][40] = { "u8g2_font_7x13_tf", "u8g2_font_crox3hb_tf", "u8g2_font_9x15_tf", "u8g2_font_rosencrantz_nbp_tf", "u8g2_font_helvR08_tf", "u8g2_font_5x7_tf", "u8g2_font_6x10_tf", "u8g2_font_crox4hb_tf", "u8g2_font_crox1hb_tf", "u8g2_font_fur17_tf" };
 
 const uint8_t *fontno[10] = { 
   u8g2_font_7x13_tf,                   // font0, start screen, 
-  u8g2_font_crox3hb_tf,                // font1, track, station, 
+  u8g2_font_crox3hb_tf,                // font1, station, 
   u8g2_font_9x15_tf,                   // font2, destination, message, station, 
   u8g2_font_rosencrantz_nbp_tf,        // font3, destination > 116, message > 116, 
   u8g2_font_helvR08_tf,                // font4, departure, 
   u8g2_font_5x7_tf,                    // font5, train, 
   u8g2_font_6x10_tf,                   // font6, message scroll, 
-  u8g2_font_6x10_tf,                   // font7, 
-  u8g2_font_6x10_tf,                   // font8, 
-  u8g2_font_6x10_tf                    // font9, 
+  u8g2_font_crox4hb_tf,                // font7, track, 
+  u8g2_font_crox1hb_tf,                // font8, 
+  u8g2_font_fur17_tf                   // font9, station
   };
 
 // Logos in monochrome bitmap .xbm format

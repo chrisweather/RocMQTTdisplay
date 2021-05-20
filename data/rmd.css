@@ -1,3 +1,10 @@
+/*
+Roc-MQTT-Display
+Version 1.00
+Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
+https://github.com/chrisweather/RocMQTTdisplay
+*/
+
 html {
   font-family: Arial, Helvetica, sans-serif;
   display: inline-block;
@@ -7,7 +14,7 @@ html {
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  text-align:center;
+  text-align: center;
   }
 
 H1 {
@@ -22,14 +29,14 @@ H2 {
   background-color: #008CBA;
   border: none;
   border-radius: 4px;
-  width: 110px;
+  width: 100px;
   color: white;
-  padding: 8px;
+  padding: 5px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 14px;
-  margin: 4px 6px;
+  margin: 2px 2px;
   cursor: pointer;
   }
 
@@ -105,7 +112,7 @@ input[type="radio"] + label {
 #tbl2 td, th {
   border: 1px solid #ddd;
   padding: 4px;
-  text-align:left;
+  text-align: left;
   width: 12%;
   }
 
