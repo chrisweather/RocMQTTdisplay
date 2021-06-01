@@ -33,7 +33,7 @@ The goal of this project is to provide simple to use and inexpensive displays to
 - Webinterface for configuration
 - Updates via OTA
 
-<img src="doc/RMD002.jpg" width="30%" alt="Displays"/>
+<img src="doc/InAction1.jpg" width="70%" alt="Trainstation"/><img src="doc/RMD002.jpg" width="30%" alt="Displays"/>
 
 Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://github.com/chrisweather/RocMQTTdisplay/wiki).
 
