@@ -41,7 +41,7 @@ Several more ideas and features are on the to do list.
 Please share your experience and ideas for improvements via GitHub Issues function.
 
 Thank you for your interest in the Roc-MQTT-Display project.
-If you like the project please consider donating if you want to support further development.
+If you like the project please Star it here on GitHub and consider donating if you want to support further development.
 Donations are more than welcome and I will use them to buy new displays, controllers and sensors for development and testing and of course for a lot of coffee... :-)
 
 [![PayPal donate button](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)
