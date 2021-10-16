@@ -1,5 +1,5 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 1.00
+// Version 1.01
 // Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -68,6 +68,7 @@ void loadCfg()
     buf.replace("%MUXHEX%", String("0x") + String(config.MUX, HEX));
   }
   buf.replace("%NUMDISP%", String(config.NUMDISP));
+  buf.replace("%DISPSIZE%", String(config.DISPWIDTH) + " x " + String(config.DISPHEIGHT));
   buf.replace("%STARTDELAY%", String(config.STARTDELAY));
   buf.replace("%UPDSPEED%", String(config.UPDSPEED));
   buf.replace("%SCREENSAVER%", String(config.SCREENSAVER));

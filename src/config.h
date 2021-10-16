@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.00
+// Version 1.01
 // Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -25,7 +25,7 @@ struct Sec {
 };
 
 struct Config {
-  const char* VER = "Version 1.00";
+  const char* VER = "Version 1.01";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
   int      WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
@@ -45,7 +45,9 @@ struct Config {
   char     MQTT_TOPIC1[50];        // MQTT Topic 1, default = "rocrail/service/info/clock"
   char     MQTT_TOPIC2[50];        // MQTT Topic 1, default = "rocrail/service/info/tx"
 // DISPLAYS
-  int      DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, default = 0
+  //int      DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, default = 0
+  uint8_t  DISPWIDTH;              // Display width in pixel
+  uint8_t  DISPHEIGHT;             // Display height in pixel
   int      MUX;                    // TCA9548A I2C Multiplexer address, default: 0x70 (112)
   int      NUMDISP;                // Number of I2C OLED displays connected to this controller, 1-8
   int      STARTDELAY;             // Show Controllername and Display Number x milliseconds longer at startup, helpful during setup

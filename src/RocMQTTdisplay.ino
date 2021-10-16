@@ -5,7 +5,7 @@ A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to eight 0.9
 I2C OLED displays. Several D1 mini can run together so the total number of displays is 
 not limited.
 
-Version 1.00  May 20, 2021
+Version 1.01  October 16, 2021
 
 Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
@@ -69,14 +69,20 @@ Message Format sent from Rocrail text fields via MQTT
 #include <U8g2lib.h>           // U8g2lib by Oliver Kraus https://github.com/olikraus/u8g2
 using namespace std;
 
-// Define OLED Display as disp (D2: SDA, D1: SCL) 128x32 OLED I2C Display
-U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+// More U8G2 Display Constructors are listed in the U8G2 Wiki: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
+// Please uncomment only one constructor! Only one display type can be handled by a Roc-MQTT-Display controller.
 
-// Define OLED Display as disp (D2: SDA, D1: SCL) 128x64 OLED I2C Display
+// ### 128x32 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
+//U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+
+// ### 128x64 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C disp(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
-// Define OLED Display as disp (D2: SDA, D1: SCL) 64x48 OLED I2C Display
+// ### 64x48 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
 //U8G2_SSD1306_64X48_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+
+// ### 96x16 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
+U8G2_SSD1306_96X16_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 
 u8g2_uint_t offset1;  // current offset for the scrolling text
@@ -252,6 +258,9 @@ void setup()
   Serial.print(F("\nSaving configuration to \n"));
   Serial.println(configfile);
   saveConfiguration(configfile, config);
+
+  config.DISPWIDTH = disp.getDisplayWidth();
+  config.DISPHEIGHT = disp.getDisplayHeight();
 
   // Load sec from file
   Serial.print(F("\nLoading sec from \n"));
@@ -439,6 +448,10 @@ void setup()
   Serial.print(F("  Displays enabled: "));
   Serial.print(config.NUMDISP);
   Serial.println(F(" / 8"));
+  Serial.print(F("  Display size: "));
+  Serial.print(config.DISPWIDTH);
+  Serial.print(" x ");
+  Serial.println(config.DISPHEIGHT);
 
   // Initialize all connected displays
   Wire.begin();
