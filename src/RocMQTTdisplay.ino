@@ -73,7 +73,7 @@ using namespace std;
 // Please uncomment only one constructor! Only one display type can be handled by a Roc-MQTT-Display controller.
 
 // ### 128x32 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
-//U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 // ### 128x64 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C disp(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
@@ -82,7 +82,7 @@ using namespace std;
 //U8G2_SSD1306_64X48_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 // ### 96x16 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
-U8G2_SSD1306_96X16_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+//U8G2_SSD1306_96X16_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 
 u8g2_uint_t offset1;  // current offset for the scrolling text
