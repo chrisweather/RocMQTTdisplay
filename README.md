@@ -30,6 +30,7 @@ The goal of this project is to provide simple to use and inexpensive displays to
 - Clock/Date available for all displays (NTP time or Rocrail time)
 - Display rotation
 - Screensaver
+- Tested with these displays: I2C Oled 128x32, 128x64, 64x48, 96x16
 - Webinterface for configuration
 - Updates via OTA
 
