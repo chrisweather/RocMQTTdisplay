@@ -5,9 +5,9 @@ A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to eight 0.9
 I2C OLED displays. Several D1 mini can run together so the total number of displays is 
 not limited.
 
-Version 1.01  October 16, 2021
+Version 1.02  January 09, 2022
 
-Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
+Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 
 ##########################################################################################
@@ -70,13 +70,13 @@ Message Format sent from Rocrail text fields via MQTT
 using namespace std;
 
 // More U8G2 Display Constructors are listed in the U8G2 Wiki: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
-// Please uncomment only one constructor! Only one display type can be handled by a Roc-MQTT-Display controller.
+// Please uncomment only one constructor! Only one display type can be handled by one Roc-MQTT-Display controller.
 
 // ### 128x32 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
 U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 // ### 128x64 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
-//U8G2_SSD1306_128X64_NONAME_F_HW_I2C disp(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+//U8G2_SSD1306_128X64_NONAME_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 // ### 64x48 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
 //U8G2_SSD1306_64X48_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);

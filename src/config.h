@@ -1,12 +1,12 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.01
-// Copyright (c) 2020-2021 Christian Heinrichs. All rights reserved.
+// Version 1.02
+// Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
 #ifndef CONFIG_H
 #define CONFIG_H
 #include "template.h"         // Roc-MQTT-Display template file
-#include <EEPROM.h>           // https://www.arduino.cc/en/Reference/EEPROM
+//#include <EEPROM.h>           // https://www.arduino.cc/en/Reference/EEPROM
 #include <LittleFS.h>         // LittleFS file system https://github.com/esp8266/Arduino/tree/master/libraries/LittleFS
 #include <ArduinoJson.h>      // ArduinoJson by Benoît Blanchon https://github.com/bblanchon/ArduinoJson
 
@@ -25,7 +25,7 @@ struct Sec {
 };
 
 struct Config {
-  const char* VER = "Version 1.01";
+  const char* VER = "Version 1.02";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
   int      WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
@@ -617,7 +617,7 @@ void stopLittleFS()
   delay(1000);
 }
 
-
+/*
 void clearEEPROM() 
 {
   EEPROM.begin(512);
@@ -626,6 +626,6 @@ void clearEEPROM()
     EEPROM.write(i, 0);
   }
   EEPROM.end();
-}
+}*/
 
 #endif
