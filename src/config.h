@@ -6,7 +6,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 #include "template.h"         // Roc-MQTT-Display template file
-//#include <EEPROM.h>           // https://www.arduino.cc/en/Reference/EEPROM
 #include <LittleFS.h>         // LittleFS file system https://github.com/esp8266/Arduino/tree/master/libraries/LittleFS
 #include <ArduinoJson.h>      // ArduinoJson by Benoît Blanchon https://github.com/bblanchon/ArduinoJson
 
@@ -617,15 +616,5 @@ void stopLittleFS()
   delay(1000);
 }
 
-/*
-void clearEEPROM() 
-{
-  EEPROM.begin(512);
-  // write a 0 to all 512 bytes of the EEPROM
-  for (int i = 0; i < 512; i++) {
-    EEPROM.write(i, 0);
-  }
-  EEPROM.end();
-}*/
 
 #endif
