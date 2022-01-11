@@ -45,4 +45,4 @@ The goal of this project is to provide simple to use and inexpensive displays to
 Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://github.com/chrisweather/RocMQTTdisplay/wiki).
 
 Several more ideas and features are on the to do list.
-Please share your experience and ideas for improvements via GitHub Issues function.  
+Please share your experience and ideas for improvements via GitHub Issues function in English or Deutsch.  
