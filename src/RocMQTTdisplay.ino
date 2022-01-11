@@ -5,7 +5,7 @@ A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to eight 0.9
 I2C OLED displays. Several D1 mini can run together so the total number of displays is 
 not limited.
 
-Version 1.02  January 09, 2022
+Version 1.03  January 10, 2022
 
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
@@ -135,6 +135,8 @@ time_t now;
 tm tm;
 String ntptime = "00:00";
 String rrtime = "00:00";
+String ntpdate = "dd.mm.yyyy";
+String rrdate =  "dd.mm.yyyy";
 
 String ZZA1_Targets =     "";
 String ZZA1_Template =    "";
@@ -1592,10 +1594,11 @@ void updateTime() {
   if (millis() - lastNTP < 20000){
     // Format time, add leading 0's
     ntptime = ("0" + String(tm.tm_hour)).substring( String(tm.tm_hour).length() - 1,  String(tm.tm_hour).length() +1) + ":" + ("0" + String(tm.tm_min)).substring( String(tm.tm_min).length() - 1,  String(tm.tm_min).length() +1);
+    ntpdate = ("0" + String(tm.tm_mday)).substring( String(tm.tm_mday).length() - 1,  String(tm.tm_mday).length() +1) + "." + ("0" + String(tm.tm_mon + 1)).substring( String(tm.tm_mon + 1).length() - 1, String(tm.tm_mon + 1).length() + 1) + "." + String(tm.tm_year + 1900);
     lastNTP = millis();
   }
   else {
-    ntptime = "no NTP time";
+    ntptime = "no NTP data";
   }
   //Serial.print(ntptime);
   //if (tm.tm_isdst == 1)                  // Daylight Saving Time flag
@@ -1608,49 +1611,65 @@ void updateTime() {
 void runCmd(){
   ZZA1_Message = ZZA1_MessageO;
   ZZA1_Message.replace("{ntptime}", ntptime);
+  ZZA1_Message.replace("{ntpdate}", ntpdate);
   ZZA1_Message.replace("{rrtime}", rrtime);
+  ZZA1_Message.replace("{rrdate}", rrdate);
   ZZA1_MessageLoop = " +++ " + ZZA1_Message;
   width1 = disp.getUTF8Width(ZZA1_MessageLoop.c_str());
 
   ZZA2_Message = ZZA2_MessageO;
   ZZA2_Message.replace("{ntptime}", ntptime);
+  ZZA2_Message.replace("{ntpdate}", ntpdate);
   ZZA2_Message.replace("{rrtime}", rrtime);
+  ZZA2_Message.replace("{rrdate}", rrdate);
   ZZA2_MessageLoop = " +++ " + ZZA2_Message;
   width2 = disp.getUTF8Width(ZZA2_MessageLoop.c_str());
 
   ZZA3_Message = ZZA3_MessageO;
   ZZA3_Message.replace("{ntptime}", ntptime);
+  ZZA3_Message.replace("{ntpdate}", ntpdate);
   ZZA3_Message.replace("{rrtime}", rrtime);
+  ZZA3_Message.replace("{rrdate}", rrdate);
   ZZA3_MessageLoop = " +++ " + ZZA3_Message;
   width3 = disp.getUTF8Width(ZZA3_MessageLoop.c_str());
 
   ZZA4_Message = ZZA4_MessageO;
   ZZA4_Message.replace("{ntptime}", ntptime);
+  ZZA4_Message.replace("{ntpdate}", ntpdate);
   ZZA4_Message.replace("{rrtime}", rrtime);
+  ZZA4_Message.replace("{rrdate}", rrdate);
   ZZA4_MessageLoop = " +++ " + ZZA4_Message;
   width4 = disp.getUTF8Width(ZZA4_MessageLoop.c_str());
 
   ZZA5_Message = ZZA5_MessageO;
   ZZA5_Message.replace("{ntptime}", ntptime);
+  ZZA5_Message.replace("{ntpdate}", ntpdate);
   ZZA5_Message.replace("{rrtime}", rrtime);
+  ZZA5_Message.replace("{rrdate}", rrdate);
   ZZA5_MessageLoop = " +++ " + ZZA5_Message;
   width5 = disp.getUTF8Width(ZZA5_MessageLoop.c_str());
 
   ZZA6_Message = ZZA6_MessageO;
   ZZA6_Message.replace("{ntptime}", ntptime);
+  ZZA6_Message.replace("{ntpdate}", ntpdate);
   ZZA6_Message.replace("{rrtime}", rrtime);
+  ZZA6_Message.replace("{rrdate}", rrdate);
   ZZA6_MessageLoop = " +++ " + ZZA6_Message;
   width6 = disp.getUTF8Width(ZZA6_MessageLoop.c_str());
 
   ZZA7_Message = ZZA7_MessageO;
   ZZA7_Message.replace("{ntptime}", ntptime);
+  ZZA7_Message.replace("{ntpdate}", ntpdate);
   ZZA7_Message.replace("{rrtime}", rrtime);
+  ZZA7_Message.replace("{rrdate}", rrdate);
   ZZA7_MessageLoop = " +++ " + ZZA7_Message;
   width7 = disp.getUTF8Width(ZZA7_MessageLoop.c_str());
 
   ZZA8_Message = ZZA8_MessageO;
   ZZA8_Message.replace("{ntptime}", ntptime);
+  ZZA8_Message.replace("{ntpdate}", ntpdate);
   ZZA8_Message.replace("{rrtime}", rrtime);
+  ZZA8_Message.replace("{rrdate}", rrdate);
   ZZA8_MessageLoop = " +++ " + ZZA8_Message;
   width8 = disp.getUTF8Width(ZZA8_MessageLoop.c_str());
 }
@@ -1672,7 +1691,36 @@ void onConnectionEstablished()
     if (m.length() < 2){
       m = "0" + m;
     }
+    int w = (payload1.substring(payload1.indexOf("wday") + 6, payload1.indexOf("mday") - 2)).toInt();
+    String wd = "";
+    switch (w) {
+      case 1: wd = "Mo";
+              break;
+      case 2: wd = "Di";
+              break;
+      case 3: wd = "Mi";
+              break;
+      case 4: wd = "Do";
+              break;
+      case 5: wd = "Fr";
+              break;
+      case 6: wd = "Sa";
+              break;
+      case 7: wd = "So";
+              break;
+    }
+    String d = payload1.substring(payload1.indexOf("mday") + 6, payload1.indexOf("month") - 2);
+    if (d.length() < 2){
+      d = "0" + d;
+    }
+    String mo = payload1.substring(payload1.indexOf("month") + 7, payload1.indexOf("year") - 2);
+    if (mo.length() < 2){
+      mo = "0" + mo;
+    }
+    String y = payload1.substring(payload1.indexOf("year") + 6, payload1.indexOf("time") - 2);
+    
     rrtime = h + ":" + m;
+    rrdate = d + "." + mo + "." + y;
     runCmd();
   }, 1);
 
@@ -1711,7 +1759,9 @@ void onConnectionEstablished()
         ZZA1_Message = ZZA1_MessageO;
         if (pld.indexOf("{") > 0){
           ZZA1_Message.replace("{ntptime}", ntptime);
+          ZZA1_Message.replace("{ntpdate}", ntpdate);
           ZZA1_Message.replace("{rrtime}", rrtime);
+          ZZA1_Message.replace("{rrdate}", rrdate);
         }
         ZZA1_MessageLoop = " +++ " + ZZA1_Message;
         width1 = disp.getUTF8Width(ZZA1_MessageLoop.c_str());
@@ -1731,7 +1781,9 @@ void onConnectionEstablished()
         ZZA2_Message = ZZA2_MessageO;
         if (pld.indexOf("{") > 0){
           ZZA2_Message.replace("{ntptime}", ntptime);
+          ZZA2_Message.replace("{ntpdate}", ntpdate);
           ZZA2_Message.replace("{rrtime}", rrtime);
+          ZZA2_Message.replace("{rrdate}", rrdate);
         }        
         ZZA2_MessageLoop = " +++ " + ZZA2_Message;
         width2 = disp.getUTF8Width(ZZA2_MessageLoop.c_str());
@@ -1751,7 +1803,9 @@ void onConnectionEstablished()
         ZZA3_Message = ZZA3_MessageO;
         if (pld.indexOf("{") > 0){
           ZZA3_Message.replace("{ntptime}", ntptime);
+          ZZA3_Message.replace("{ntpdate}", ntpdate);
           ZZA3_Message.replace("{rrtime}", rrtime);
+          ZZA3_Message.replace("{rrdate}", rrdate);
         }
         ZZA3_MessageLoop = " +++ " + ZZA3_Message;
         width3 = disp.getUTF8Width(ZZA3_MessageLoop.c_str());
@@ -1771,7 +1825,9 @@ void onConnectionEstablished()
         ZZA4_Message = ZZA4_MessageO;
         if (pld.indexOf("{") > 0){
           ZZA4_Message.replace("{ntptime}", ntptime);
+          ZZA4_Message.replace("{ntpdate}", ntpdate);
           ZZA4_Message.replace("{rrtime}", rrtime);
+          ZZA4_Message.replace("{rrdate}", rrdate);
         }        
         ZZA4_MessageLoop = " +++ " + ZZA4_Message;
         width4 = disp.getUTF8Width(ZZA4_MessageLoop.c_str());
@@ -1791,7 +1847,9 @@ void onConnectionEstablished()
         ZZA5_Message = ZZA5_MessageO;
         if (pld.indexOf("{") > 0){
           ZZA5_Message.replace("{ntptime}", ntptime);
+          ZZA5_Message.replace("{ntpdate}", ntpdate);
           ZZA5_Message.replace("{rrtime}", rrtime);
+          ZZA5_Message.replace("{rrdate}", rrdate);
         }        
         ZZA5_MessageLoop = " +++ " + ZZA5_Message;
         width5 = disp.getUTF8Width(ZZA5_MessageLoop.c_str());
@@ -1811,7 +1869,9 @@ void onConnectionEstablished()
         ZZA6_Message = ZZA6_MessageO;
         if (pld.indexOf("{") > 0){
           ZZA6_Message.replace("{ntptime}", ntptime);
+          ZZA6_Message.replace("{ntpdate}", ntpdate);
           ZZA6_Message.replace("{rrtime}", rrtime);
+          ZZA6_Message.replace("{rrdate}", rrdate);
         }        
         ZZA6_MessageLoop = " +++ " + ZZA6_Message;
         width6 = disp.getUTF8Width(ZZA6_MessageLoop.c_str());
@@ -1831,7 +1891,9 @@ void onConnectionEstablished()
         ZZA7_Message = ZZA7_MessageO;
         if (pld.indexOf("{") > 0){
           ZZA7_Message.replace("{ntptime}", ntptime);
+          ZZA7_Message.replace("{ntpdate}", ntpdate);
           ZZA7_Message.replace("{rrtime}", rrtime);
+          ZZA7_Message.replace("{rrdate}", rrdate);
         }        
         ZZA7_MessageLoop = " +++ " + ZZA7_Message;
         width7 = disp.getUTF8Width(ZZA7_MessageLoop.c_str());
@@ -1851,7 +1913,9 @@ void onConnectionEstablished()
         ZZA8_Message = ZZA8_MessageO;
         if (pld.indexOf("{") > 0){
           ZZA8_Message.replace("{ntptime}", ntptime);
+          ZZA8_Message.replace("{ntpdate}", ntpdate);
           ZZA8_Message.replace("{rrtime}", rrtime);
+          ZZA8_Message.replace("{rrdate}", rrdate);
         }        
         ZZA8_MessageLoop = " +++ " + ZZA8_Message;
         width8 = disp.getUTF8Width(ZZA8_MessageLoop.c_str());
