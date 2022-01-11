@@ -10,8 +10,8 @@ A Lolin/Wemos D1 mini ESP8266 controller and a TCA9548A I2C Multiplexer can driv
 I2C OLED displays. 
 Several controllers can run in parallel so the total number of displays is not limited.
 
-Latest Version 1.02 
-January 09, 2022 
+Latest Version 1.03 
+January 10, 2022 
 
 The goal of this project is to provide simple to use and inexpensive displays to run in a Model Railroad environment.
 
