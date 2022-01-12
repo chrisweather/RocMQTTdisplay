@@ -10,8 +10,14 @@ A Lolin/Wemos D1 mini ESP8266 controller and a TCA9548A I2C Multiplexer can driv
 I2C OLED displays. 
 Several controllers can run in parallel so the total number of displays is not limited.
 
-Latest Version 1.02 
-January 09, 2022 
+Latest Version 1.03 
+January 10, 2022 
+
+Thank you for your interest in the Roc-MQTT-Display project.
+If you like the project please Star it here on GitHub and consider donating if you want to support further development.
+Donations are more than welcome and I will use them to buy new displays, controllers and sensors for development and testing and of course for a lot of coffee... :-)
+
+[![PayPal donate button](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)  
 
 The goal of this project is to provide simple to use and inexpensive displays to run in a Model Railroad environment.
 
@@ -39,10 +45,4 @@ The goal of this project is to provide simple to use and inexpensive displays to
 Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://github.com/chrisweather/RocMQTTdisplay/wiki).
 
 Several more ideas and features are on the to do list.
-Please share your experience and ideas for improvements via GitHub Issues function.
-
-Thank you for your interest in the Roc-MQTT-Display project.
-If you like the project please Star it here on GitHub and consider donating if you want to support further development.
-Donations are more than welcome and I will use them to buy new displays, controllers and sensors for development and testing and of course for a lot of coffee... :-)
-
-[![PayPal donate button](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)
+Please share your experience and ideas for improvements via GitHub Issues function in English or Deutsch.  
