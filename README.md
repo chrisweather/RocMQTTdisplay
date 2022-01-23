@@ -43,7 +43,7 @@ The goal of this project is to provide simple to use and inexpensive displays to
 - Updates via OTA
 
 <img src="doc/InAction1.jpg" width="90%" alt="Trainstation"/>
-Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.
+   *Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.*  
 
 Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://github.com/chrisweather/RocMQTTdisplay/wiki).
 
