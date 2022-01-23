@@ -48,4 +48,4 @@ Several more ideas and features are on the to do list.
 Please share your experience and ideas for improvements via GitHub Issues or Discussions function in English or Deutsch.  
 
 <img src="doc/InAction1.jpg" width="90%" alt="Trainstation"/>
-*Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.*  
+Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.  
