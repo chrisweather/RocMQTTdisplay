@@ -9,6 +9,8 @@ Wireless communication with Rocrail or other sources via MQTT messages.
 A Lolin/Wemos D1 mini ESP8266 controller and a TCA9548A I2C Multiplexer can drive up to eight 0.91" 128x32
 I2C OLED displays. 
 Several controllers can run in parallel so the total number of displays is not limited.
+A friend of mine was looking for an easy way to run displays with live data in his model railroad environment. Right after this conversation this project was born.
+Since then it's a work in progress with already many nice features. If you want to share your experience with this code or have ideas for more features your are welcome to share them in the issues or discussions are. Have fun.
 
 Latest Version 1.03 
 January 10, 2022 
@@ -41,7 +43,7 @@ The goal of this project is to provide simple to use and inexpensive displays to
 - Updates via OTA
 
 <img src="doc/InAction1.jpg" width="90%" alt="Trainstation"/>
-Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.
+Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.  
 
 Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://github.com/chrisweather/RocMQTTdisplay/wiki).
 
