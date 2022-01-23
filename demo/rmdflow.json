@@ -1,0 +1,268 @@
+[
+    {
+        "id": "2d75cc5f.5ed6fc",
+        "type": "tab",
+        "label": "Roc-MQTT-Display Test",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9fb86b29.a68ad8",
+        "type": "inject",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Zugdurchfahrt",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "rocrail/service/info/tx",
+        "payload": "<text=\"ZZAMSG#D01D03#T4#Bhf01#6#####Zugdurchfahrt###\"/>",
+        "payloadType": "str",
+        "x": 210,
+        "y": 220,
+        "wires": [
+            [
+                "727d65a3.da42c4"
+            ]
+        ]
+    },
+    {
+        "id": "727d65a3.da42c4",
+        "type": "mqtt out",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "ToRocMQTTdisplay",
+        "topic": "rocrail/service/info/tx",
+        "qos": "0",
+        "retain": "false",
+        "broker": "fa5858ef.2dcb2",
+        "x": 680,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "fd8bbbc2.72964",
+        "type": "mqtt in",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Topic rocrail/service/info/tx",
+        "topic": "rocrail/service/info/tx",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "fa5858ef.2dcb2",
+        "x": 230,
+        "y": 100,
+        "wires": [
+            [
+                "f5751c32.4ea4f8"
+            ]
+        ]
+    },
+    {
+        "id": "f5751c32.4ea4f8",
+        "type": "debug",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "DebugOut",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b4682388.89611",
+        "type": "inject",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Köln-Bonn",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "rocrail/service/info/tx",
+        "payload": "<\"ZZAMSG#D01D02#T0#Bhf01#1#Köln-Bonn#10:22#IC 53#IC#5min Verspätung - 5min later###\"/>",
+        "payloadType": "str",
+        "x": 200,
+        "y": 280,
+        "wires": [
+            [
+                "727d65a3.da42c4"
+            ]
+        ]
+    },
+    {
+        "id": "7eed789f.81469",
+        "type": "inject",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Hamburg",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "rocrail/service/info/tx",
+        "payload": "<\"ZZAMSG#D01#T0#Bhf01#1#Hamburg Hbf#23:05#ICE 359##Es ist {ntptime}  20°C###\"/>",
+        "payloadType": "str",
+        "x": 200,
+        "y": 340,
+        "wires": [
+            [
+                "727d65a3.da42c4"
+            ]
+        ]
+    },
+    {
+        "id": "b58a5a65.55c3a8",
+        "type": "inject",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Gartenstadt",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "rocrail/service/info/tx",
+        "payload": "<\"ZZAMSG#D01#T6#Gartenstadt#########\"/>",
+        "payloadType": "str",
+        "x": 210,
+        "y": 400,
+        "wires": [
+            [
+                "727d65a3.da42c4"
+            ]
+        ]
+    },
+    {
+        "id": "af54aa0a.2e435",
+        "type": "inject",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "U2",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "rocrail/service/info/tx",
+        "payload": "<\"ZZAMSG#D01D02#T2#Bhf01#1#Sternschanze#10:22#U2#U#5min Verspätung###\"/>",
+        "payloadType": "str",
+        "x": 190,
+        "y": 460,
+        "wires": [
+            [
+                "727d65a3.da42c4"
+            ]
+        ]
+    },
+    {
+        "id": "bb7ae211.28f55",
+        "type": "mqtt in",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Topic rocrail/service/info/clock",
+        "topic": "rocrail/service/info/clock",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "fa5858ef.2dcb2",
+        "x": 240,
+        "y": 40,
+        "wires": [
+            [
+                "f5751c32.4ea4f8"
+            ]
+        ]
+    },
+    {
+        "id": "2be2dd43.31c75a",
+        "type": "inject",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Clear all displays",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "rocrail/service/info/tx",
+        "payload": "<\"ZZAMSG#D01D02D03D04D05D06D07D08###########\"/>",
+        "payloadType": "str",
+        "x": 220,
+        "y": 520,
+        "wires": [
+            [
+                "727d65a3.da42c4"
+            ]
+        ]
+    },
+    {
+        "id": "fa5858ef.2dcb2",
+        "type": "mqtt-broker",
+        "name": "Broker",
+        "broker": "192.168.2.197",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]
