@@ -5,7 +5,7 @@ A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to eight 0.9
 I2C OLED displays. Several D1 mini can run together so the total number of displays is 
 not limited.
 
-Version 1.03  January 10, 2022
+Version 1.04  February 05, 2022
 
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
@@ -261,6 +261,7 @@ void setup()
   Serial.println(configfile);
   saveConfiguration(configfile, config);
 
+  // Read display width and height from display constructor
   config.DISPWIDTH = disp.getDisplayWidth();
   config.DISPHEIGHT = disp.getDisplayHeight();
 
@@ -441,18 +442,26 @@ void setup()
   // Switch off Wemos D1 mini onboard LED
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
-
   delay(200);
+
   Serial.println(F("\nRoc-MQTT-Display"));
   Serial.println(config.VER);
-  Serial.print(F("\nController: "));
+  Serial.print(F("\nCurrent MQTT broker IP-adress: "));
+  Serial.println(config.MQTT_IP);
+  if (strlen(config.MQTT_IP) < 7) {
+    Serial.println(F("\nWARNING: MQTT broker IP-adress is missing or incomplete in configuration"));
+  }
+  Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
   Serial.println(config.WIFI_DEVICENAME);
-  Serial.print(F("  Displays enabled: "));
+  Serial.println(F("                          or "));
+  Serial.print(F("                        http://"));
+  Serial.println(WiFi.localIP());
+  Serial.print(F("\n  Displays enabled: "));
   Serial.print(config.NUMDISP);
   Serial.println(F(" / 8"));
   Serial.print(F("  Display size: "));
   Serial.print(config.DISPWIDTH);
-  Serial.print(" x ");
+  Serial.print(F(" x "));
   Serial.println(config.DISPHEIGHT);
 
   // Initialize all connected displays
@@ -510,10 +519,8 @@ void setup()
   Serial.print(config.OTA_HOSTNAME);
   Serial.print(F(" at "));
   Serial.println(WiFi.localIP());
-  Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
-  Serial.println(WiFi.localIP());
 
-  // WEBSERVER
+  // Initialize WEBSERVER
   webserver.on("/", []() {             // Define the handling function for / path
     loadRoot();
   });
@@ -534,15 +541,15 @@ void setup()
     loadCfg();
   });
 
-  webserver.on("/tpl1", []() {     // Define the handling function for the /tpl1 path
+  webserver.on("/tpl1", []() {         // Define the handling function for the /tpl1 path
     loadTpl1();
   });
 
-  webserver.on("/tpl2", []() {     // Define the handling function for the /tpl2 path
+  webserver.on("/tpl2", []() {         // Define the handling function for the /tpl2 path
     loadTpl2();
   });
 
-  webserver.on("/tpl2sel", []() {     // Define the handling function for the /tpl2sel path
+  webserver.on("/tpl2sel", []() {      // Define the handling function for the /tpl2sel path
     handleTpl2Select();
   });
 
@@ -556,13 +563,13 @@ void setup()
     loadCfg();
   });
 
-  webserver.on("/submittpl1", []() {    // Define the handling function for the /submittpl1 path
+  webserver.on("/submittpl1", []() {   // Define the handling function for the /submittpl1 path
     webserver.send(204);
     handleTpl1Submit();
     loadTpl1();
   });
 
-  webserver.on("/submittpl2", []() {    // Define the handling function for the /submittpl2 path
+  webserver.on("/submittpl2", []() {   // Define the handling function for the /submittpl2 path
     webserver.send(204);
     handleTpl2Submit();
     loadTpl2();
@@ -574,9 +581,15 @@ void setup()
     loadSec();
   });
 
-  webserver.on("/download", []() {    // Define the handling function for the /download path
+  webserver.on("/download", []() {     // Define the handling function for the /download path
     //webserver.send(204);
     downloadFile();
+  });
+
+  webserver.on("/printdisp", []() {    // Define the handling function for the /printdisp path
+    webserver.send(204);
+    //printBuffer();
+    config.PRINTBUF = 1;
   });
 
   webserver.on("/restart", []() {      // Define the handling function for the /restart path
@@ -585,7 +598,7 @@ void setup()
     restartESP();
   });
 
-  webserver.on("/ota", []() {      // Define the handling function for the /ota path
+  webserver.on("/ota", []() {          // Define the handling function for the /ota path
     webserver.send(204);
     delay(500);
     stopLittleFS();
@@ -597,7 +610,7 @@ void setup()
 
   webserver.begin();                   // Start the webserver
   Serial.println(F("\nWebserver started and listening for requests"));
-}
+} // End of setup
 
 
 // Restart the controller
@@ -642,9 +655,9 @@ void DisplayInit()
       disp.setContrast(DPL_contrast[i]);
       disp.setFont(fontno[0]);
       disp.setCursor(0,13);
-      disp.print(config.WIFI_DEVICENAME);
+      disp.print(F("http://"));
       disp.setCursor(0,29);
-      disp.print(WiFi.localIP());
+      disp.print(config.WIFI_DEVICENAME);
       disp.nextPage();
       delay(500 + (config.STARTDELAY / 2));
       disp.clearDisplay();
@@ -652,13 +665,24 @@ void DisplayInit()
       disp.print(F("Display: "));
       disp.print(i+1);
       disp.setCursor(0,29);
-      disp.print(F("ID: "));
+      disp.print(F("Display-ID: "));
       disp.print(DPL_id[i]);
+      if (strlen(config.MQTT_IP) < 7) {
+        disp.nextPage();
+        delay(500 + (config.STARTDELAY / 2));
+        disp.clearDisplay();
+        disp.setCursor(0,13);
+        disp.print(F("NO MQTT broker"));
+        disp.setCursor(0,29);
+        disp.print(F("Check Config"));
+        disp.nextPage();
+        delay(5000 + (config.STARTDELAY / 2));
+      }
       Serial.print(F("  Display: "));
       Serial.print(i+1);
       Serial.print(F("  connected to multiplexer port (SCx, SDx): "));
       Serial.print(i);
-      Serial.print(F("  ID: "));
+      Serial.print(F("  Display-ID: "));
       Serial.println(DPL_id[i]);
     } while (disp.nextPage());
   }
@@ -707,9 +731,11 @@ void send2display1(void)
     if (ZZA1_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width1 = disp.getUTF8Width(ZZA1_MessageLoop.c_str());
+      // draw message box
       disp.setFontMode(TPL_6fontmode[t]);
       disp.setDrawColor(TPL_6drawcolor[t]);
       disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
+      // draw black box
       disp.setFontMode(TPL_6fontmode2[t]);
       disp.setDrawColor(TPL_6drawcolor2[t]);
       disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
@@ -797,7 +823,10 @@ void send2display1(void)
 */
   
   disp.nextPage();
-
+  if (config.PRINTBUF == 1){
+    printBuffer();
+    config.PRINTBUF = 0;
+  }
   offset1-=1;
   if ( (u8g2_uint_t)offset1 < (u8g2_uint_t)-width1 )
     offset1 = 0;
@@ -1509,7 +1538,6 @@ void send2display8(void)
   if ( ZZA8_Type != "" ) {
     switchLogo(t, ZZA8_Type);
   }
-  
   disp.nextPage();
 
   offset8-=1;
@@ -1577,13 +1605,20 @@ void switchLogo(uint8_t t, String ZZA_Type)
 
 
 // Toggle ScreenSaver for all displays
-void screenSaver(int s)
-{
+void screenSaver(int s){
   for (int i = 0; i < config.NUMDISP; i++)
   {
     DMUX(i);
     disp.setPowerSave(s);
   }
+}
+
+
+// Write display buffer to file
+void printBuffer(){
+  Serial.println("Buffer of display 1 as XBM image\n");
+  disp.writeBufferXBM(Serial);      // Write XBM image to serial out
+  Serial.println();
 }
 
 
@@ -1724,12 +1759,22 @@ void onConnectionEstablished()
     runCmd();
   }, 1);
 
-  // Subscribe MQTT client to topic: "rocrail/service/info/tx" to receive messages sent by Rocrail text fields
+  // Subscribe MQTT client to topic: "rocrail/service/info/tx" to receive messages sent by Rocrail text fields or other MQTT sources
   client.subscribe(config.MQTT_TOPIC2, [](const String & payload2) {
-    //Serial.println(payload2);
     String pld = payload2.substring(payload2.indexOf("ZZAMSG"), payload2.length() - 4);
-
+    if (config.MQTT_DEBUG == 1){
+      Serial.println("Received message: " + payload2);
+      Serial.println("Received payload:  " + pld);
+      //Serial.println(strlen(config.MQTT_DELIMITER));
+      //Serial.println(config.MQTT_DELIMITER);
+    }
     if (pld.substring(0, 6) == "ZZAMSG"){
+      if (strlen(config.MQTT_DELIMITER) > 0){
+        pld.replace(String(config.MQTT_DELIMITER), "#");
+      }
+      if (config.MQTT_DEBUG == 1){
+        Serial.println("Converted payload: " + pld);
+      }
       int start01 = pld.indexOf("ZZAMSG#") + 7;                         // ZZAMSG identifier
       int start02 = start01 + 1 + pld.substring(start01).indexOf("#");  // Target Displays as defined in config.h e.g. D01-D08
       int start03 = start02 + 1 + pld.substring(start02).indexOf("#");  // Template T0-T9
@@ -1740,6 +1785,7 @@ void onConnectionEstablished()
       int start08 = start07 + 1 + pld.substring(start07).indexOf("#");  // Train Number
       int start09 = start08 + 1 + pld.substring(start08).indexOf("#");  // Train Type e.g. ICE, IC, ...
       int start10 = start09 + 1 + pld.substring(start09).indexOf("#");  // Message Text
+
 
       // Deactivate / Reset ScreenSaver
       screenSaver(0);

@@ -1,5 +1,11 @@
 ## Roc-MQTT-Display Changelog
 
+### Roc-MQTT-Display release 1.04
+2022-02-05 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
+
+-   added alternative separator option in configuration. MQTT payload can be separated by # or for example by ;
+-   screenshot option for display 1, write display buffer to serial out as XBM image
+
 ### Roc-MQTT-Display release 1.03
 2022-01-10 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
 

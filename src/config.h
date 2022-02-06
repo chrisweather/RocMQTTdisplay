@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.03
+// Version 1.04
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -24,7 +24,7 @@ struct Sec {
 };
 
 struct Config {
-  const char* VER = "Version 1.03";
+  const char* VER = "Version 1.04";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
   int      WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
@@ -32,19 +32,20 @@ struct Config {
   char     OTA_HOSTNAME[19];       // Unique OTA Controller Hostname, default when empty: esp8266-[ChipID]
   int      OTA_PORT;               // OTA Port, default = 8266
 // NTP
-  char     NTP_SERVER[51];         // NTP Time Server pool providing UTC time, Europe: europe.pool.ntp.org, Germany: de.pool.ntp.org
+  char     NTP_SERVER[51];         // NTP Time Server pool providing UTC time, Europe: 0.europe.pool.ntp.org, Germany: de.pool.ntp.org
   char     NTP_TZ[51];             // NTP Timezone and Daylight Saving Time start/end  https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 // MQTT
-  char     MQTT_IP[18];            // MQTT broker IP adress
-  uint16_t MQTT_PORT = 1883;       // MQTT broker port, default = 1883, currently hardcoded, change here if required
+  char     MQTT_IP[18];            // MQTT broker IP-adress
+  uint16_t MQTT_PORT = 1883;       // MQTT broker Port, default = 1883, currently hardcoded, change here if required
   uint16_t MQTT_MSGSIZE;           // Max. MQTT packet size, default = 128 bytes
   uint16_t MQTT_KEEPALIVE1;        // MQTT keep alive, default = 15 sec, min = 1 sec
   int      MQTT_RECONDELAY;        // Delay between MQTT reconnection attempts, default = 15000 ms
   int      MQTT_DEBUG;             // Enable MQTT debugging messages sent to serial output, 0=off, 1=on
   char     MQTT_TOPIC1[50];        // MQTT Topic 1, default = "rocrail/service/info/clock"
   char     MQTT_TOPIC2[50];        // MQTT Topic 1, default = "rocrail/service/info/tx"
+  char     MQTT_DELIMITER[5];      // MQTT delimiter (e.g. ";" or " , " for message payload, will be replaced by "#" before processing. Default: "#"
 // DISPLAYS
-  //int      DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, default = 0
+  //int      DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, 3=96x16, default = 0
   uint8_t  DISPWIDTH;              // Display width in pixel
   uint8_t  DISPHEIGHT;             // Display height in pixel
   int      MUX;                    // TCA9548A I2C Multiplexer address, default: 0x70 (112)
@@ -52,6 +53,7 @@ struct Config {
   int      STARTDELAY;             // Show Controllername and Display Number x milliseconds longer at startup, helpful during setup
   int      UPDSPEED;               // Slow down display update intervall by increasing the number of ms, e.g. 10 = 100ms + 10
   int      SCREENSAVER;            // minutes without message received until screenSaver switches all displays into power save mode, 0=off
+  int      PRINTBUF;               // When 1: Print display buffer of display 1 to serial out as XBM, default: 0
 };
 
 // Configuration for displays connected to this controller (Disp) 1-8
@@ -101,9 +103,9 @@ void loadConfiguration(const char *configfile, Config &config)
     }
   }
   // Copy values from JsonDocument to Config, use defaults in case file is not readable
-  strlcpy(config.WIFI_DEVICENAME, doc["WIFI_DEVICENAME"] | "RocMQTTdisplay C01", sizeof(config.WIFI_DEVICENAME));
+  strlcpy(config.WIFI_DEVICENAME, doc["WIFI_DEVICENAME"] | "RocMQTTdisplayC01", sizeof(config.WIFI_DEVICENAME));
   config.WIFI_RECONDELAY = doc["WIFI_RECONDELAY"] | 5000;
-  strlcpy(config.OTA_HOSTNAME, doc["OTA_HOSTNAME"] | "RocMQTTdisplay C01", sizeof(config.OTA_HOSTNAME));
+  strlcpy(config.OTA_HOSTNAME, doc["OTA_HOSTNAME"] | "RocMQTTdisplayC01", sizeof(config.OTA_HOSTNAME));
   config.OTA_PORT = doc["OTA_PORT"] | 8266;
   strlcpy(config.NTP_SERVER, doc["NTP_SERVER"] | "0.europe.pool.ntp.org", sizeof(config.NTP_SERVER));
   strlcpy(config.NTP_TZ, doc["NTP_TZ"] | "CET-1CEST,M3.5.0,M10.5.0/3", sizeof(config.NTP_TZ));
@@ -114,12 +116,14 @@ void loadConfiguration(const char *configfile, Config &config)
   config.MQTT_RECONDELAY = doc["MQTT_RECONDELAY"] | 10000;
   strlcpy(config.MQTT_TOPIC1, doc["MQTT_TOPIC1"] | "rocrail/service/info/clock", sizeof(config.MQTT_TOPIC1));
   strlcpy(config.MQTT_TOPIC2, doc["MQTT_TOPIC2"] | "rocrail/service/info/tx", sizeof(config.MQTT_TOPIC2));
+  strlcpy(config.MQTT_DELIMITER, doc["MQTT_DELIMITER"] | "", sizeof(config.MQTT_DELIMITER));
   config.MQTT_DEBUG = doc["MQTT_DEBUG"] | 0;
   config.MUX = doc["MUX"] | 0x70;
   config.NUMDISP = doc["NUMDISP"] | 8;
-  config.STARTDELAY = doc["STARTDELAY"] | 2000;
+  config.STARTDELAY = doc["STARTDELAY"] | 200;
   config.UPDSPEED = doc["UPDSPEED"] | 10;
   config.SCREENSAVER = doc["SCREENSAVER"] | 60;
+  config.PRINTBUF = doc["PRINTBUF"] | 0;
   strlcpy(DPL_id[0], doc["DPL_ID0"] | "D01", sizeof(DPL_id[0]));
   strlcpy(DPL_id[1], doc["DPL_ID1"] | "D02", sizeof(DPL_id[1]));
   strlcpy(DPL_id[2], doc["DPL_ID2"] | "D03", sizeof(DPL_id[2]));
@@ -184,6 +188,7 @@ void saveConfiguration(const char *configfile, const Config &config)
   doc["MQTT_RECONDELAY"] = config.MQTT_RECONDELAY;
   doc["MQTT_TOPIC1"] = config.MQTT_TOPIC1;
   doc["MQTT_TOPIC2"] = config.MQTT_TOPIC2;
+  doc["MQTT_DELIMITER"] = config.MQTT_DELIMITER;
   doc["MQTT_DEBUG"] = config.MQTT_DEBUG;
   doc["MUX"] = config.MUX;
   doc["NUMDISP"] = config.NUMDISP;

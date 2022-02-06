@@ -1,5 +1,5 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 1.03
+// Version 1.04
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -59,6 +59,7 @@ void loadCfg()
   buf.replace("%MQTT_RECONDELAY%", String(config.MQTT_RECONDELAY));
   buf.replace("%MQTT_TOPIC1%", String(config.MQTT_TOPIC1));
   buf.replace("%MQTT_TOPIC2%", String(config.MQTT_TOPIC2));
+  buf.replace("%MQTT_DELIMITER%", String(config.MQTT_DELIMITER));
   buf.replace("%MQTT_DEBUG%", String(config.MQTT_DEBUG));
   buf.replace("%MUX%", String(config.MUX));
   if (config.MUX < 16){
@@ -72,6 +73,7 @@ void loadCfg()
   buf.replace("%STARTDELAY%", String(config.STARTDELAY));
   buf.replace("%UPDSPEED%", String(config.UPDSPEED));
   buf.replace("%SCREENSAVER%", String(config.SCREENSAVER));
+  buf.replace("%PRINTBUF%", String(config.PRINTBUF));
   buf.replace("%DPL_ID0%", String(DPL_id[0]));
   buf.replace("%DPL_ID1%", String(DPL_id[1]));
   buf.replace("%DPL_ID2%", String(DPL_id[2]));
@@ -126,6 +128,7 @@ void handleCfgSubmit()
       if (webserver.argName(i) == "f_MQTT_RECONDELAY") { config.MQTT_RECONDELAY = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_MQTT_TOPIC1") { webserver.arg(webserver.argName(i)).toCharArray(config.MQTT_TOPIC1, sizeof(config.MQTT_TOPIC1)); }
       if (webserver.argName(i) == "f_MQTT_TOPIC2") { webserver.arg(webserver.argName(i)).toCharArray(config.MQTT_TOPIC2, sizeof(config.MQTT_TOPIC2)); }
+      if (webserver.argName(i) == "f_MQTT_DELIMITER") { webserver.arg(webserver.argName(i)).toCharArray(config.MQTT_DELIMITER, sizeof(config.MQTT_DELIMITER)); }
       if (webserver.argName(i) == "f_MQTT_DEBUG") { config.MQTT_DEBUG = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_MUX") { config.MUX = webserver.arg(webserver.argName(i)).toInt(); }
       //if (webserver.argName(i) == "f_MUX") { webserver.arg(webserver.argName(i)).toCharArray(config.MUX, sizeof(config.MUX)); }
@@ -133,6 +136,7 @@ void handleCfgSubmit()
       if (webserver.argName(i) == "f_STARTDELAY") { config.STARTDELAY = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_UPDSPEED") { config.UPDSPEED = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_SCREENSAVER") { config.SCREENSAVER = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_PRINTBUF") { config.PRINTBUF = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_DPL_ID0") { webserver.arg(webserver.argName(i)).toCharArray(DPL_id[0], sizeof(DPL_id[0])); }
       if (webserver.argName(i) == "f_DPL_ID1") { webserver.arg(webserver.argName(i)).toCharArray(DPL_id[1], sizeof(DPL_id[1])); }
       if (webserver.argName(i) == "f_DPL_ID2") { webserver.arg(webserver.argName(i)).toCharArray(DPL_id[2], sizeof(DPL_id[2])); }
