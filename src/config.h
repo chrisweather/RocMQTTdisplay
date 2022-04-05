@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.04
+// Version 1.05
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -24,7 +24,7 @@ struct Sec {
 };
 
 struct Config {
-  const char* VER = "Version 1.04";
+  const char* VER = "Version 1.05";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
   int      WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
@@ -45,7 +45,7 @@ struct Config {
   char     MQTT_TOPIC2[50];        // MQTT Topic 1, default = "rocrail/service/info/tx"
   char     MQTT_DELIMITER[5];      // MQTT delimiter (e.g. ";" or " , " for message payload, will be replaced by "#" before processing. Default: "#"
 // DISPLAYS
-  //int      DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, 3=96x16, default = 0
+  //int      DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, 3=96x16, 4=80x160, default = 0
   uint8_t  DISPWIDTH;              // Display width in pixel
   uint8_t  DISPHEIGHT;             // Display height in pixel
   int      MUX;                    // TCA9548A I2C Multiplexer address, default: 0x70 (112)
@@ -102,6 +102,7 @@ void loadConfiguration(const char *configfile, Config &config)
      Serial.println("allocation failed!");
     }
   }
+
   // Copy values from JsonDocument to Config, use defaults in case file is not readable
   strlcpy(config.WIFI_DEVICENAME, doc["WIFI_DEVICENAME"] | "RocMQTTdisplayC01", sizeof(config.WIFI_DEVICENAME));
   config.WIFI_RECONDELAY = doc["WIFI_RECONDELAY"] | 5000;
@@ -119,7 +120,9 @@ void loadConfiguration(const char *configfile, Config &config)
   strlcpy(config.MQTT_DELIMITER, doc["MQTT_DELIMITER"] | "", sizeof(config.MQTT_DELIMITER));
   config.MQTT_DEBUG = doc["MQTT_DEBUG"] | 0;
   config.MUX = doc["MUX"] | 0x70;
-  config.NUMDISP = doc["NUMDISP"] | 8;
+  config.NUMDISP = doc["NUMDISP"] | 2;
+  config.DISPWIDTH = doc["DISPWIDTH"] | 128;
+  config.DISPHEIGHT = doc["DISPHEIGHT"] | 32;
   config.STARTDELAY = doc["STARTDELAY"] | 200;
   config.UPDSPEED = doc["UPDSPEED"] | 10;
   config.SCREENSAVER = doc["SCREENSAVER"] | 60;
@@ -192,6 +195,8 @@ void saveConfiguration(const char *configfile, const Config &config)
   doc["MQTT_DEBUG"] = config.MQTT_DEBUG;
   doc["MUX"] = config.MUX;
   doc["NUMDISP"] = config.NUMDISP;
+  doc["DISPWIDTH"] = config.DISPWIDTH;
+  doc["DISPHEIGHT"] = config.DISPHEIGHT;
   doc["STARTDELAY"] = config.STARTDELAY;
   doc["UPDSPEED"] = config.UPDSPEED;
   doc["SCREENSAVER"] = config.SCREENSAVER;
@@ -253,6 +258,7 @@ void loadTemplate(const char *templatefile, Template &templ)
      Serial.println("allocation failed!");
     }
   }
+  else {
   // Copy values from JsonDocument to templ, use defaults in case file is not readable
   strlcpy(logoId[0], doc["LOGOID0"] | "", sizeof(logoId[0]));
   strlcpy(logoId[1], doc["LOGOID1"] | "", sizeof(logoId[1]));
@@ -300,10 +306,11 @@ void loadTemplate(const char *templatefile, Template &templ)
   strlcpy(logo9, doc["LOGO9"] | "", sizeof(logo9));
 */
   file.close();
+  }
 }
 
 
-// Save template data to a file
+// Save template data to a file - fonts, logos
 void saveTemplate(const char *templatefile, const Template &templ)
 {
   // Delete existing file, otherwise the template data will be appended to the file
@@ -371,12 +378,20 @@ void saveTemplate(const char *templatefile, const Template &templ)
 }
 
 
-// Load templates from files
+// Load templates T0-T9 from files
 void loadTemplateFile(const char *templatexx)
 {
   // Open config json file for reading
   File file = LittleFS.open(templatexx, "r");
-  delay(200);
+  if (!file) {
+    Serial.println("file open failed");
+    //delay(300);
+    unsigned long tn = 0;
+    if(millis() > tn + 500){
+      tn = millis();
+    }
+  }
+
   StaticJsonDocument<1600> doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
@@ -387,7 +402,7 @@ void loadTemplateFile(const char *templatexx)
      Serial.println("allocation failed!");
     }
   }
-
+  else {
   // Copy values from JsonDocument to Config, use defaults in case file is not readable
   strlcpy(TPL_id[TPL], doc["TPLID"] | "T", sizeof(TPL_id[TPL]));
   strlcpy(TPL_name[TPL], doc["TPLNAME"] | "", sizeof(TPL_name[TPL]));
@@ -452,9 +467,96 @@ void loadTemplateFile(const char *templatexx)
   TPL_6box2y[TPL] = doc["TPL6BOX2Y"] | 0;
   TPL_6box2w[TPL] = doc["TPL6BOX2W"] | 127;
   TPL_6box2h[TPL] = doc["TPL6BOX2H"] | 10;
-
+  unsigned long tn = 0;
+  if(millis() > tn + 1000){
+    tn = millis();
+  }
   file.close();
+  }
 }
+
+
+// Import template
+void importTemplateFile(char *tcontent)
+{
+  StaticJsonDocument<1600> doc;
+  DeserializationError error = deserializeJson(doc, tcontent);
+  if (error) {
+    Serial.println(F("Failed to convert json import, using default configuration"));
+    Serial.print(F("deserializeJson() returned "));
+    Serial.println(error.c_str());
+    if (doc.capacity() == 0) {
+      Serial.println("allocation failed!");
+    }
+  }
+  else {
+  // Copy values from JsonDocument to Config, use defaults in case file is not readable
+  strlcpy(TPL_id[TPL], doc["TPLID"] | "T", sizeof(TPL_id[TPL]));
+  strlcpy(TPL_name[TPL], doc["TPLNAME"] | "Template", sizeof(TPL_name[TPL]));
+  TPL_side[TPL] = doc["TPLSIDE"] | 0;
+// Field 0 - Station
+  TPL_0font[TPL] = doc["TPL0FONT"] | 2;
+  TPL_0maxwidth[TPL] = doc["TPL0MAXWIDTH"] | 116;
+  TPL_0font2[TPL] = doc["TPL0FONT2"] | 3;
+  TPL_0drawcolor[TPL] = doc["TPL0DRAWCOLOR"] | 1;
+  TPL_0fontmode[TPL] = doc["TPL0FONTMODE"] | 1;
+  TPL_0posx[TPL] = doc["TPL0POSX"] | 0;
+  TPL_0posy[TPL] = doc["TPL0POSY"] | 0;
+  TPL_0scroll[TPL] = doc["TPL0SCROLL"] | 0;
+// Field 1 - Track
+  TPL_1font[TPL] = doc["TPL1FONT"] | 1;
+  TPL_1drawcolor[TPL] = doc["TPL1DRAWCOLOR"] | 1;
+  TPL_1fontmode[TPL] = doc["TPL1FONTMODE"] | 1;
+  TPL_1posx[TPL] = doc["TPL1POSX"] | 0;
+  TPL_1posy[TPL] = doc["TPL1POSY"] | 30;
+// Field 2 - Destination
+  TPL_2font[TPL] = doc["TPL2FONT"] | 2;
+  TPL_2maxwidth[TPL] = doc["TPL2MAXWIDTH"] | 116;
+  TPL_2font2[TPL] = doc["TPL2FONT2"] | 3;
+  TPL_2drawcolor[TPL] = doc["TPL2DRAWCOLOR"] | 1;
+  TPL_2fontmode[TPL] = doc["TPL2FONTMODE"] | 1;
+  TPL_2posx[TPL] = doc["TPL2POSX"] | 20;
+  TPL_2posy[TPL] = doc["TPL2POSY"] | 29;
+  TPL_2scroll[TPL] = doc["TPL2SCROLL"] | 0;
+// Field 3 - Departure
+  TPL_3font[TPL] = doc["TPL3FONT"] | 4;
+  TPL_3drawcolor[TPL] = doc["TPL3DRAWCOLOR"] | 1;
+  TPL_3fontmode[TPL] = doc["TPL3FONTMODE"] | 1;
+  TPL_3posx[TPL] = doc["TPL3POSX"] | 100;
+  TPL_3posy[TPL] = doc["TPL3POSY"] | 8;
+// Field 4 - Train
+  TPL_4font[TPL] = doc["TPL4FONT"] | 5;
+  TPL_4drawcolor[TPL] = doc["TPL4DRAWCOLOR"] | 1;
+  TPL_4fontmode[TPL] = doc["TPL4FONTMODE"] | 1;
+  TPL_4posx[TPL] = doc["TPL4POSX"] | 93;
+  TPL_4posy[TPL] = doc["TPL4POSY"] | 17;
+// Field 5 - Train Type
+  TPL_5logox[TPL] = doc["TPL5LOGOX"] | 0;
+  TPL_5logoy[TPL] = doc["TPL5LOGOY"] | 0;
+// Field 6 - Message
+  TPL_6font[TPL] = doc["TPL6FONT"] | 6;
+  TPL_6maxwidth[TPL] = doc["TPL6MAXWIDTH"] | 116;
+  TPL_6font2[TPL] = doc["TPL6FONT2"] | 1;
+  TPL_6drawcolor[TPL] = doc["TPL6DRAWCOLOR"] | 1;
+  TPL_6fontmode[TPL] = doc["TPL6FONTMODE"] | 0;
+  TPL_6posx[TPL] = doc["TPL6POSX"] | 0;
+  TPL_6posy[TPL] = doc["TPL6POSY"] | 8;
+  TPL_6scroll[TPL] = doc["TPL6SCROLL"] | 1;
+// Field 6 - Message Scrollbox
+  TPL_6boxx[TPL] = doc["TPL6BOXX"] | 20;
+  TPL_6boxy[TPL] = doc["TPL6BOXY"] | 0;
+  TPL_6boxw[TPL] = doc["TPL6BOXW"] | 90;
+  TPL_6boxh[TPL] = doc["TPL6BOXH"] | 10;
+// Field 6 - Message Blackbox
+  TPL_6drawcolor2[TPL] = doc["TPL6DRAWCOLOR2"] | 0;
+  TPL_6fontmode2[TPL] = doc["TPL6FONTMODE2"] | 1;
+  TPL_6box2x[TPL] = doc["TPL6BOX2X"] | 91;
+  TPL_6box2y[TPL] = doc["TPL6BOX2Y"] | 0;
+  TPL_6box2w[TPL] = doc["TPL6BOX2W"] | 127;
+  TPL_6box2h[TPL] = doc["TPL6BOX2H"] | 10;
+  }
+}
+
 
 // Save templates to files
 void saveTemplateFile(const char *templatexx) 
@@ -539,7 +641,11 @@ void saveTemplateFile(const char *templatexx)
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
-  delay(1000);
+  //delay(2000);
+  unsigned long tn = 0;
+  if(millis() > tn + 3000){
+    tn = millis();
+  }
 }
 
 
@@ -594,7 +700,11 @@ void saveSec(const char *secfile, const Sec &sec)
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
-  delay(1000);
+  //delay(1000);
+  unsigned long tn = 0;
+  if(millis() > tn + 1000){
+    tn = millis();
+  }
 }
 
 
@@ -615,10 +725,14 @@ void printFile(const char *pfile)
 }
 
 
-void stopLittleFS() 
+void stopLittleFS()
 {
-  //LittleFS.end();
-  delay(1000);
+  LittleFS.end();
+  //delay(1000);
+  unsigned long tn = 0;
+  if(millis() > tn + 1000){
+    tn = millis();
+  }
 }
 
 

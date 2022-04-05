@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
 Roc-MQTT-Display
-Version 1.04
+Version 1.05
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
@@ -30,28 +30,29 @@ function buttonDownload() {
 </br>
 
 <table id='tbl1'>
-<tr><td>WIFI Devicename</td><td><input type='text' class='infield' name='f_WIFI_DEVICENAME' value='%WIFI_DEVICENAME%' title='Name of the controller in your Wifi network' size='19' maxlength='18' ></td></tr>
+<tr><td>WIFI Devicename</td><td><input type='text' class='infield' name='f_WIFI_DEVICENAME' value='%WIFI_DEVICENAME%' title='Name of this controller in your Wifi network' size='19' maxlength='18' ></td></tr>
 <tr><td>WIFI reconnect delay (ms)</td><td><input type='number' class='infield' name='f_WIFI_RECONDELAY' value='%WIFI_RECONDELAY%' title='Wait x ms until reconnect attempt in case of connection loss' size='7' maxlength='6' min='5000' ></td></tr>
-<tr><td>OTA Hostname</td><td><input type='text' class='infield' name='f_OTA_HOSTNAME' value='%OTA_HOSTNAME%' title='Name of the controller for OTA' size='19' maxlength='18' ></td></tr>
+<tr><td>OTA Hostname</td><td><input type='text' class='infield' name='f_OTA_HOSTNAME' value='%OTA_HOSTNAME%' title='Name of this controller for OTA' size='19' maxlength='18' ></td></tr>
 <tr><td>OTA Port</td><td><input type='number' class='infield' name='f_OTA_PORT' value='%OTA_PORT%' title='OTA port, default: 8266' size='6' maxlength='5' min='0' ></td></tr>
 <tr><td><a href='https://www.pool.ntp.org/zone/europe' target='_blank'>NTP Time Server pool</td><td><input type='text' class='infield' name='f_NTP_SERVER' value='%NTP_SERVER%' title='Set the NTP Server Pool you want to check for the correct time. See https://www.pool.ntp.org/zone/europe for details.' size='51' maxlength='50' ></td></tr>
 <tr><td><a href='https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv' target='_blank'>NTP Timezone and DST</td><td><input type='text' class='infield' name='f_NTP_TZ' value='%NTP_TZ%' title='Time Zone settings, see https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv for more details.' size='51' maxlength='50' ></td></tr>
 <tr><td>MQTT broker IP-address</td><td><input type='text' class='infield' name='f_MQTT_IP' value='%MQTT_IP%' title='IP-address of your MQTT broker' size='17' maxlength='16' ></td></tr>
 <tr><td>MQTT broker Port</td><td><input type='number' class='infield' name='f_MQTT_PORT' value='%MQTT_PORT%' title='MQTT broker Port, default: 1883 currently hardcoded, changes here are without effect' size='6' maxlength='5' min='0' ></td></tr>
-<tr><td>MQTT Message Size (byte)</td><td><input type='number' class='infield' name='f_MQTT_MSGSIZE' value='%MQTT_MSGSIZE%' title='Max. MQTT message size. Default = 128 bytes, for this project 256 bytes.' size='5' maxlength='4' min='128' ></td></tr>
-<tr><td>MQTT keep alive (sec)</td><td><input type='number' class='infield' name='f_MQTT_KEEPALIVE' value='%MQTT_KEEPALIVE%' title='MQTT keep alive. Default = 15 sec' size='5' maxlength='4' min='1' ></td></tr>
+<tr><td>MQTT Message Size (byte)</td><td><input type='number' class='infield' name='f_MQTT_MSGSIZE' value='%MQTT_MSGSIZE%' title='Max. MQTT message size. Default: 256 bytes.' size='5' maxlength='4' min='128' ></td></tr>
+<tr><td>MQTT keep alive (sec)</td><td><input type='number' class='infield' name='f_MQTT_KEEPALIVE' value='%MQTT_KEEPALIVE%' title='MQTT keep alive. Default: 15 sec' size='5' maxlength='4' min='1' ></td></tr>
 <tr><td>MQTT time between reconnects (ms)</td><td><input type='number' class='infield' name='f_MQTT_RECONDELAY' value='%MQTT_RECONDELAY%' title='Delay between MQTT reconnection attempts. Default = 10000 ms' size='5' maxlength='4' min='10000' ></td></tr>
 <tr><td>MQTT Topic1</td><td><input type='text' class='infield' name='f_MQTT_TOPIC1' value='%MQTT_TOPIC1%' title='MQTT Topic1, default: rocrail/service/info/clock' size='51' maxlength='50' ></td></tr>
 <tr><td>MQTT Topic2</td><td><input type='text' class='infield' name='f_MQTT_TOPIC2' value='%MQTT_TOPIC2%' title='MQTT Topic2, default: rocrail/service/info/tx' size='51' maxlength='50' ></td></tr>
-<tr><td>MQTT Delimiter</td><td><input type='text' class='infield' name='f_MQTT_DELIMITER' value='%MQTT_DELIMITER%' title='MQTT Delimiter, default: "" empty means # is expected as separator in messages. Add an alternative separator when your MQTT source cannot send # and requires another separator between fields, for example ";" or " , "' size='3' maxlength='3' ></td></tr>
-<tr><td>Enable debug messages</td><td><input type='number' class='infield' name='f_MQTT_DEBUG' value='%MQTT_DEBUG%' title='0=off, 1= show debug messages in serial monitor' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td>MQTT alternative Delimiter</td><td><input type='text' class='infield' name='f_MQTT_DELIMITER' value='%MQTT_DELIMITER%' title='MQTT Delimiter, default: "" empty means # is expected as separator in messages. Add an alternative separator when your MQTT source cannot send # and requires another separator between fields, for example ";" or " , "' size='3' maxlength='3' ></td></tr>
+<tr><td>Enable debug messages</td><td><input type='number' class='infield' name='f_MQTT_DEBUG' value='%MQTT_DEBUG%' title='0=off, 1=show debug messages in serial monitor, default: 0' size='1' maxlength='1' min='0' max='1' ></td></tr>
 <tr><td>I2C Multiplexer address</td><td><input type='text' class='infield' name='f_MUX' value='%MUX%' title='I2C Multiplexer address, default 112 (0x70)' size='4' maxlength='4' > (%MUXHEX%)</td></tr>
 <tr><td>Number of connected displays</td><td><input type='number' class='infield' name='f_NUMDISP' value='%NUMDISP%' title='Number (1-8) of displays connected to this controller' size='5' maxlength='4' min='1' max='8' ></td></tr>
-<tr><td>Display Size</td><td><input type='text' class='infield' name='f_DISPSIZE' value='%DISPSIZE%' title='Display resolution width x height (Read Only at the moment)' size='15' maxlength='14' readonly ></td></tr>
+<tr><td>Display Width</td><td><input type='number' class='infield' name='f_DISPWIDTH' value='%DISPWIDTH%' title='Display width in pixel' size='5' maxlength='5' ></td></tr>
+<tr><td>Display Height</td><td><input type='number' class='infield' name='f_DISPHEIGHT' value='%DISPHEIGHT%' title='Display height in pixel' size='5' maxlength='5' ></td></tr>
 <tr><td>Show start screens longer (ms)</td><td><input type='number' class='infield' name='f_STARTDELAY' value='%STARTDELAY%' title='Set during display installation e.g. to 4000 to show the start up screens longer with Version, Display-ID configuration link and controller name' size='5' maxlength='4' min='1' max='5000' ></td></tr>
 <tr><td>Increase display update intervall (ms)</td><td><input type='number' class='infield' name='f_UPDSPEED' value='%UPDSPEED%' title='Slow down display update intervall by increasing the number of ms, e.g. 10 = 100ms + 10' size='5' maxlength='4' min='1' max='100' ></td></tr>
 <tr><td>Screensaver (min)</td><td><input type='number' class='infield' name='f_SCREENSAVER' value='%SCREENSAVER%' title='minutes without message received until screenSaver switches all displays into power save mode, 0=off' size='5' maxlength='4' min='0' max='600' ></td></tr>
-<tr><td>Screenshot Display 1</td><td><input type='number' class='infield' name='f_PRINTBUF' value='%PRINTBUF%' title='0=off, 1= print screenshot from buffer of display 1 to serial out as XBM image' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td>Screenshot Display 1</td><td><input type='number' class='infield' name='f_PRINTBUF' value='%PRINTBUF%' title='0=off, 1=print screenshot from buffer of display 1 to serial out as XBM image' size='1' maxlength='1' min='0' max='1' ></td></tr>
 <tr><td>Display IDs</td><td><table id='tbl2'><tr>
 <td><input type='text' class='infield2' name='f_DPL_ID0' value='%DPL_ID0%' title='Name of display 1 connected to this controller, e.g. D01' size='3' maxlength='3' ></td>
 <td><input type='text' class='infield2' name='f_DPL_ID1' value='%DPL_ID1%' title='Name of display 2 connected to this controller, e.g. D02' size='3' maxlength='3' ></td>
@@ -73,14 +74,14 @@ function buttonDownload() {
 <td><input type='number' class='infield2' name='f_DPL_FLIP7' value='%DPL_FLIP7%' title='1 = Flip this display by 180&deg;' size='3' maxlength='1' min='0' max='1' ></td>
 </tr></table></td></tr>
 <tr><td>Contrast</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST0' value='%DPL_CONTRAST0%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST1' value='%DPL_CONTRAST1%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST2' value='%DPL_CONTRAST2%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST3' value='%DPL_CONTRAST3%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST4' value='%DPL_CONTRAST4%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST5' value='%DPL_CONTRAST5%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST6' value='%DPL_CONTRAST6%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST7' value='%DPL_CONTRAST7%' title='0=off, 1=low ... 255=brightest' size='3' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST0' value='%DPL_CONTRAST0%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST1' value='%DPL_CONTRAST1%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST2' value='%DPL_CONTRAST2%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST3' value='%DPL_CONTRAST3%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST4' value='%DPL_CONTRAST4%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST5' value='%DPL_CONTRAST5%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST6' value='%DPL_CONTRAST6%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST7' value='%DPL_CONTRAST7%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
 </tr></table></td></tr>
 <tr><td>Display Side</td><td><table id='tbl2'><tr>
 <td><input type='number' class='infield2' name='f_DPL_SIDE0' value='%DPL_SIDE0%' title='0=Side A <- track on left side, 1=Side B -> track on right side' size='3' maxlength='1' min='0' max='1' ></td>

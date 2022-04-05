@@ -5,13 +5,12 @@ A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to eight 0.9
 I2C OLED displays. Several D1 mini can run together so the total number of displays is 
 not limited.
 
-Version 1.04  February 05, 2022
+Version 1.05  April 04, 2022
 
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 
 ##########################################################################################
-
 
 Message Format sent from Rocrail text fields via MQTT
 #####################################################
@@ -69,8 +68,10 @@ Message Format sent from Rocrail text fields via MQTT
 #include <U8g2lib.h>           // U8g2lib by Oliver Kraus https://github.com/olikraus/u8g2
 using namespace std;
 
+// !!! SELECT YOUR DISPLAY TYPE HERE !!!
+// 
 // More U8G2 Display Constructors are listed in the U8G2 Wiki: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
-// Please uncomment only one constructor! Only one display type can be handled by one Roc-MQTT-Display controller.
+// Please uncomment ONLY ONE constructor! Only one display type can be handled by one Roc-MQTT-Display controller.
 
 // ### 128x32 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
 U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
@@ -85,22 +86,22 @@ U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 //U8G2_SSD1306_96X16_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 
-u8g2_uint_t offset1;  // current offset for the scrolling text
-u8g2_uint_t offset2;
-u8g2_uint_t offset3;
-u8g2_uint_t offset4;
-u8g2_uint_t offset5;
-u8g2_uint_t offset6;
-u8g2_uint_t offset7;
-u8g2_uint_t offset8;
-u8g2_uint_t width1;  // pixel width of the scrolling text (must be < 128 unless U8G2_16BIT is defined)
-u8g2_uint_t width2;
-u8g2_uint_t width3;
-u8g2_uint_t width4;
-u8g2_uint_t width5;
-u8g2_uint_t width6;
-u8g2_uint_t width7;
-u8g2_uint_t width8;
+u8g2_uint_t offset1 = 0;  // current offset for the scrolling text
+u8g2_uint_t offset2 = 0;
+u8g2_uint_t offset3 = 0;
+u8g2_uint_t offset4 = 0;
+u8g2_uint_t offset5 = 0;
+u8g2_uint_t offset6 = 0;
+u8g2_uint_t offset7 = 0;
+u8g2_uint_t offset8 = 0;
+u8g2_uint_t width1 = 0;  // pixel width of the scrolling text (must be < 128 unless U8G2_16BIT is defined, max display 240x240, https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#16-bit-mode)
+u8g2_uint_t width2 = 0;
+u8g2_uint_t width3 = 0;
+u8g2_uint_t width4 = 0;
+u8g2_uint_t width5 = 0;
+u8g2_uint_t width6 = 0;
+u8g2_uint_t width7 = 0;
+u8g2_uint_t width8 = 0;
 
 // Define TaskScheduler 
 Scheduler ts;
@@ -238,7 +239,7 @@ String ZZA8_MessageLoop = "";
 // SETUP, runs once at startup
 void setup()
 {
-  Serial.begin(38400);
+  Serial.begin(115200);
   while (!Serial) continue;
   delay(1000);
 
@@ -262,8 +263,8 @@ void setup()
   saveConfiguration(configfile, config);
 
   // Read display width and height from display constructor
-  config.DISPWIDTH = disp.getDisplayWidth();
-  config.DISPHEIGHT = disp.getDisplayHeight();
+  //config.DISPWIDTH = disp.getDisplayWidth();
+  //config.DISPHEIGHT = disp.getDisplayHeight();
 
   // Load sec from file
   Serial.print(F("\nLoading sec from \n"));
@@ -553,6 +554,10 @@ void setup()
     handleTpl2Select();
   });
 
+webserver.on("/tpl2imp", []() {         // Define the handling function for the /tpl2imp path
+    loadTpl2imp();
+  });
+
   webserver.on("/sec", []() {          // Define the handling function for the /sec path
     loadSec();
   });
@@ -575,6 +580,11 @@ void setup()
     loadTpl2();
   });
 
+  webserver.on("/submittpl2imp", []() {   // Define the handling function for the /submittpl2imp path
+    webserver.send(204);
+    handleTpl2impSubmit();
+  });
+
   webserver.on("/submitsec", []() {    // Define the handling function for the /submitsec path
     webserver.send(204);
     handleSecSubmit();
@@ -594,13 +604,19 @@ void setup()
 
   webserver.on("/restart", []() {      // Define the handling function for the /restart path
     webserver.send(204);
-    delay(300);
+    unsigned long tn = 0;
+    if(millis() > tn + 300){
+      tn = millis();
+    }
     restartESP();
   });
 
   webserver.on("/ota", []() {          // Define the handling function for the /ota path
     webserver.send(204);
-    delay(500);
+    unsigned long tn = 0;
+    if(millis() > tn + 500){
+      tn = millis();
+    }
     stopLittleFS();
   });
 
@@ -616,6 +632,7 @@ void setup()
 // Restart the controller
 void restartESP()
 {
+  stopLittleFS();
   ESP.restart();
 }
 
@@ -641,18 +658,17 @@ void DisplayInit()
       disp.begin();  // Initialize display i
       disp.setFlipMode(DPL_flip[i]);
       //disp.setDisplayRotation(U8G2_R2);  // U8G2_R0, U8G2_R1, U8G2_R2, U8G2_R3, U8G2_MIRROR  DPL_rotation[i]
-      disp.setContrast(255);
+      disp.setContrast(DPL_contrast[i]);
       disp.enableUTF8Print();
       disp.setFont(fontno[0]);
       disp.setFontMode(0);
-      disp.setCursor(3,13);
+      disp.setCursor(0,13);
       disp.print(F("Roc-MQTT-Display"));
-      disp.setCursor(3,31);
+      disp.setCursor(0,29);
       disp.print(config.VER);
       disp.nextPage();
       delay(500 + (config.STARTDELAY / 2));
       disp.clearDisplay();
-      disp.setContrast(DPL_contrast[i]);
       disp.setFont(fontno[0]);
       disp.setCursor(0,13);
       disp.print(F("http://"));
@@ -665,8 +681,9 @@ void DisplayInit()
       disp.print(F("Display: "));
       disp.print(i+1);
       disp.setCursor(0,29);
-      disp.print(F("Display-ID: "));
+      disp.print(F("ID: "));
       disp.print(DPL_id[i]);
+      
       if (strlen(config.MQTT_IP) < 7) {
         disp.nextPage();
         delay(500 + (config.STARTDELAY / 2));
@@ -674,7 +691,7 @@ void DisplayInit()
         disp.setCursor(0,13);
         disp.print(F("NO MQTT broker"));
         disp.setCursor(0,29);
-        disp.print(F("Check Config"));
+        disp.print(F("Check Config!"));
         disp.nextPage();
         delay(5000 + (config.STARTDELAY / 2));
       }
@@ -709,7 +726,7 @@ void send2display1(void)
   DMUX(0);
   u8g2_uint_t x;
   disp.firstPage();
-  
+  disp.setContrast(DPL_contrast[0]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -731,20 +748,22 @@ void send2display1(void)
     if (ZZA1_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width1 = disp.getUTF8Width(ZZA1_MessageLoop.c_str());
-      // draw message box
       disp.setFontMode(TPL_6fontmode[t]);
       disp.setDrawColor(TPL_6drawcolor[t]);
-      disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
-      // draw black box
-      disp.setFontMode(TPL_6fontmode2[t]);
-      disp.setDrawColor(TPL_6drawcolor2[t]);
-      disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
- 
+      if (TPL_6boxh[t] > 0){
+        // draw message box
+        disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
+        // draw black box
+        disp.setFontMode(TPL_6fontmode2[t]);
+        disp.setDrawColor(TPL_6drawcolor2[t]);
+        disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
+      }
       x = offset1;
       do {
         disp.drawUTF8(x, TPL_6posy[t], ZZA1_MessageLoop.c_str());  // !!!!!!!!!!!!!
         x += width1;
-      } while( x < disp.getDisplayWidth());
+      //} while( x < disp.getDisplayWidth());
+      } while( x < config.DISPWIDTH);
     }
   }
   disp.setFontMode(TPL_6fontmode[t]);
@@ -765,7 +784,7 @@ void send2display1(void)
   }
   //disp.setCursor((disp.getDisplayWidth() / 2) - (disp.getUTF8Width(ZZA2_Station.c_str()) / 2), TPL_3posy[t]);
   //disp.drawUTF8(TPL_0posx[t], TPL_0posy[t], ZZA2_Station.c_str());
-  disp.drawUTF8((disp.getDisplayWidth() / 2) - (disp.getUTF8Width(ZZA1_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA1_Station.c_str());
+  disp.drawUTF8((config.DISPWIDTH / 2) - (disp.getUTF8Width(ZZA1_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA1_Station.c_str());
 
   // Track
   disp.setFont(fontno[TPL_1font[t]]);
@@ -850,7 +869,7 @@ void send2display2(void)
   DMUX(1);
   u8g2_uint_t x;
   disp.firstPage();
-  
+  disp.setContrast(DPL_contrast[1]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -874,16 +893,17 @@ void send2display2(void)
       width2 = disp.getUTF8Width(ZZA2_MessageLoop.c_str());
       disp.setFontMode(TPL_6fontmode[t]);
       disp.setDrawColor(TPL_6drawcolor[t]);
-      disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
-      disp.setFontMode(TPL_6fontmode2[t]);
-      disp.setDrawColor(TPL_6drawcolor2[t]);
-      disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
- 
+      if (TPL_6boxh[t] > 0){
+        disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
+        disp.setFontMode(TPL_6fontmode2[t]);
+        disp.setDrawColor(TPL_6drawcolor2[t]);
+        disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
+      }
       x = offset2;
       do {
         disp.drawUTF8(x, 8, ZZA2_MessageLoop.c_str());
         x += width2;
-      } while( x < disp.getDisplayWidth());
+      } while( x < config.DISPWIDTH);
     }
   }
   disp.setFontMode(TPL_6fontmode[t]);
@@ -895,7 +915,7 @@ void send2display2(void)
   if (disp.getUTF8Width(ZZA2_Station.c_str()) > TPL_0maxwidth[t]){
     disp.setFont(fontno[TPL_0font2[t]]);
   }
-  disp.drawUTF8((disp.getDisplayWidth() / 2) - (disp.getUTF8Width(ZZA2_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA2_Station.c_str());
+  disp.drawUTF8((config.DISPWIDTH / 2) - (disp.getUTF8Width(ZZA2_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA2_Station.c_str());
 
   // Track
   disp.setFont(fontno[TPL_1font[t]]);
@@ -952,7 +972,7 @@ void send2display3(void)
   DMUX(2);
   u8g2_uint_t x;
   disp.firstPage();
-  
+  disp.setContrast(DPL_contrast[2]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -976,16 +996,17 @@ void send2display3(void)
       width3 = disp.getUTF8Width(ZZA3_MessageLoop.c_str());
       disp.setFontMode(TPL_6fontmode[t]);
       disp.setDrawColor(TPL_6drawcolor[t]);
-      disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
-      disp.setFontMode(TPL_6fontmode2[t]);
-      disp.setDrawColor(TPL_6drawcolor2[t]);
-      disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
-
+      if (TPL_6boxh[t] > 0){
+        disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
+        disp.setFontMode(TPL_6fontmode2[t]);
+        disp.setDrawColor(TPL_6drawcolor2[t]);
+        disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
+      }
       x = offset3;
       do {
         disp.drawUTF8(x, 8, ZZA3_MessageLoop.c_str());
         x += width3;
-      } while( x < disp.getDisplayWidth());
+      } while( x < config.DISPWIDTH);
     }
   }
   disp.setFontMode(TPL_6fontmode[t]);
@@ -997,7 +1018,7 @@ void send2display3(void)
   if (disp.getUTF8Width(ZZA3_Station.c_str()) > TPL_0maxwidth[t]){
     disp.setFont(fontno[TPL_0font2[t]]);
   }
-  disp.drawUTF8((disp.getDisplayWidth() / 2) - (disp.getUTF8Width(ZZA3_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA3_Station.c_str());
+  disp.drawUTF8((config.DISPWIDTH / 2) - (disp.getUTF8Width(ZZA3_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA3_Station.c_str());
 
   // Track
   disp.setFont(fontno[TPL_1font[t]]);
@@ -1054,7 +1075,7 @@ void send2display4(void)
   DMUX(3);
   u8g2_uint_t x;
   disp.firstPage();
-  
+  disp.setContrast(DPL_contrast[3]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1078,11 +1099,12 @@ void send2display4(void)
       width4 = disp.getUTF8Width(ZZA4_MessageLoop.c_str());
       disp.setFontMode(TPL_6fontmode[t]);
       disp.setDrawColor(TPL_6drawcolor[t]);
-      disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
-      disp.setFontMode(TPL_6fontmode2[t]);
-      disp.setDrawColor(TPL_6drawcolor2[t]);
-      disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
- 
+      if (TPL_6boxh[t] > 0){
+        disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
+        disp.setFontMode(TPL_6fontmode2[t]);
+        disp.setDrawColor(TPL_6drawcolor2[t]);
+        disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
+      }
       x = offset4;
       do {
         disp.drawUTF8(x, 8, ZZA4_MessageLoop.c_str());
@@ -1099,7 +1121,7 @@ void send2display4(void)
   if (disp.getUTF8Width(ZZA4_Station.c_str()) > TPL_0maxwidth[t]){
     disp.setFont(fontno[TPL_0font2[t]]);
   }
-  disp.drawUTF8((disp.getDisplayWidth() / 2) - (disp.getUTF8Width(ZZA4_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA4_Station.c_str());
+  disp.drawUTF8((config.DISPWIDTH / 2) - (disp.getUTF8Width(ZZA4_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA4_Station.c_str());
 
   // Track
   disp.setFont(fontno[TPL_1font[t]]);
@@ -1156,7 +1178,7 @@ void send2display5(void)
   DMUX(4);
   u8g2_uint_t x;
   disp.firstPage();
-  
+  disp.setContrast(DPL_contrast[4]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1180,16 +1202,17 @@ void send2display5(void)
       width5 = disp.getUTF8Width(ZZA5_MessageLoop.c_str());
       disp.setFontMode(TPL_6fontmode[t]);
       disp.setDrawColor(TPL_6drawcolor[t]);
-      disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
-      disp.setFontMode(TPL_6fontmode2[t]);
-      disp.setDrawColor(TPL_6drawcolor2[t]);
-      disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
- 
+      if (TPL_6boxh[t] > 0){
+        disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
+        disp.setFontMode(TPL_6fontmode2[t]);
+        disp.setDrawColor(TPL_6drawcolor2[t]);
+        disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
+      }
       x = offset5;
       do {
         disp.drawUTF8(x, 8, ZZA5_MessageLoop.c_str());
         x += width5;
-      } while( x < disp.getDisplayWidth());
+      } while( x < config.DISPWIDTH);
     }
   }
   disp.setFontMode(TPL_6fontmode[t]);
@@ -1201,7 +1224,7 @@ void send2display5(void)
   if (disp.getUTF8Width(ZZA5_Station.c_str()) > TPL_0maxwidth[t]){
     disp.setFont(fontno[TPL_0font2[t]]);
   }
-  disp.drawUTF8((disp.getDisplayWidth() / 2) - (disp.getUTF8Width(ZZA5_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA5_Station.c_str());
+  disp.drawUTF8((config.DISPWIDTH / 2) - (disp.getUTF8Width(ZZA5_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA5_Station.c_str());
 
   // Track
   disp.setFont(fontno[TPL_1font[t]]);
@@ -1258,7 +1281,7 @@ void send2display6(void)
   DMUX(5);
   u8g2_uint_t x;
   disp.firstPage();
-  
+  disp.setContrast(DPL_contrast[5]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1282,16 +1305,17 @@ void send2display6(void)
       width6 = disp.getUTF8Width(ZZA6_MessageLoop.c_str());
       disp.setFontMode(TPL_6fontmode[t]);
       disp.setDrawColor(TPL_6drawcolor[t]);
-      disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
-      disp.setFontMode(TPL_6fontmode2[t]);
-      disp.setDrawColor(TPL_6drawcolor2[t]);
-      disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
- 
+      if (TPL_6boxh[t] > 0){
+        disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
+        disp.setFontMode(TPL_6fontmode2[t]);
+        disp.setDrawColor(TPL_6drawcolor2[t]);
+        disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
+      }
       x = offset6;
       do {
         disp.drawUTF8(x, 8, ZZA6_MessageLoop.c_str());
         x += width6;
-      } while( x < disp.getDisplayWidth());
+      } while( x < config.DISPWIDTH);
     }
   }
   disp.setFontMode(TPL_6fontmode[t]);
@@ -1303,7 +1327,7 @@ void send2display6(void)
   if (disp.getUTF8Width(ZZA6_Station.c_str()) > TPL_0maxwidth[t]){
     disp.setFont(fontno[TPL_0font2[t]]);
   }
-  disp.drawUTF8((disp.getDisplayWidth() / 2) - (disp.getUTF8Width(ZZA6_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA6_Station.c_str());
+  disp.drawUTF8((config.DISPWIDTH / 2) - (disp.getUTF8Width(ZZA6_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA6_Station.c_str());
 
   // Track
   disp.setFont(fontno[TPL_1font[t]]);
@@ -1360,7 +1384,7 @@ void send2display7(void)
   DMUX(6);
   u8g2_uint_t x;
   disp.firstPage();
-  
+  disp.setContrast(DPL_contrast[6]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1384,16 +1408,17 @@ void send2display7(void)
       width7 = disp.getUTF8Width(ZZA7_MessageLoop.c_str());
       disp.setFontMode(TPL_6fontmode[t]);
       disp.setDrawColor(TPL_6drawcolor[t]);
-      disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
-      disp.setFontMode(TPL_6fontmode2[t]);
-      disp.setDrawColor(TPL_6drawcolor2[t]);
-      disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
- 
+      if (TPL_6boxh[t] > 0){
+        disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
+        disp.setFontMode(TPL_6fontmode2[t]);
+        disp.setDrawColor(TPL_6drawcolor2[t]);
+        disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
+      }
       x = offset7;
       do {
         disp.drawUTF8(x, 8, ZZA7_MessageLoop.c_str());
         x += width7;
-      } while( x < disp.getDisplayWidth());
+      } while( x < config.DISPWIDTH);
     }
   }
   disp.setFontMode(TPL_6fontmode[t]);
@@ -1405,7 +1430,7 @@ void send2display7(void)
   if (disp.getUTF8Width(ZZA7_Station.c_str()) > TPL_0maxwidth[t]){
     disp.setFont(fontno[TPL_0font2[t]]);
   }
-  disp.drawUTF8((disp.getDisplayWidth() / 2) - (disp.getUTF8Width(ZZA7_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA7_Station.c_str());
+  disp.drawUTF8((config.DISPWIDTH / 2) - (disp.getUTF8Width(ZZA7_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA7_Station.c_str());
 
   // Track
   disp.setFont(fontno[TPL_1font[t]]);
@@ -1462,7 +1487,7 @@ void send2display8(void)
   DMUX(7);
   u8g2_uint_t x;
   disp.firstPage();
-  
+  disp.setContrast(DPL_contrast[7]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1486,16 +1511,17 @@ void send2display8(void)
       width8 = disp.getUTF8Width(ZZA8_MessageLoop.c_str());
       disp.setFontMode(TPL_6fontmode[t]);
       disp.setDrawColor(TPL_6drawcolor[t]);
-      disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
-      disp.setFontMode(TPL_6fontmode2[t]);
-      disp.setDrawColor(TPL_6drawcolor2[t]);
-      disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
- 
+      if (TPL_6boxh[t] > 0){
+        disp.drawBox(TPL_6boxx[t], TPL_6boxy[t], TPL_6boxw[t], TPL_6boxh[t]);
+        disp.setFontMode(TPL_6fontmode2[t]);
+        disp.setDrawColor(TPL_6drawcolor2[t]);
+        disp.drawBox(TPL_6box2x[t], TPL_6box2y[t], TPL_6box2w[t], TPL_6box2h[t]);
+      }
       x = offset8;
       do {
         disp.drawUTF8(x, 8, ZZA8_MessageLoop.c_str());
         x += width8;
-      } while( x < disp.getDisplayWidth());
+      } while( x < config.DISPWIDTH);
     }
   }
   disp.setFontMode(TPL_6fontmode[t]);
@@ -1507,7 +1533,7 @@ void send2display8(void)
   if (disp.getUTF8Width(ZZA8_Station.c_str()) > TPL_0maxwidth[t]){
     disp.setFont(fontno[TPL_0font2[t]]);
   }
-  disp.drawUTF8((disp.getDisplayWidth() / 2) - (disp.getUTF8Width(ZZA8_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA8_Station.c_str());
+  disp.drawUTF8((config.DISPWIDTH / 2) - (disp.getUTF8Width(ZZA8_Station.c_str()) / 2) + TPL_0posx[t], TPL_0posy[t], ZZA8_Station.c_str());
 
   // Track
   disp.setFont(fontno[TPL_1font[t]]);
@@ -1604,7 +1630,7 @@ void switchLogo(uint8_t t, String ZZA_Type)
 }
 
 
-// Toggle ScreenSaver for all displays
+// Enable ScreenSaver for all displays
 void screenSaver(int s){
   for (int i = 0; i < config.NUMDISP; i++)
   {
@@ -1614,9 +1640,9 @@ void screenSaver(int s){
 }
 
 
-// Write display buffer to file
+// Write display buffer/screenshot to serial out
 void printBuffer(){
-  Serial.println("Buffer of display 1 as XBM image\n");
+  Serial.println("\nScreenshot of display 1 as XBM image\n");
   disp.writeBufferXBM(Serial);      // Write XBM image to serial out
   Serial.println();
 }

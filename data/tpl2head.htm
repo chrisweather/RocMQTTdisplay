@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--
+Roc-MQTT-Display
+Version 1.05
+Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
+https://github.com/chrisweather/RocMQTTdisplay
+-->
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Roc-MQTT-Display</title>
+<link rel='stylesheet' type='text/css' href='rmd.css'>
+</head>
+<body>
+<H1>Roc-MQTT-Display - Templates 2</H1>
+<p><strong>%WIFI_DEVICENAME%</strong></p>
+<script>
+function buttonHome() {
+ window.open('/','_self');
+}
+function CheckTplRadio() {
+  tplradiobtn = document.getElementById('%TPL_ID0%');
+  tplradiobtn.checked = true;
+}
+function buttonDownload() {
+ switch(Number(tplradiobtn.value)) {
+  case 0:
+    window.open('/download?file=/rmdtpl00.txt','_blank');
+    break;
+  case 1:
+    window.open('/download?file=/rmdtpl01.txt','_blank');
+    break;
+  case 2:
+    window.open('/download?file=/rmdtpl02.txt','_blank');
+    break;
+  case 3:
+    window.open('/download?file=/rmdtpl03.txt','_blank');
+    break;
+  case 4:
+    window.open('/download?file=/rmdtpl04.txt','_blank');
+    break;
+  case 5:
+    window.open('/download?file=/rmdtpl05.txt','_blank');
+    break;
+  case 6:
+    window.open('/download?file=/rmdtpl06.txt','_blank');
+    break;
+  case 7:
+    window.open('/download?file=/rmdtpl07.txt','_blank');
+    break;
+  case 8:
+    window.open('/download?file=/rmdtpl08.txt','_blank');
+    break;
+  case 9:
+    window.open('/download?file=/rmdtpl09.txt','_blank');
+    break;
+  default:
+    break;
+ } 
+}
+function buttonImport() {
+ window.open('/tpl2imp','_self');
+}
+function SelTpl() {
+ document.getElementById('formSelTpl').submit();
+}
+window.onload = CheckTplRadio;
+</script>
+<button type='button' class='button' title='Home' onclick='buttonHome()'>Home</button>   
+<button type='button' class='button' title='Download' onclick='buttonDownload()'>Download</button>   
+<button type='button' class='button' title='Import' onclick='buttonImport()'>Import</button>   
+
+<table id='tbl1'>
+<tr><td><br>Template</td><td><br>
+<form name='formSelTpl' action='/tpl2sel' method='POST'>
+  <input type='radio' id='T0' name='f_TPL_NO' value='0' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T0'>T0</label> 
+  <input type='radio' id='T1' name='f_TPL_NO' value='1' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T1'>T1</label> 
+  <input type='radio' id='T2' name='f_TPL_NO' value='2' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T2'>T2</label>
+  <input type='radio' id='T3' name='f_TPL_NO' value='3' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T3'>T3</label>
+  <input type='radio' id='T4' name='f_TPL_NO' value='4' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T4'>T4</label>
+  <input type='radio' id='T5' name='f_TPL_NO' value='5' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T5'>T5</label>
+  <input type='radio' id='T6' name='f_TPL_NO' value='6' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T6'>T6</label>
+  <input type='radio' id='T7' name='f_TPL_NO' value='7' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T7'>T7</label>
+  <input type='radio' id='T8' name='f_TPL_NO' value='8' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T8'>T8</label>
+  <input type='radio' id='T9' name='f_TPL_NO' value='9' title='Select a template' onchange='this.form.submit()'> 
+  <label for='T9'>T9</label>
+  <br>
+</form>
+</td></tr>

@@ -1,5 +1,5 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 1.04
+// Version 1.05
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -11,18 +11,19 @@
 
 // Define WEBSERVER
 ESP8266WebServer webserver(80);
-String buf = "";
+String buf1 = "";
 
 // ROOT
 void loadRoot()
 {
   File htmlRoot = LittleFS.open( "/index.htm", "r" );
-  buf = htmlRoot.readString();
-  buf.replace("%VER%", config.VER);
-  buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
-  webserver.send( 200, "text/html", buf );
+  buf1 = htmlRoot.readString();
   htmlRoot.close();
-  buf = "";
+  buf1.replace("%VER%", config.VER);
+  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
+  webserver.setContentLength( buf1.length() );
+  webserver.send( 200, "text/html", buf1 );
+  buf1 = "";
 }
 
 // CSS
@@ -45,70 +46,73 @@ void loadNotFound()
 void loadCfg()
 {
   File htmlCfg = LittleFS.open( "/config.htm", "r" );
-  buf = htmlCfg.readString();
-  buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
-  buf.replace("%WIFI_RECONDELAY%", String(config.WIFI_RECONDELAY));
-  buf.replace("%OTA_HOSTNAME%", String(config.OTA_HOSTNAME));
-  buf.replace("%OTA_PORT%", String(config.OTA_PORT));
-  buf.replace("%NTP_SERVER%", String(config.NTP_SERVER));
-  buf.replace("%NTP_TZ%", String(config.NTP_TZ));
-  buf.replace("%MQTT_IP%", String(config.MQTT_IP));
-  buf.replace("%MQTT_PORT%", String(config.MQTT_PORT));
-  buf.replace("%MQTT_MSGSIZE%", String(config.MQTT_MSGSIZE));
-  buf.replace("%MQTT_KEEPALIVE%", String(config.MQTT_KEEPALIVE1));
-  buf.replace("%MQTT_RECONDELAY%", String(config.MQTT_RECONDELAY));
-  buf.replace("%MQTT_TOPIC1%", String(config.MQTT_TOPIC1));
-  buf.replace("%MQTT_TOPIC2%", String(config.MQTT_TOPIC2));
-  buf.replace("%MQTT_DELIMITER%", String(config.MQTT_DELIMITER));
-  buf.replace("%MQTT_DEBUG%", String(config.MQTT_DEBUG));
-  buf.replace("%MUX%", String(config.MUX));
+  buf1 = htmlCfg.readString();
+  htmlCfg.close();
+  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
+  buf1.replace("%WIFI_RECONDELAY%", String(config.WIFI_RECONDELAY));
+  buf1.replace("%OTA_HOSTNAME%", String(config.OTA_HOSTNAME));
+  buf1.replace("%OTA_PORT%", String(config.OTA_PORT));
+  buf1.replace("%NTP_SERVER%", String(config.NTP_SERVER));
+  buf1.replace("%NTP_TZ%", String(config.NTP_TZ));
+  buf1.replace("%MQTT_IP%", String(config.MQTT_IP));
+  buf1.replace("%MQTT_PORT%", String(config.MQTT_PORT));
+  buf1.replace("%MQTT_MSGSIZE%", String(config.MQTT_MSGSIZE));
+  buf1.replace("%MQTT_KEEPALIVE%", String(config.MQTT_KEEPALIVE1));
+  buf1.replace("%MQTT_RECONDELAY%", String(config.MQTT_RECONDELAY));
+  buf1.replace("%MQTT_TOPIC1%", String(config.MQTT_TOPIC1));
+  buf1.replace("%MQTT_TOPIC2%", String(config.MQTT_TOPIC2));
+  buf1.replace("%MQTT_DELIMITER%", String(config.MQTT_DELIMITER));
+  buf1.replace("%MQTT_DEBUG%", String(config.MQTT_DEBUG));
+  buf1.replace("%MUX%", String(config.MUX));
   if (config.MUX < 16){
-    buf.replace("%MUXHEX%", String("0x0") + String(config.MUX, HEX));
+    buf1.replace("%MUXHEX%", String("0x0") + String(config.MUX, HEX));
   }
   else {
-    buf.replace("%MUXHEX%", String("0x") + String(config.MUX, HEX));
+    buf1.replace("%MUXHEX%", String("0x") + String(config.MUX, HEX));
   }
-  buf.replace("%NUMDISP%", String(config.NUMDISP));
-  buf.replace("%DISPSIZE%", String(config.DISPWIDTH) + " x " + String(config.DISPHEIGHT));
-  buf.replace("%STARTDELAY%", String(config.STARTDELAY));
-  buf.replace("%UPDSPEED%", String(config.UPDSPEED));
-  buf.replace("%SCREENSAVER%", String(config.SCREENSAVER));
-  buf.replace("%PRINTBUF%", String(config.PRINTBUF));
-  buf.replace("%DPL_ID0%", String(DPL_id[0]));
-  buf.replace("%DPL_ID1%", String(DPL_id[1]));
-  buf.replace("%DPL_ID2%", String(DPL_id[2]));
-  buf.replace("%DPL_ID3%", String(DPL_id[3]));
-  buf.replace("%DPL_ID4%", String(DPL_id[4]));
-  buf.replace("%DPL_ID5%", String(DPL_id[5]));
-  buf.replace("%DPL_ID6%", String(DPL_id[6]));
-  buf.replace("%DPL_ID7%", String(DPL_id[7]));
-  buf.replace("%DPL_FLIP0%", String(DPL_flip[0]));
-  buf.replace("%DPL_FLIP1%", String(DPL_flip[1]));
-  buf.replace("%DPL_FLIP2%", String(DPL_flip[2]));
-  buf.replace("%DPL_FLIP3%", String(DPL_flip[3]));
-  buf.replace("%DPL_FLIP4%", String(DPL_flip[4]));
-  buf.replace("%DPL_FLIP5%", String(DPL_flip[5]));
-  buf.replace("%DPL_FLIP6%", String(DPL_flip[6]));
-  buf.replace("%DPL_FLIP7%", String(DPL_flip[7]));
-  buf.replace("%DPL_CONTRAST0%", String(DPL_contrast[0]));
-  buf.replace("%DPL_CONTRAST1%", String(DPL_contrast[1]));
-  buf.replace("%DPL_CONTRAST2%", String(DPL_contrast[2]));
-  buf.replace("%DPL_CONTRAST3%", String(DPL_contrast[3]));
-  buf.replace("%DPL_CONTRAST4%", String(DPL_contrast[4]));
-  buf.replace("%DPL_CONTRAST5%", String(DPL_contrast[5]));
-  buf.replace("%DPL_CONTRAST6%", String(DPL_contrast[6]));
-  buf.replace("%DPL_CONTRAST7%", String(DPL_contrast[7]));
-  buf.replace("%DPL_SIDE0%", String(DPL_side[0]));
-  buf.replace("%DPL_SIDE1%", String(DPL_side[1]));
-  buf.replace("%DPL_SIDE2%", String(DPL_side[2]));
-  buf.replace("%DPL_SIDE3%", String(DPL_side[3]));
-  buf.replace("%DPL_SIDE4%", String(DPL_side[4]));
-  buf.replace("%DPL_SIDE5%", String(DPL_side[5]));
-  buf.replace("%DPL_SIDE6%", String(DPL_side[6]));
-  buf.replace("%DPL_SIDE7%", String(DPL_side[7]));
-  webserver.send( 200, "text/html", buf );
-  htmlCfg.close();
-  buf = "";
+  buf1.replace("%NUMDISP%", String(config.NUMDISP));
+  buf1.replace("%DISPWIDTH%", String(config.DISPWIDTH));
+  buf1.replace("%DISPHEIGHT%", String(config.DISPHEIGHT));
+  buf1.replace("%DISPSIZE%", String(config.DISPWIDTH) + " x " + String(config.DISPHEIGHT));
+  buf1.replace("%STARTDELAY%", String(config.STARTDELAY));
+  buf1.replace("%UPDSPEED%", String(config.UPDSPEED));
+  buf1.replace("%SCREENSAVER%", String(config.SCREENSAVER));
+  buf1.replace("%PRINTBUF%", String(config.PRINTBUF));
+  buf1.replace("%DPL_ID0%", String(DPL_id[0]));
+  buf1.replace("%DPL_ID1%", String(DPL_id[1]));
+  buf1.replace("%DPL_ID2%", String(DPL_id[2]));
+  buf1.replace("%DPL_ID3%", String(DPL_id[3]));
+  buf1.replace("%DPL_ID4%", String(DPL_id[4]));
+  buf1.replace("%DPL_ID5%", String(DPL_id[5]));
+  buf1.replace("%DPL_ID6%", String(DPL_id[6]));
+  buf1.replace("%DPL_ID7%", String(DPL_id[7]));
+  buf1.replace("%DPL_FLIP0%", String(DPL_flip[0]));
+  buf1.replace("%DPL_FLIP1%", String(DPL_flip[1]));
+  buf1.replace("%DPL_FLIP2%", String(DPL_flip[2]));
+  buf1.replace("%DPL_FLIP3%", String(DPL_flip[3]));
+  buf1.replace("%DPL_FLIP4%", String(DPL_flip[4]));
+  buf1.replace("%DPL_FLIP5%", String(DPL_flip[5]));
+  buf1.replace("%DPL_FLIP6%", String(DPL_flip[6]));
+  buf1.replace("%DPL_FLIP7%", String(DPL_flip[7]));
+  buf1.replace("%DPL_CONTRAST0%", String(DPL_contrast[0]));
+  buf1.replace("%DPL_CONTRAST1%", String(DPL_contrast[1]));
+  buf1.replace("%DPL_CONTRAST2%", String(DPL_contrast[2]));
+  buf1.replace("%DPL_CONTRAST3%", String(DPL_contrast[3]));
+  buf1.replace("%DPL_CONTRAST4%", String(DPL_contrast[4]));
+  buf1.replace("%DPL_CONTRAST5%", String(DPL_contrast[5]));
+  buf1.replace("%DPL_CONTRAST6%", String(DPL_contrast[6]));
+  buf1.replace("%DPL_CONTRAST7%", String(DPL_contrast[7]));
+  buf1.replace("%DPL_SIDE0%", String(DPL_side[0]));
+  buf1.replace("%DPL_SIDE1%", String(DPL_side[1]));
+  buf1.replace("%DPL_SIDE2%", String(DPL_side[2]));
+  buf1.replace("%DPL_SIDE3%", String(DPL_side[3]));
+  buf1.replace("%DPL_SIDE4%", String(DPL_side[4]));
+  buf1.replace("%DPL_SIDE5%", String(DPL_side[5]));
+  buf1.replace("%DPL_SIDE6%", String(DPL_side[6]));
+  buf1.replace("%DPL_SIDE7%", String(DPL_side[7]));
+  webserver.setContentLength( buf1.length() );
+  webserver.send( 200, "text/html", buf1 );
+  buf1 = "";
 }
 
 void handleCfgSubmit()
@@ -133,6 +137,8 @@ void handleCfgSubmit()
       if (webserver.argName(i) == "f_MUX") { config.MUX = webserver.arg(webserver.argName(i)).toInt(); }
       //if (webserver.argName(i) == "f_MUX") { webserver.arg(webserver.argName(i)).toCharArray(config.MUX, sizeof(config.MUX)); }
       if (webserver.argName(i) == "f_NUMDISP") { config.NUMDISP = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DISPWIDTH") { config.DISPWIDTH = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DISPHEIGHT") { config.DISPHEIGHT = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_STARTDELAY") { config.STARTDELAY = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_UPDSPEED") { config.UPDSPEED = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_SCREENSAVER") { config.SCREENSAVER = webserver.arg(webserver.argName(i)).toInt(); }
@@ -171,7 +177,10 @@ void handleCfgSubmit()
       if (webserver.argName(i) == "f_DPL_SIDE7") { DPL_side[7] = webserver.arg(webserver.argName(i)).toInt(); }
     }
     saveConfiguration(configfile, config);
-    delay(2000);
+    unsigned long tn = 0;
+    if(millis() > tn + 2000){
+      tn = millis();
+    }
   }
 }
 
@@ -180,55 +189,56 @@ void handleCfgSubmit()
 void loadTpl1()
 {
   File htmlTpl = LittleFS.open( "/tpl1.htm", "r" );
-  buf = htmlTpl.readString();
-  buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
+  buf1 = htmlTpl.readString();
+  htmlTpl.close();
+  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
 
   int i = 0;
   //String fbuf = "";
   //fbuf = String(&*fontno[i]);
-  buf.replace("%TPL_FONT0%", String(fonts[0]));
-  buf.replace("%TPL_FONT1%", String(fonts[1]));
-  buf.replace("%TPL_FONT2%", String(fonts[2]));
-  buf.replace("%TPL_FONT3%", String(fonts[3]));
-  buf.replace("%TPL_FONT4%", String(fonts[4]));
-  buf.replace("%TPL_FONT5%", String(fonts[5]));
-  buf.replace("%TPL_FONT6%", String(fonts[6]));
-  buf.replace("%TPL_FONT7%", String(fonts[7]));
-  buf.replace("%TPL_FONT8%", String(fonts[8]));
-  buf.replace("%TPL_FONT9%", String(fonts[9]));
+  buf1.replace("%TPL_FONT0%", String(fonts[0]));
+  buf1.replace("%TPL_FONT1%", String(fonts[1]));
+  buf1.replace("%TPL_FONT2%", String(fonts[2]));
+  buf1.replace("%TPL_FONT3%", String(fonts[3]));
+  buf1.replace("%TPL_FONT4%", String(fonts[4]));
+  buf1.replace("%TPL_FONT5%", String(fonts[5]));
+  buf1.replace("%TPL_FONT6%", String(fonts[6]));
+  buf1.replace("%TPL_FONT7%", String(fonts[7]));
+  buf1.replace("%TPL_FONT8%", String(fonts[8]));
+  buf1.replace("%TPL_FONT9%", String(fonts[9]));
 
-  buf.replace("%TPL_LOGOID0%", String(logoId[0]));
-  buf.replace("%TPL_LOGOID1%", String(logoId[1]));
-  buf.replace("%TPL_LOGOID2%", String(logoId[2]));
-  buf.replace("%TPL_LOGOID3%", String(logoId[3]));
-  buf.replace("%TPL_LOGOID4%", String(logoId[4]));
-  buf.replace("%TPL_LOGOID5%", String(logoId[5]));
-  buf.replace("%TPL_LOGOID6%", String(logoId[6]));
-  buf.replace("%TPL_LOGOID7%", String(logoId[7]));
-  buf.replace("%TPL_LOGOID8%", String(logoId[8]));
-  buf.replace("%TPL_LOGOID9%", String(logoId[9]));
+  buf1.replace("%TPL_LOGOID0%", String(logoId[0]));
+  buf1.replace("%TPL_LOGOID1%", String(logoId[1]));
+  buf1.replace("%TPL_LOGOID2%", String(logoId[2]));
+  buf1.replace("%TPL_LOGOID3%", String(logoId[3]));
+  buf1.replace("%TPL_LOGOID4%", String(logoId[4]));
+  buf1.replace("%TPL_LOGOID5%", String(logoId[5]));
+  buf1.replace("%TPL_LOGOID6%", String(logoId[6]));
+  buf1.replace("%TPL_LOGOID7%", String(logoId[7]));
+  buf1.replace("%TPL_LOGOID8%", String(logoId[8]));
+  buf1.replace("%TPL_LOGOID9%", String(logoId[9]));
 
-  buf.replace("%TPL_LOGO0W%", String(logow[0]));
-  buf.replace("%TPL_LOGO1W%", String(logow[1]));
-  buf.replace("%TPL_LOGO2W%", String(logow[2]));
-  buf.replace("%TPL_LOGO3W%", String(logow[3]));
-  buf.replace("%TPL_LOGO4W%", String(logow[4]));
-  buf.replace("%TPL_LOGO5W%", String(logow[5]));
-  buf.replace("%TPL_LOGO6W%", String(logow[6]));
-  buf.replace("%TPL_LOGO7W%", String(logow[7]));
-  buf.replace("%TPL_LOGO8W%", String(logow[8]));
-  buf.replace("%TPL_LOGO9W%", String(logow[9]));
+  buf1.replace("%TPL_LOGO0W%", String(logow[0]));
+  buf1.replace("%TPL_LOGO1W%", String(logow[1]));
+  buf1.replace("%TPL_LOGO2W%", String(logow[2]));
+  buf1.replace("%TPL_LOGO3W%", String(logow[3]));
+  buf1.replace("%TPL_LOGO4W%", String(logow[4]));
+  buf1.replace("%TPL_LOGO5W%", String(logow[5]));
+  buf1.replace("%TPL_LOGO6W%", String(logow[6]));
+  buf1.replace("%TPL_LOGO7W%", String(logow[7]));
+  buf1.replace("%TPL_LOGO8W%", String(logow[8]));
+  buf1.replace("%TPL_LOGO9W%", String(logow[9]));
 
-  buf.replace("%TPL_LOGO0H%", String(logoh[0]));
-  buf.replace("%TPL_LOGO1H%", String(logoh[1]));
-  buf.replace("%TPL_LOGO2H%", String(logoh[2]));
-  buf.replace("%TPL_LOGO3H%", String(logoh[3]));
-  buf.replace("%TPL_LOGO4H%", String(logoh[4]));
-  buf.replace("%TPL_LOGO5H%", String(logoh[5]));
-  buf.replace("%TPL_LOGO6H%", String(logoh[6]));
-  buf.replace("%TPL_LOGO7H%", String(logoh[7]));
-  buf.replace("%TPL_LOGO8H%", String(logoh[8]));
-  buf.replace("%TPL_LOGO9H%", String(logoh[9]));
+  buf1.replace("%TPL_LOGO0H%", String(logoh[0]));
+  buf1.replace("%TPL_LOGO1H%", String(logoh[1]));
+  buf1.replace("%TPL_LOGO2H%", String(logoh[2]));
+  buf1.replace("%TPL_LOGO3H%", String(logoh[3]));
+  buf1.replace("%TPL_LOGO4H%", String(logoh[4]));
+  buf1.replace("%TPL_LOGO5H%", String(logoh[5]));
+  buf1.replace("%TPL_LOGO6H%", String(logoh[6]));
+  buf1.replace("%TPL_LOGO7H%", String(logoh[7]));
+  buf1.replace("%TPL_LOGO8H%", String(logoh[8]));
+  buf1.replace("%TPL_LOGO9H%", String(logoh[9]));
 
   String lbuf = "";
   
@@ -242,7 +252,7 @@ void loadTpl1()
     lbuf += String(logo0[i], HEX);
     if (i < (logo0size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO0%", String(lbuf));
+  buf1.replace("%TPL_LOGO0%", String(lbuf));
 
   lbuf = "";
   for (i = 0; i < (logo1size); i++){
@@ -255,7 +265,7 @@ void loadTpl1()
     lbuf += String(logo1[i], HEX);
     if (i < (logo1size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO1%", String(lbuf));
+  buf1.replace("%TPL_LOGO1%", String(lbuf));
 
   lbuf = "";
   for (i = 0; i < (logo2size); i++){
@@ -268,7 +278,7 @@ void loadTpl1()
     lbuf += String(logo2[i], HEX);
     if (i < (logo2size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO2%", String(lbuf));
+  buf1.replace("%TPL_LOGO2%", String(lbuf));
 
   lbuf = "";
   for (i = 0; i < (logo3size); i++){
@@ -281,7 +291,7 @@ void loadTpl1()
     lbuf += String(logo3[i], HEX);
     if (i < (logo3size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO3%", String(lbuf));
+  buf1.replace("%TPL_LOGO3%", String(lbuf));
 
   lbuf = "";
   for (i = 0; i < (logo4size); i++){
@@ -294,7 +304,7 @@ void loadTpl1()
     lbuf += String(logo4[i], HEX);
     if (i < (logo4size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO4%", String(lbuf));
+  buf1.replace("%TPL_LOGO4%", String(lbuf));
 
   lbuf = "";
   for (i = 0; i < (logo5size); i++){
@@ -307,7 +317,7 @@ void loadTpl1()
     lbuf += String(logo5[i], HEX);
     if (i < (logo5size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO5%", String(lbuf));
+  buf1.replace("%TPL_LOGO5%", String(lbuf));
 
   lbuf = "";
   for (i = 0; i < (logo6size); i++){
@@ -320,7 +330,7 @@ void loadTpl1()
     lbuf += String(logo6[i], HEX);
     if (i < (logo6size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO6%", String(lbuf));
+  buf1.replace("%TPL_LOGO6%", String(lbuf));
 
   lbuf = "";
   for (i = 0; i < (logo7size); i++){
@@ -333,7 +343,7 @@ void loadTpl1()
     lbuf += String(logo7[i], HEX);
     if (i < (logo7size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO7%", String(lbuf));
+  buf1.replace("%TPL_LOGO7%", String(lbuf));
 
   lbuf = "";
   for (i = 0; i < (logo8size); i++){
@@ -346,7 +356,7 @@ void loadTpl1()
     lbuf += String(logo8[i], HEX);
     if (i < (logo8size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO8%", String(lbuf));
+  buf1.replace("%TPL_LOGO8%", String(lbuf));
 
   lbuf = "";
   for (i = 0; i < (logo9size); i++){
@@ -359,11 +369,11 @@ void loadTpl1()
     lbuf += String(logo9[i], HEX);
     if (i < (logo9size - 1)) lbuf += String(", ");
   }
-  buf.replace("%TPL_LOGO9%", String(lbuf));
+  buf1.replace("%TPL_LOGO9%", String(lbuf));
 
-  webserver.send( 200, "text/html", buf );
-  htmlTpl.close();
-  buf = "";
+  webserver.setContentLength( buf1.length() );
+  webserver.send( 200, "text/html", buf1 );
+  buf1 = "";
 }
 
 void handleTpl1Submit()
@@ -402,87 +412,101 @@ void handleTpl1Submit()
       if (webserver.argName(i) == "f_TPL_LOGO7H") { logoh[7] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_LOGO8H") { logoh[8] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_LOGO9H") { logoh[9] = webserver.arg(webserver.argName(i)).toInt(); }
-
     }
     saveTemplate(templatefile, templ);
-    delay(2000);
+    unsigned long tn = 0;
+    if(millis() > tn + 2000){
+      tn = millis();
+    }
   }
 }
+
 
 // TEMPLATE data - Settings of template 0 - 9
 void loadTpl2()
 {
-  File htmlTpl = LittleFS.open( "/tpl2.htm", "r" );
-  buf = htmlTpl.readString();
-  buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
-
-  buf.replace("%TPL_ID0%", String(TPL_id[TPL]));
-  buf.replace("%TPL_NAME0%", String(TPL_name[TPL]));
-  buf.replace("%TPL_SIDE0%", String(TPL_side[TPL]));
+  File htmlTplh = LittleFS.open( "/tpl2head.htm", "r" );
+  buf1 = htmlTplh.readString();
+  htmlTplh.close();
+  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
+  buf1.replace("%TPL_ID0%", String(TPL_id[TPL]));
+  webserver.setContentLength(CONTENT_LENGTH_UNKNOWN);
+  webserver.send( 200, "text/html", buf1 );
+  buf1 = "";
   
-  buf.replace("%TPL_0FONT0%", String(TPL_0font[TPL]));
-  buf.replace("%TPL_0MAXWIDTH0%", String(TPL_0maxwidth[TPL]));
-  buf.replace("%TPL_0FONT20%", String(TPL_0font2[TPL]));
-  buf.replace("%TPL_0DRAWCOLOR0%", String(TPL_0drawcolor[TPL]));
-  buf.replace("%TPL_0FONTMODE0%", String(TPL_0fontmode[TPL]));
-  buf.replace("%TPL_0POSX0%", String(TPL_0posx[TPL]));
-  buf.replace("%TPL_0POSY0%", String(TPL_0posy[TPL]));
-  buf.replace("%TPL_0SCROLL0%", String(TPL_0scroll[TPL]));
+  File htmlTplb = LittleFS.open( "/tpl2body.htm", "r" );
+  String buf2 = htmlTplb.readString();
+  htmlTplb.close();
 
-  buf.replace("%TPL_1FONT0%", String(TPL_1font[TPL]));
-  buf.replace("%TPL_1DRAWCOLOR0%", String(TPL_1drawcolor[TPL]));
-  buf.replace("%TPL_1FONTMODE0%", String(TPL_1fontmode[TPL]));
-  buf.replace("%TPL_1POSX0%", String(TPL_1posx[TPL]));
-  buf.replace("%TPL_1POSY0%", String(TPL_1posy[TPL]));
-
-  buf.replace("%TPL_2FONT0%", String(TPL_2font[TPL]));
-  buf.replace("%TPL_2MAXWIDTH0%", String(TPL_2maxwidth[TPL]));
-  buf.replace("%TPL_2FONT20%", String(TPL_2font2[TPL]));
-  buf.replace("%TPL_2DRAWCOLOR0%", String(TPL_2drawcolor[TPL]));
-  buf.replace("%TPL_2FONTMODE0%", String(TPL_2fontmode[TPL]));
-  buf.replace("%TPL_2POSX0%", String(TPL_2posx[TPL]));
-  buf.replace("%TPL_2POSY0%", String(TPL_2posy[TPL]));
-  buf.replace("%TPL_2SCROLL0%", String(TPL_2scroll[TPL]));
-
-  buf.replace("%TPL_3FONT0%", String(TPL_3font[TPL]));
-  buf.replace("%TPL_3DRAWCOLOR0%", String(TPL_3drawcolor[TPL]));
-  buf.replace("%TPL_3FONTMODE0%", String(TPL_3fontmode[TPL]));
-  buf.replace("%TPL_3POSX0%", String(TPL_3posx[TPL]));
-  buf.replace("%TPL_3POSY0%", String(TPL_3posy[TPL]));
-
-  buf.replace("%TPL_4FONT0%", String(TPL_4font[TPL]));
-  buf.replace("%TPL_4DRAWCOLOR0%", String(TPL_4drawcolor[TPL]));
-  buf.replace("%TPL_4FONTMODE0%", String(TPL_4fontmode[TPL]));
-  buf.replace("%TPL_4POSX0%", String(TPL_4posx[TPL]));
-  buf.replace("%TPL_4POSY0%", String(TPL_4posy[TPL]));
-
-  buf.replace("%TPL_5LOGOX0%", String(TPL_5logox[TPL]));
-  buf.replace("%TPL_5LOGOY0%", String(TPL_5logoy[TPL]));
-
-  buf.replace("%TPL_6FONT0%", String(TPL_6font[TPL]));
-  buf.replace("%TPL_6MAXWIDTH0%", String(TPL_6maxwidth[TPL]));
-  buf.replace("%TPL_6FONT20%", String(TPL_6font2[TPL]));
-  buf.replace("%TPL_6DRAWCOLOR0%", String(TPL_6drawcolor[TPL]));
-  buf.replace("%TPL_6FONTMODE0%", String(TPL_6fontmode[TPL]));
-  buf.replace("%TPL_6POSX0%", String(TPL_6posx[TPL]));
-  buf.replace("%TPL_6POSY0%", String(TPL_6posy[TPL]));
-  buf.replace("%TPL_6SCROLL0%", String(TPL_6scroll[TPL]));
-
-  buf.replace("%TPL_6BOXX0%", String(TPL_6boxx[TPL]));
-  buf.replace("%TPL_6BOXY0%", String(TPL_6boxy[TPL]));
-  buf.replace("%TPL_6BOXW0%", String(TPL_6boxw[TPL]));
-  buf.replace("%TPL_6BOXH0%", String(TPL_6boxh[TPL]));
-
-  buf.replace("%TPL_6DRAWCOLOR20%", String(TPL_6drawcolor2[TPL]));
-  buf.replace("%TPL_6FONTMODE20%", String(TPL_6fontmode2[TPL]));
-  buf.replace("%TPL_6BOX2X0%", String(TPL_6box2x[TPL]));
-  buf.replace("%TPL_6BOX2Y0%", String(TPL_6box2y[TPL]));
-  buf.replace("%TPL_6BOX2W0%", String(TPL_6box2w[TPL]));
-  buf.replace("%TPL_6BOX2H0%", String(TPL_6box2h[TPL]));
+  buf2.replace("%TPL_NAME0%", String(TPL_name[TPL]));
+  buf2.replace("%TPL_SIDE0%", String(TPL_side[TPL]));
   
-  webserver.send( 200, "text/html", buf );
-  htmlTpl.close();
-  buf = "";
+  buf2.replace("%TPL_0FONT0%", String(TPL_0font[TPL]));
+  buf2.replace("%TPL_0MAXWIDTH0%", String(TPL_0maxwidth[TPL]));
+  buf2.replace("%TPL_0FONT20%", String(TPL_0font2[TPL]));
+  buf2.replace("%TPL_0DRAWCOLOR0%", String(TPL_0drawcolor[TPL]));
+  buf2.replace("%TPL_0FONTMODE0%", String(TPL_0fontmode[TPL]));
+  buf2.replace("%TPL_0POSX0%", String(TPL_0posx[TPL]));
+  buf2.replace("%TPL_0POSY0%", String(TPL_0posy[TPL]));
+  buf2.replace("%TPL_0SCROLL0%", String(TPL_0scroll[TPL]));
+
+  buf2.replace("%TPL_1FONT0%", String(TPL_1font[TPL]));
+  buf2.replace("%TPL_1DRAWCOLOR0%", String(TPL_1drawcolor[TPL]));
+  buf2.replace("%TPL_1FONTMODE0%", String(TPL_1fontmode[TPL]));
+  buf2.replace("%TPL_1POSX0%", String(TPL_1posx[TPL]));
+  buf2.replace("%TPL_1POSY0%", String(TPL_1posy[TPL]));
+
+  buf2.replace("%TPL_2FONT0%", String(TPL_2font[TPL]));
+  buf2.replace("%TPL_2MAXWIDTH0%", String(TPL_2maxwidth[TPL]));
+  buf2.replace("%TPL_2FONT20%", String(TPL_2font2[TPL]));
+  buf2.replace("%TPL_2DRAWCOLOR0%", String(TPL_2drawcolor[TPL]));
+  buf2.replace("%TPL_2FONTMODE0%", String(TPL_2fontmode[TPL]));
+  buf2.replace("%TPL_2POSX0%", String(TPL_2posx[TPL]));
+  buf2.replace("%TPL_2POSY0%", String(TPL_2posy[TPL]));
+  buf2.replace("%TPL_2SCROLL0%", String(TPL_2scroll[TPL]));
+
+  buf2.replace("%TPL_3FONT0%", String(TPL_3font[TPL]));
+  buf2.replace("%TPL_3DRAWCOLOR0%", String(TPL_3drawcolor[TPL]));
+  buf2.replace("%TPL_3FONTMODE0%", String(TPL_3fontmode[TPL]));
+  buf2.replace("%TPL_3POSX0%", String(TPL_3posx[TPL]));
+  buf2.replace("%TPL_3POSY0%", String(TPL_3posy[TPL]));
+
+  buf2.replace("%TPL_4FONT0%", String(TPL_4font[TPL]));
+  buf2.replace("%TPL_4DRAWCOLOR0%", String(TPL_4drawcolor[TPL]));
+  buf2.replace("%TPL_4FONTMODE0%", String(TPL_4fontmode[TPL]));
+  buf2.replace("%TPL_4POSX0%", String(TPL_4posx[TPL]));
+  buf2.replace("%TPL_4POSY0%", String(TPL_4posy[TPL]));
+
+  buf2.replace("%TPL_5LOGOX0%", String(TPL_5logox[TPL]));
+  buf2.replace("%TPL_5LOGOY0%", String(TPL_5logoy[TPL]));
+
+  buf2.replace("%TPL_6FONT0%", String(TPL_6font[TPL]));
+  buf2.replace("%TPL_6MAXWIDTH0%", String(TPL_6maxwidth[TPL]));
+  buf2.replace("%TPL_6FONT20%", String(TPL_6font2[TPL]));
+  buf2.replace("%TPL_6DRAWCOLOR0%", String(TPL_6drawcolor[TPL]));
+  buf2.replace("%TPL_6FONTMODE0%", String(TPL_6fontmode[TPL]));
+  buf2.replace("%TPL_6POSX0%", String(TPL_6posx[TPL]));
+  buf2.replace("%TPL_6POSY0%", String(TPL_6posy[TPL]));
+  buf2.replace("%TPL_6SCROLL0%", String(TPL_6scroll[TPL]));
+
+  buf2.replace("%TPL_6BOXX0%", String(TPL_6boxx[TPL]));
+  buf2.replace("%TPL_6BOXY0%", String(TPL_6boxy[TPL]));
+  buf2.replace("%TPL_6BOXW0%", String(TPL_6boxw[TPL]));
+  buf2.replace("%TPL_6BOXH0%", String(TPL_6boxh[TPL]));
+
+  buf2.replace("%TPL_6DRAWCOLOR20%", String(TPL_6drawcolor2[TPL]));
+  buf2.replace("%TPL_6FONTMODE20%", String(TPL_6fontmode2[TPL]));
+  buf2.replace("%TPL_6BOX2X0%", String(TPL_6box2x[TPL]));
+  buf2.replace("%TPL_6BOX2Y0%", String(TPL_6box2y[TPL]));
+  buf2.replace("%TPL_6BOX2W0%", String(TPL_6box2w[TPL]));
+  buf2.replace("%TPL_6BOX2H0%", String(TPL_6box2h[TPL]));
+  
+  webserver.sendContent( buf2 );  
+  buf2 = "";
+  unsigned long tn = 0;
+  if(millis() > tn + 4000){
+    tn = millis();
+  }
 }
 
 void handleTpl2Select()
@@ -490,6 +514,10 @@ void handleTpl2Select()
   if (webserver.args() > 0 ) {
     for ( uint8_t i = 0; i < webserver.args(); i++ ) {
       if (webserver.argName(i) == "f_TPL_NO") { TPL = webserver.arg(webserver.argName(i)).toInt(); }
+    }
+    unsigned long tn = 0;
+    if(millis() > tn + 2000){
+      tn = millis();
     }
     loadTpl2();
   }
@@ -583,8 +611,40 @@ void handleTpl2Submit()
             break;
     case 9: saveTemplateFile(template09);
     }
-    delay(2000);
+    unsigned long tn = 0;
+    if(millis() > tn + 2000){
+      tn = millis();
+    }
   }
+}
+
+// TEMPLATE load import template page
+void loadTpl2imp()
+{
+  File htmlTpl = LittleFS.open( "/tpl2imp.htm", "r" );
+  buf1 = htmlTpl.readString();
+  htmlTpl.close();
+  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
+  webserver.setContentLength( buf1.length() );
+  webserver.send( 200, "text/html", buf1 );
+  buf1 = "";
+}
+
+// TEMPLATE submit import
+void handleTpl2impSubmit()
+{
+  char TPLcontent[1500] = "";
+  if (webserver.args() > 0 ) {
+    for ( uint8_t i = 0; i < webserver.args(); i++ ) {
+      if (webserver.argName(i) == "f_TPL_CONTENT") { webserver.arg(webserver.argName(i)).toCharArray(TPLcontent, sizeof(TPLcontent)); }
+    }
+  }
+  importTemplateFile(TPLcontent);
+  unsigned long tn = 0;
+  if(millis() > tn + 4000){
+    tn = millis();
+  }
+  //loadTpl2();
 }
 
 void downloadFile(){
@@ -598,32 +658,31 @@ void downloadFile(){
       Serial.println("Can't open LittleFS file !\r\n");         
     }
     else {
-      char buf[1024];
+      char bufc[1300];
       int siz = f.size();
       while(siz > 0) {
-        size_t len = std::min((int)(sizeof(buf) - 1), siz);
-        f.read((uint8_t *)buf, len);
-        buf[len] = 0;
-        str += buf;
-        siz -= sizeof(buf) - 1;
+        size_t len = std::min((int)(sizeof(bufc) - 1), siz);
+        f.read((uint8_t *)bufc, len);
+        bufc[len] = 0;
+        str += bufc;
+        siz -= sizeof(bufc) - 1;
       }
       f.close();
-      //webserver.send(200, "text/plain", webserver.arg(0));
+      webserver.setContentLength( str.length() );
       webserver.send(200, "text/plain", str);
-      //webserver.send(200, "application/json", str);
     }
   }
 }
-
 
 // SEC
 void loadSec()
 {
   File htmlSec = LittleFS.open( "/sec.htm", "r" );
-  buf = htmlSec.readString();
-  buf.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
-  buf.replace("%WIFI_SSID%", String(sec.WIFI_SSID));
-  buf.replace("%MQTT_USER%", String(sec.MQTT_USER));
+  buf1 = htmlSec.readString();
+  htmlSec.close();
+  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
+  buf1.replace("%WIFI_SSID%", String(sec.WIFI_SSID));
+  buf1.replace("%MQTT_USER%", String(sec.MQTT_USER));
 /*
   switch (WiFi.status()){
   case 0: buf.replace("%WIFI_STATUS%", "");
@@ -644,9 +703,9 @@ void loadSec()
           break;
   }
 */
-  webserver.send( 200, "text/html", buf );
-  htmlSec.close();
-  buf = "";
+  webserver.setContentLength( buf1.length() );
+  webserver.send( 200, "text/html", buf1 );
+  buf1 = "";
 }
 
 void handleSecSubmit()
@@ -661,7 +720,10 @@ void handleSecSubmit()
       if (webserver.argName(i) == "f_MQTT_PW") { webserver.arg(webserver.argName(i)).toCharArray(sec.MQTT_PW, sizeof(sec.MQTT_PW)); }
     }
     saveSec(secfile, sec);
-    delay(2000);
+    unsigned long tn = 0;
+    if(millis() > tn + 2000){
+      tn = millis();
+    }
   }
 }
 

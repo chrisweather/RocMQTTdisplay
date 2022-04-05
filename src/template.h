@@ -1,5 +1,5 @@
 // Roc-MQTT-Display TEMPLATES
-// Version 1.04
+// Version 1.05
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -10,7 +10,7 @@
 // TEMPLATES Part 2
 // TEMPLATES T0 - T9
 char TPL_id[10][3] =    { "T0","T1","T2","T3","T4","T5","T6","T7","T8","T9" }; // do not change TPL_id here!
-char TPL_name[10][30] = { "Train Announcement - Side A", "Train Announcement - Side B", "Local Train - Side A", "Local Train - Side B", "Message Only, 1 Line - Side A", "Message Only, 1 Line - Side B", "Stationname, 1 Line - Side A", "Template 7", "Template 8", "Template 9" };
+char TPL_name[10][30] = { "Train Announcement - Side A", "Train Announcement - Side B", "Local Train - Side A", "Local Train - Side B", "Message Only, 1 Line - Side A", "Message Only, 1 Line - Side B", "Stationname, 1 Line - Side A", "Template7", "Template8", "Template9" };
 
 // TEMPLATE SETTINGS       T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
 int TPL_side[] =        {   0,   1,   0,   1,   0,   1,   0,   0,   0,   0 };  // 0,1    0=Side A, 1= Side B
@@ -102,9 +102,9 @@ const uint8_t *fontno[10] = {
 
 // Logos in monochrome bitmap .xbm format
 // LOGO 0 - 9:            0,     1,     2,     3,     4,     5,     6,     7,     8,     9
-char logoId[10][4] = { "DB", "ICE",  "IC",  "RE",  "RB",   "U",   "S",   "A",    "",    "" };  // logo id
-uint8_t logow[]    = {   17,    20,    11,    12,    12,    10,    12,    12,    10,    10 };  // logo width in pixel
-uint8_t logoh[]    = {   11,     9,     8,    10,    10,    10,    12,    12,    10,    10 };  // logo height in pixel
+char logoId[10][4] = { "DB", "ICE",  "IC",  "RE",  "RB",   "U",   "S",   "A", "SBB", "OBB" };  // logo id
+uint8_t logow[]    = {   17,    20,    11,    12,    12,    10,    12,    12,    15,    21 };  // logo width in pixel
+uint8_t logoh[]    = {   11,     9,     8,    10,    10,    10,    12,    12,    10,     8 };  // logo height in pixel
 
 //  Logo 0 - DB
 unsigned char logo0[] = { 0xfe, 0xff, 0x00, 0x01, 0x00, 0x01, 0x7d, 0x3e, 0x01, 0xcd, 0x66, 0x01,
@@ -156,13 +156,15 @@ unsigned char logo7[] = { 0xf0, 0x00, 0x9c, 0x03, 0x0e, 0x07, 0x0e, 0x07, 0x67, 
 const int logo7size = sizeof(logo7)/sizeof(logo7[0]);
 unsigned char (*pl7)[logo7size] = &logo7;
 
-//  Logo 8 - x
-unsigned char logo8[] = { 0x00 };
+//  Logo 8 - SBB
+unsigned char logo8[] = { 0x00, 0x00, 0xb0, 0x06, 0x98, 0x0c, 0x8c, 0x18, 0xfe, 0x3f, 0xfe, 0x3f,
+                          0x8c, 0x18, 0x98, 0x0c, 0xb0, 0x06, 0x00, 0x00 };
 const int logo8size = sizeof(logo8)/sizeof(logo8[0]);
 unsigned char (*pl8)[logo8size] = &logo8;
 
-//  Logo 9 - x
-unsigned char logo9[] = { 0x00 };
+//  Logo 9 - ÖBB
+unsigned char logo9[] = { 0xdc, 0x3c, 0x0f, 0x6e, 0x64, 0x19, 0xb7, 0x65, 0x19, 0x83, 0x3d, 0x0f,
+                          0x83, 0x65, 0x19, 0xc7, 0x65, 0x19, 0xfe, 0x64, 0x19, 0x7c, 0x3c, 0x0f };
 const int logo9size = sizeof(logo9)/sizeof(logo9[0]);
 unsigned char (*pl9)[logo9size] = &logo9;
 
