@@ -4,7 +4,7 @@ Copyright (c) 2020-2022 Christian Heinrichs.
 All rights reserved.
 
 
-Dynamic Passenger Information system for Model Railroad Stations controlled by Rocrail.
+Dynamic Passenger Information system for Model Railroad Stations controlled by Rocrail or other sources.
 Wireless communication with Rocrail or other sources via MQTT messages.
 A Lolin/Wemos D1 mini ESP8266 controller and a TCA9548A I2C Multiplexer can drive up to eight 0.91" 128x32
 I2C OLED displays. 
@@ -38,7 +38,7 @@ The goal of this project is to provide simple to use and inexpensive displays to
 - Clock/Date available for all displays (NTP time or Rocrail time)
 - Display rotation
 - Screensaver
-- Tested with these displays: I2C Oled 128x32, 128x64, 64x48, 96x16
+- Tested with these display types: I2C OLED 128x32, 128x64, 64x48, 96x16
 - Webinterface for configuration
 - Updates via OTA
 
