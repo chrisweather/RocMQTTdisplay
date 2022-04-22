@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.05
+// Version 1.06
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -12,7 +12,7 @@
 // File System
 #define FORMAT_LITTLEFS_IF_FAILED true
 
-int TPL = 0;
+uint8_t TPL = 0;
 
 struct Sec {
   char WIFI_SSID[50];     // 
@@ -24,13 +24,13 @@ struct Sec {
 };
 
 struct Config {
-  const char* VER = "Version 1.05";
+  const char* VER = "Version 1.06";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
-  int      WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
+  uint16_t WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
 // OTA
   char     OTA_HOSTNAME[19];       // Unique OTA Controller Hostname, default when empty: esp8266-[ChipID]
-  int      OTA_PORT;               // OTA Port, default = 8266
+  uint16_t OTA_PORT;               // OTA Port, default = 8266
 // NTP
   char     NTP_SERVER[51];         // NTP Time Server pool providing UTC time, Europe: 0.europe.pool.ntp.org, Germany: de.pool.ntp.org
   char     NTP_TZ[51];             // NTP Timezone and Daylight Saving Time start/end  https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
@@ -39,8 +39,8 @@ struct Config {
   uint16_t MQTT_PORT = 1883;       // MQTT broker Port, default = 1883, currently hardcoded, change here if required
   uint16_t MQTT_MSGSIZE;           // Max. MQTT packet size, default = 128 bytes
   uint16_t MQTT_KEEPALIVE1;        // MQTT keep alive, default = 15 sec, min = 1 sec
-  int      MQTT_RECONDELAY;        // Delay between MQTT reconnection attempts, default = 15000 ms
-  int      MQTT_DEBUG;             // Enable MQTT debugging messages sent to serial output, 0=off, 1=on
+  uint16_t MQTT_RECONDELAY;        // Delay between MQTT reconnection attempts, default = 15000 ms
+  uint8_t  MQTT_DEBUG;             // Enable MQTT debugging messages sent to serial output, 0=off, 1=on
   char     MQTT_TOPIC1[50];        // MQTT Topic 1, default = "rocrail/service/info/clock"
   char     MQTT_TOPIC2[50];        // MQTT Topic 1, default = "rocrail/service/info/tx"
   char     MQTT_DELIMITER[5];      // MQTT delimiter (e.g. ";" or " , " for message payload, will be replaced by "#" before processing. Default: "#"
@@ -49,20 +49,20 @@ struct Config {
   uint8_t  DISPWIDTH;              // Display width in pixel
   uint8_t  DISPHEIGHT;             // Display height in pixel
   int      MUX;                    // TCA9548A I2C Multiplexer address, default: 0x70 (112)
-  int      NUMDISP;                // Number of I2C OLED displays connected to this controller, 1-8
-  int      STARTDELAY;             // Show Controllername and Display Number x milliseconds longer at startup, helpful during setup
-  int      UPDSPEED;               // Slow down display update intervall by increasing the number of ms, e.g. 10 = 100ms + 10
-  int      SCREENSAVER;            // minutes without message received until screenSaver switches all displays into power save mode, 0=off
-  int      PRINTBUF;               // When 1: Print display buffer of display 1 to serial out as XBM, default: 0
+  uint8_t  NUMDISP;                // Number of I2C OLED displays connected to this controller, 1-8
+  uint16_t STARTDELAY;             // Show Controllername and Display Number x milliseconds longer at startup, helpful during setup
+  uint16_t UPDSPEED;               // Slow down display update intervall by increasing the number of ms, e.g. 10 = 100ms + 10
+  uint8_t  SCREENSAVER;            // minutes without message received until screenSaver switches all displays into power save mode, 0=off
+  uint8_t  PRINTBUF;               // When 1: Print display buffer of display 1 to serial out as XBM, default: 0
 };
 
 // Configuration for displays connected to this controller (Disp) 1-8
-//                         Disp1, Disp2, Disp3, Disp4, Disp5, Disp6, Disp7, Disp8
-char   DPL_id[8][4] =    { "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08" };  // ID's of Displays 1-8 connected to this controller, e.g. D01...D99
-int    DPL_flip[] =      {     0,     1,     1,     0,     0,     1,     1,     0 };  // 0,1  180 degree hardware based rotation of the internal frame buffer when 1
-//int  DPL_rotation[] =  {     0,     0,     0,     0,     0,     0,     0,     0 };  // 0,90,180,270  software based display content rotation by 0, 90, 180, 270 degrees, still work in progress
-int    DPL_contrast[] =  {     1,     1,     1,     1,     1,     1,     1,     1 };  // 0-255  0=display off, 255 max brightness
-int    DPL_side[] =      {     1,     0,     0,     1,     1,     0,     0,     1 };  // 0,1  0=Side A, 1=Side B
+//                          Disp1, Disp2, Disp3, Disp4, Disp5, Disp6, Disp7, Disp8
+char     DPL_id[8][4] =    { "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08" };  // ID's of Displays 1-8 connected to this controller, e.g. D01...D99
+uint8_t  DPL_flip[] =      {     0,     1,     1,     0,     0,     1,     1,     0 };  // 0,1  180 degree hardware based rotation of the internal frame buffer when 1
+//uint8_t  DPL_rotation[] =  {     0,     0,     0,     0,     0,     0,     0,     0 };  // 0,90,180,270  software based display content rotation by 0, 90, 180, 270 degrees, still work in progress
+uint8_t  DPL_contrast[] =  {     1,     1,     1,     1,     1,     1,     1,     1 };  // 0-255  0=display off (works with some displays only), default = 1, 255 max brightness, change requires reboot
+uint8_t  DPL_side[] =      {     1,     0,     0,     1,     1,     0,     0,     1 };  // 0,1  0=Side A, 1=Side B
 
 struct Template {
 };
@@ -92,7 +92,7 @@ void loadConfiguration(const char *configfile, Config &config)
   // Open config json file for reading
   File file = LittleFS.open(configfile, "r");
   delay(200);
-  StaticJsonDocument<1800> doc;
+  StaticJsonDocument<1500> doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
@@ -120,7 +120,7 @@ void loadConfiguration(const char *configfile, Config &config)
   strlcpy(config.MQTT_DELIMITER, doc["MQTT_DELIMITER"] | "", sizeof(config.MQTT_DELIMITER));
   config.MQTT_DEBUG = doc["MQTT_DEBUG"] | 0;
   config.MUX = doc["MUX"] | 0x70;
-  config.NUMDISP = doc["NUMDISP"] | 2;
+  config.NUMDISP = doc["NUMDISP"] | 4;
   config.DISPWIDTH = doc["DISPWIDTH"] | 128;
   config.DISPHEIGHT = doc["DISPHEIGHT"] | 32;
   config.STARTDELAY = doc["STARTDELAY"] | 200;
@@ -176,7 +176,7 @@ void saveConfiguration(const char *configfile, const Config &config)
     return;
   }
 
-  StaticJsonDocument<1024> doc;
+  StaticJsonDocument<1500> doc;
   doc["VER"] = config.VER;
   doc["WIFI_DEVICENAME"] = config.WIFI_DEVICENAME;
   doc["WIFI_RECONDELAY"] = config.WIFI_RECONDELAY;
@@ -392,7 +392,7 @@ void loadTemplateFile(const char *templatexx)
     }
   }
 
-  StaticJsonDocument<1600> doc;
+  StaticJsonDocument<1024> doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
@@ -479,7 +479,7 @@ void loadTemplateFile(const char *templatexx)
 // Import template
 void importTemplateFile(char *tcontent)
 {
-  StaticJsonDocument<1600> doc;
+  StaticJsonDocument<1024> doc;
   DeserializationError error = deserializeJson(doc, tcontent);
   if (error) {
     Serial.println(F("Failed to convert json import, using default configuration"));
@@ -571,7 +571,7 @@ void saveTemplateFile(const char *templatexx)
     return;
   }
 
-  StaticJsonDocument<2000> doc;
+  StaticJsonDocument<1024> doc;
   doc["TPLID"] = TPL_id[TPL];
   doc["TPLNAME"] = TPL_name[TPL];
   doc["TPLSIDE"] = TPL_side[TPL];

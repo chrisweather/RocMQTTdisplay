@@ -4,7 +4,7 @@ Copyright (c) 2020-2022 Christian Heinrichs.
 All rights reserved.
 
 
-Dynamic Passenger Information system for Model Railroad Stations controlled by Rocrail or other sources.
+Dynamic Passenger Information system for Model Railroad Stations controlled by Rocrail.
 Wireless communication with Rocrail or other sources via MQTT messages.
 A Lolin/Wemos D1 mini ESP8266 controller and a TCA9548A I2C Multiplexer can drive up to eight 0.91" 128x32
 I2C OLED displays. 
@@ -12,8 +12,8 @@ Several controllers can run in parallel so the total number of displays is not l
 A friend of mine was looking for an easy way to run displays with live data in his model railroad environment. Right after this conversation this project was born.
 Since then it's a work in progress with already many nice features. If you want to share your experience with this code or have ideas for more features you are welcome to share them in the Issues or Discussions area. Have fun.
 
-Latest Version 1.05 
-April 04, 2022 
+Latest Version 1.06 
+April 22, 2022 
 
 Thank you for your interest in the Roc-MQTT-Display project.
 If you like the project please Star it here on GitHub and consider donating if you want to support further development.
@@ -38,7 +38,7 @@ The goal of this project is to provide simple to use and inexpensive displays to
 - Clock/Date available for all displays (NTP time or Rocrail time)
 - Display rotation
 - Screensaver
-- Tested with these display types: I2C OLED 128x32, 128x64, 64x48, 96x16
+- Tested with these displays: I2C Oled 128x32, 128x64, 64x48, 96x16
 - Webinterface for configuration
 - Updates via OTA
 

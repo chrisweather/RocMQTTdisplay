@@ -1,5 +1,5 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 1.05
+// Version 1.06
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -193,7 +193,7 @@ void loadTpl1()
   htmlTpl.close();
   buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
 
-  int i = 0;
+  uint8_t i = 0;
   //String fbuf = "";
   //fbuf = String(&*fontno[i]);
   buf1.replace("%TPL_FONT0%", String(fonts[0]));
@@ -633,7 +633,7 @@ void loadTpl2imp()
 // TEMPLATE submit import
 void handleTpl2impSubmit()
 {
-  char TPLcontent[1500] = "";
+  char TPLcontent[1000] = "";
   if (webserver.args() > 0 ) {
     for ( uint8_t i = 0; i < webserver.args(); i++ ) {
       if (webserver.argName(i) == "f_TPL_CONTENT") { webserver.arg(webserver.argName(i)).toCharArray(TPLcontent, sizeof(TPLcontent)); }

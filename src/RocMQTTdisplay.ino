@@ -1,19 +1,21 @@
 /*########################################################################################
                              Roc-MQTT-Display
-Dynamic Passenger Information for Model Railroad Stations controlled by Rocrail via MQTT.
-A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to eight 0.91" 128x32
-I2C OLED displays. Several D1 mini can run together so the total number of displays is 
-not limited.
+Dynamic Passenger Information for Model Railroad Stations controlled by Rocrail or other 
+sources via MQTT. A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to 
+eight 0.91" 128x32 I2C OLED displays. Several D1 mini can run together so the total number 
+of displays is not limited.
 
-Version 1.05  April 04, 2022
+Version 1.06  April 22, 2022
 
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 
 ##########################################################################################
 
-Message Format sent from Rocrail text fields via MQTT
-#####################################################
+Message Format sent from Rocrail text fields or other sources via MQTT
+More details and examples in the Wiki 
+https://github.com/chrisweather/RocMQTTdisplay/wiki
+######################################################################
 
   Format: ZZAMSG#Targets#Template#Station#Track#Destination#Departure#Train#TrainType#Message#Spare1#Spare2#
 
@@ -650,7 +652,7 @@ void DMUX(uint8_t port)
 void DisplayInit()
 {
   // Loop through all connected displays on the I2C bus
-  for (int i = 0; i < config.NUMDISP; i++) {
+  for (uint8_t i = 0; i < config.NUMDISP; i++) {
     DMUX(i);
     disp.clearBuffer();
     disp.firstPage();
@@ -659,6 +661,12 @@ void DisplayInit()
       disp.setFlipMode(DPL_flip[i]);
       //disp.setDisplayRotation(U8G2_R2);  // U8G2_R0, U8G2_R1, U8G2_R2, U8G2_R3, U8G2_MIRROR  DPL_rotation[i]
       disp.setContrast(DPL_contrast[i]);
+      //if (DPL_contrast[i] == 0){
+      //  disp.setPowerSave(1);
+      //}
+      //else {
+      //  disp.setPowerSave(0);
+      //}
       disp.enableUTF8Print();
       disp.setFont(fontno[0]);
       disp.setFontMode(0);
@@ -726,7 +734,7 @@ void send2display1(void)
   DMUX(0);
   u8g2_uint_t x;
   disp.firstPage();
-  disp.setContrast(DPL_contrast[0]);
+  //disp.setContrast(DPL_contrast[0]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -869,7 +877,7 @@ void send2display2(void)
   DMUX(1);
   u8g2_uint_t x;
   disp.firstPage();
-  disp.setContrast(DPL_contrast[1]);
+  //disp.setContrast(DPL_contrast[1]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -972,7 +980,7 @@ void send2display3(void)
   DMUX(2);
   u8g2_uint_t x;
   disp.firstPage();
-  disp.setContrast(DPL_contrast[2]);
+  //disp.setContrast(DPL_contrast[2]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1075,7 +1083,7 @@ void send2display4(void)
   DMUX(3);
   u8g2_uint_t x;
   disp.firstPage();
-  disp.setContrast(DPL_contrast[3]);
+  //disp.setContrast(DPL_contrast[3]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1178,7 +1186,7 @@ void send2display5(void)
   DMUX(4);
   u8g2_uint_t x;
   disp.firstPage();
-  disp.setContrast(DPL_contrast[4]);
+  //disp.setContrast(DPL_contrast[4]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1281,7 +1289,7 @@ void send2display6(void)
   DMUX(5);
   u8g2_uint_t x;
   disp.firstPage();
-  disp.setContrast(DPL_contrast[5]);
+  //disp.setContrast(DPL_contrast[5]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1384,7 +1392,7 @@ void send2display7(void)
   DMUX(6);
   u8g2_uint_t x;
   disp.firstPage();
-  disp.setContrast(DPL_contrast[6]);
+  //disp.setContrast(DPL_contrast[6]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1487,7 +1495,7 @@ void send2display8(void)
   DMUX(7);
   u8g2_uint_t x;
   disp.firstPage();
-  disp.setContrast(DPL_contrast[7]);
+  //disp.setContrast(DPL_contrast[7]);
   // Message
   // *** Message only, in the middle of the display ***
   if (TPL_6scroll[t] != 1){
@@ -1632,7 +1640,7 @@ void switchLogo(uint8_t t, String ZZA_Type)
 
 // Enable ScreenSaver for all displays
 void screenSaver(int s){
-  for (int i = 0; i < config.NUMDISP; i++)
+  for (uint8_t i = 0; i < config.NUMDISP; i++)
   {
     DMUX(i);
     disp.setPowerSave(s);
@@ -1752,7 +1760,7 @@ void onConnectionEstablished()
     if (m.length() < 2){
       m = "0" + m;
     }
-    int w = (payload1.substring(payload1.indexOf("wday") + 6, payload1.indexOf("mday") - 2)).toInt();
+    uint8_t w = (payload1.substring(payload1.indexOf("wday") + 6, payload1.indexOf("mday") - 2)).toInt();
     String wd = "";
     switch (w) {
       case 1: wd = "Mo";
@@ -1801,16 +1809,16 @@ void onConnectionEstablished()
       if (config.MQTT_DEBUG == 1){
         Serial.println("Converted payload: " + pld);
       }
-      int start01 = pld.indexOf("ZZAMSG#") + 7;                         // ZZAMSG identifier
-      int start02 = start01 + 1 + pld.substring(start01).indexOf("#");  // Target Displays as defined in config.h e.g. D01-D08
-      int start03 = start02 + 1 + pld.substring(start02).indexOf("#");  // Template T0-T9
-      int start04 = start03 + 1 + pld.substring(start03).indexOf("#");  // Station Name
-      int start05 = start04 + 1 + pld.substring(start04).indexOf("#");  // Track Number
-      int start06 = start05 + 1 + pld.substring(start05).indexOf("#");  // Destination Name
-      int start07 = start06 + 1 + pld.substring(start06).indexOf("#");  // Departure Time
-      int start08 = start07 + 1 + pld.substring(start07).indexOf("#");  // Train Number
-      int start09 = start08 + 1 + pld.substring(start08).indexOf("#");  // Train Type e.g. ICE, IC, ...
-      int start10 = start09 + 1 + pld.substring(start09).indexOf("#");  // Message Text
+      uint8_t start01 = pld.indexOf("ZZAMSG#") + 7;                         // ZZAMSG identifier
+      uint8_t start02 = start01 + 1 + pld.substring(start01).indexOf("#");  // Target Displays as defined in config.h e.g. D01-D08
+      uint8_t start03 = start02 + 1 + pld.substring(start02).indexOf("#");  // Template T0-T9
+      uint8_t start04 = start03 + 1 + pld.substring(start03).indexOf("#");  // Station Name
+      uint8_t start05 = start04 + 1 + pld.substring(start04).indexOf("#");  // Track Number
+      uint8_t start06 = start05 + 1 + pld.substring(start05).indexOf("#");  // Destination Name
+      uint8_t start07 = start06 + 1 + pld.substring(start06).indexOf("#");  // Departure Time
+      uint8_t start08 = start07 + 1 + pld.substring(start07).indexOf("#");  // Train Number
+      uint8_t start09 = start08 + 1 + pld.substring(start08).indexOf("#");  // Train Type e.g. ICE, IC, ...
+      uint8_t start10 = start09 + 1 + pld.substring(start09).indexOf("#");  // Message Text
 
 
       // Deactivate / Reset ScreenSaver

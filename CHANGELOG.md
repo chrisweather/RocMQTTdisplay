@@ -1,5 +1,12 @@
 ## Roc-MQTT-Display Changelog
 
+### Roc-MQTT-Display release 1.06
+2022-04-22 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
+
+-   code optimized
+-   Template - ÖBB logo optimized, can be called with ÖBB now instead of OBB
+-   Changed wiring, VCC of multiplexer and displays now connected to 5V instead of 3.3V, see wiring in Wiki. Some displays work more reliable with 5V.
+
 ### Roc-MQTT-Display release 1.05
 2022-04-04 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
 
