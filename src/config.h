@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.06
+// Version 1.07
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -24,7 +24,7 @@ struct Sec {
 };
 
 struct Config {
-  const char* VER = "Version 1.06";
+  const char* VER = "Version 1.07";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
   uint16_t WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
@@ -45,14 +45,14 @@ struct Config {
   char     MQTT_TOPIC2[50];        // MQTT Topic 1, default = "rocrail/service/info/tx"
   char     MQTT_DELIMITER[5];      // MQTT delimiter (e.g. ";" or " , " for message payload, will be replaced by "#" before processing. Default: "#"
 // DISPLAYS
-  //int      DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, 3=96x16, 4=80x160, default = 0
+  //uint8_t  DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, 3=96x16, 4=80x160, default = 0
   uint8_t  DISPWIDTH;              // Display width in pixel
   uint8_t  DISPHEIGHT;             // Display height in pixel
-  int      MUX;                    // TCA9548A I2C Multiplexer address, default: 0x70 (112)
+  uint8_t  MUX;                    // TCA9548A I2C Multiplexer address, default: 112 (0x70), 0=one display connected without multiplexer
   uint8_t  NUMDISP;                // Number of I2C OLED displays connected to this controller, 1-8
   uint16_t STARTDELAY;             // Show Controllername and Display Number x milliseconds longer at startup, helpful during setup
-  uint16_t UPDSPEED;               // Slow down display update intervall by increasing the number of ms, e.g. 10 = 100ms + 10
-  uint8_t  SCREENSAVER;            // minutes without message received until screenSaver switches all displays into power save mode, 0=off
+  uint8_t  UPDSPEED;               // Slow down display update intervall by increasing the number, e.g. 30 = base speed + 30ms
+  uint8_t  SCREENSAVER;            // minutes without MQTT message received until screenSaver switches all displays into power save mode, 0=off
   uint8_t  PRINTBUF;               // When 1: Print display buffer of display 1 to serial out as XBM, default: 0
 };
 
@@ -92,7 +92,7 @@ void loadConfiguration(const char *configfile, Config &config)
   // Open config json file for reading
   File file = LittleFS.open(configfile, "r");
   delay(200);
-  StaticJsonDocument<1500> doc;
+  StaticJsonDocument<1800> doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
@@ -119,12 +119,12 @@ void loadConfiguration(const char *configfile, Config &config)
   strlcpy(config.MQTT_TOPIC2, doc["MQTT_TOPIC2"] | "rocrail/service/info/tx", sizeof(config.MQTT_TOPIC2));
   strlcpy(config.MQTT_DELIMITER, doc["MQTT_DELIMITER"] | "", sizeof(config.MQTT_DELIMITER));
   config.MQTT_DEBUG = doc["MQTT_DEBUG"] | 0;
-  config.MUX = doc["MUX"] | 0x70;
-  config.NUMDISP = doc["NUMDISP"] | 4;
+  config.MUX = doc["MUX"] | 112;
+  config.NUMDISP = doc["NUMDISP"] | 2;
   config.DISPWIDTH = doc["DISPWIDTH"] | 128;
   config.DISPHEIGHT = doc["DISPHEIGHT"] | 32;
   config.STARTDELAY = doc["STARTDELAY"] | 200;
-  config.UPDSPEED = doc["UPDSPEED"] | 10;
+  config.UPDSPEED = doc["UPDSPEED"] | 0;
   config.SCREENSAVER = doc["SCREENSAVER"] | 60;
   config.PRINTBUF = doc["PRINTBUF"] | 0;
   strlcpy(DPL_id[0], doc["DPL_ID0"] | "D01", sizeof(DPL_id[0]));
@@ -176,7 +176,7 @@ void saveConfiguration(const char *configfile, const Config &config)
     return;
   }
 
-  StaticJsonDocument<1500> doc;
+  StaticJsonDocument<1800> doc;
   doc["VER"] = config.VER;
   doc["WIFI_DEVICENAME"] = config.WIFI_DEVICENAME;
   doc["WIFI_RECONDELAY"] = config.WIFI_RECONDELAY;
@@ -392,7 +392,7 @@ void loadTemplateFile(const char *templatexx)
     }
   }
 
-  StaticJsonDocument<1024> doc;
+  StaticJsonDocument<1600> doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
@@ -479,7 +479,7 @@ void loadTemplateFile(const char *templatexx)
 // Import template
 void importTemplateFile(char *tcontent)
 {
-  StaticJsonDocument<1024> doc;
+  StaticJsonDocument<1600> doc;
   DeserializationError error = deserializeJson(doc, tcontent);
   if (error) {
     Serial.println(F("Failed to convert json import, using default configuration"));
@@ -571,7 +571,7 @@ void saveTemplateFile(const char *templatexx)
     return;
   }
 
-  StaticJsonDocument<1024> doc;
+  StaticJsonDocument<1600> doc;
   doc["TPLID"] = TPL_id[TPL];
   doc["TPLNAME"] = TPL_name[TPL];
   doc["TPLSIDE"] = TPL_side[TPL];

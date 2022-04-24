@@ -5,7 +5,7 @@ sources via MQTT. A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can dri
 eight 0.91" 128x32 I2C OLED displays. Several D1 mini can run together so the total number 
 of displays is not limited.
 
-Version 1.06  April 22, 2022
+Version 1.07  April 24, 2022
 
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
@@ -264,9 +264,9 @@ void setup()
   Serial.println(configfile);
   saveConfiguration(configfile, config);
 
-  // Read display width and height from display constructor
-  //config.DISPWIDTH = disp.getDisplayWidth();
-  //config.DISPHEIGHT = disp.getDisplayHeight();
+  //Read display width and height from display constructor
+  config.DISPWIDTH = disp.getDisplayWidth();
+  config.DISPHEIGHT = disp.getDisplayHeight();
 
   // Load sec from file
   Serial.print(F("\nLoading sec from \n"));
@@ -442,6 +442,17 @@ void setup()
     printFile(template09);
   }
 
+  if (config.MUX == 0){
+    tS2.disable();
+    tS3.disable();
+    tS4.disable();
+    tS5.disable();
+    tS6.disable();
+    tS7.disable();
+    tS8.disable();
+    tS1.setInterval(20 + config.UPDSPEED);
+  }
+
   // Switch off Wemos D1 mini onboard LED
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -468,7 +479,9 @@ void setup()
   Serial.println(config.DISPHEIGHT);
 
   // Initialize all connected displays
-  Wire.begin();
+  if(config.MUX > 0){
+    Wire.begin();
+  }
   DisplayInit();
 
   // Optional functionalities of EspMQTTClient
@@ -653,7 +666,9 @@ void DisplayInit()
 {
   // Loop through all connected displays on the I2C bus
   for (uint8_t i = 0; i < config.NUMDISP; i++) {
-    DMUX(i);
+    if (config.MUX > 0){
+      DMUX(i);
+    }
     disp.clearBuffer();
     disp.firstPage();
     do {
@@ -668,27 +683,27 @@ void DisplayInit()
       //  disp.setPowerSave(0);
       //}
       disp.enableUTF8Print();
-      disp.setFont(fontno[0]);
+      disp.setFont(fontno[5]);
       disp.setFontMode(0);
-      disp.setCursor(0,13);
-      disp.print(F("Roc-MQTT-Display"));
-      disp.setCursor(0,29);
+      disp.setCursor(0,7);
+      disp.print(F("Roc-MQTT-Display "));
+      disp.setCursor(0,15);
       disp.print(config.VER);
       disp.nextPage();
       delay(500 + (config.STARTDELAY / 2));
       disp.clearDisplay();
-      disp.setFont(fontno[0]);
-      disp.setCursor(0,13);
+      disp.setFont(fontno[5]);
+      disp.setCursor(0,7);
       disp.print(F("http://"));
-      disp.setCursor(0,29);
+      disp.setCursor(0,15);
       disp.print(config.WIFI_DEVICENAME);
       disp.nextPage();
       delay(500 + (config.STARTDELAY / 2));
       disp.clearDisplay();
-      disp.setCursor(0,13);
+      disp.setCursor(0,7);
       disp.print(F("Display: "));
       disp.print(i+1);
-      disp.setCursor(0,29);
+      disp.setCursor(0,15);
       disp.print(F("ID: "));
       disp.print(DPL_id[i]);
       
@@ -696,9 +711,9 @@ void DisplayInit()
         disp.nextPage();
         delay(500 + (config.STARTDELAY / 2));
         disp.clearDisplay();
-        disp.setCursor(0,13);
+        disp.setCursor(0,7);
         disp.print(F("NO MQTT broker"));
-        disp.setCursor(0,29);
+        disp.setCursor(0,15);
         disp.print(F("Check Config!"));
         disp.nextPage();
         delay(5000 + (config.STARTDELAY / 2));
@@ -722,7 +737,7 @@ void send2display1(void)
 { 
   // Template number
   uint8_t t = ZZA1_Template.toInt();
-  if (t < 0 || t > 9){
+  if (t > 9){
     t = 0;
   }
   if (DPL_side[0] == 1){
@@ -730,8 +745,9 @@ void send2display1(void)
       t = t+1;
     }
   }
-
-  DMUX(0);
+  if (config.MUX > 0){
+    DMUX(0);
+  }
   u8g2_uint_t x;
   disp.firstPage();
   //disp.setContrast(DPL_contrast[0]);
@@ -865,7 +881,7 @@ void send2display2(void)
 { 
   // Template number
   uint8_t t = ZZA2_Template.toInt();
-  if (t < 0 || t > 9){
+  if (t > 9){
     t = 0;
   }
   if (DPL_side[1] == 1){
@@ -968,7 +984,7 @@ void send2display3(void)
 { 
   // Template number
   uint8_t t = ZZA3_Template.toInt();
-  if (t < 0 || t > 9){
+  if (t > 9){
     t = 0;
   }
   if (DPL_side[2] == 1){
@@ -1071,7 +1087,7 @@ void send2display4(void)
 { 
   // Template number
   uint8_t t = ZZA4_Template.toInt();
-  if (t < 0 || t > 9){
+  if (t > 9){
     t = 0;
   }
   if (DPL_side[3] == 1){
@@ -1174,7 +1190,7 @@ void send2display5(void)
 { 
   // Template number
   uint8_t t = ZZA5_Template.toInt();
-  if (t < 0 || t > 9){
+  if (t > 9){
     t = 0;
   }
   if (DPL_side[4] == 1){
@@ -1277,7 +1293,7 @@ void send2display6(void)
 { 
   // Template number
   uint8_t t = ZZA6_Template.toInt();
-  if (t < 0 || t > 9){
+  if (t > 9){
     t = 0;
   }
   if (DPL_side[5] == 1){
@@ -1380,7 +1396,7 @@ void send2display7(void)
 { 
   // Template number
   uint8_t t = ZZA7_Template.toInt();
-  if (t < 0 || t > 9){
+  if (t > 9){
     t = 0;
   }
   if (DPL_side[6] == 1){
@@ -1483,7 +1499,7 @@ void send2display8(void)
 { 
   // Template number
   uint8_t t = ZZA8_Template.toInt();
-  if (t < 0 || t > 9){
+  if (t > 9){
     t = 0;
   }
   if (DPL_side[7] == 1){
@@ -1642,7 +1658,13 @@ void switchLogo(uint8_t t, String ZZA_Type)
 void screenSaver(int s){
   for (uint8_t i = 0; i < config.NUMDISP; i++)
   {
-    DMUX(i);
+    if (config.MUX == 112){
+      DMUX(i);
+    }
+    else {
+      disp.sendBuffer();
+    }    
+    //DMUX(i);
     disp.setPowerSave(s);
   }
 }
@@ -2012,11 +2034,11 @@ void onConnectionEstablished()
 // Main loop
 void loop()
 {
-  ArduinoOTA.handle();       // OTA
-
-  webserver.handleClient();  // WEBSERVER handling of incoming requests
-
   client.loop();             // WIFI, MQTT
+  
+  ArduinoOTA.handle();       // OTA
+  
+  webserver.handleClient();  // WEBSERVER handling of incoming requests
 
   updateTime();              // NTP update time information
 
