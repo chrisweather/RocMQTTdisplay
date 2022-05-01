@@ -7,6 +7,7 @@
 -   fixed some compiler warnings
 -   added option to run only one display without multiplexer
 -   Webinterface - optimized config site and help texts
+-   Wiki - Schnellstart Anleitung deutsch erweitert
 
 ### Roc-MQTT-Display release 1.06
 2022-04-22 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
