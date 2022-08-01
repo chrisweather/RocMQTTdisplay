@@ -4,7 +4,7 @@ Copyright (c) 2020-2022 Christian Heinrichs.
 All rights reserved.
 
 
-Dynamic Passenger Information system for Model Railroad Stations controlled by Rocrail.
+Dynamic Passenger Information system for Model Railroad Stations controlled by Rocrail or any other program that can send MQTT messages.
 Wireless communication with Rocrail or other sources via MQTT messages.
 A Lolin/Wemos D1 mini ESP8266 controller and a TCA9548A I2C Multiplexer can drive up to eight 0.91" 128x32
 I2C OLED displays. 
