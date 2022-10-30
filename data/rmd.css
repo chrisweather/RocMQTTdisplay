@@ -1,6 +1,6 @@
 /*
 Roc-MQTT-Display
-Version 1.07
+Version 1.08
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 */
@@ -59,6 +59,16 @@ H2 {
   font-weight: bold;
   padding: 4px;
   width: 80%;
+  }
+
+.infield3 {
+  border: none;
+  background: none;
+  font-size: 14px;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 4px;
+  width: 99%;
   }
 
 input[type="radio"] + label {
