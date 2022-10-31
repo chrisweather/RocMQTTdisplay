@@ -6,8 +6,7 @@ All rights reserved.
 
 Dynamic Passenger Information system for Model Railroad Stations controlled by Rocrail, Node-RED or any other program that can send MQTT messages.
 Wireless communication with Rocrail, Node-RED or other sources via MQTT messages.
-A Lolin/Wemos D1 mini ESP8266 controller and a TCA9548A I2C Multiplexer can drive up to eight 0.91" 128x32
-I2C OLED displays. 
+A Lolin/Wemos D1 mini ESP8266 controller and a TCA9548A I2C Multiplexer can drive up to eight I2C OLED displays. 
 Several controllers can run in parallel so the total number of displays is not limited.  
 A friend of mine was looking for an easy way to run displays with live data in his model railroad environment. Right after this conversation this project was born.
 Since then it's a work in progress with already many nice features. If you want to share your experience with this code or have ideas for more features you are welcome to share them in the Issues or Discussions area. Have fun.
