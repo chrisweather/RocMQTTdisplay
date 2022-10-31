@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
 Roc-MQTT-Display
-Version 1.07
+Version 1.08
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
@@ -11,9 +11,11 @@ https://github.com/chrisweather/RocMQTTdisplay
 <title>Roc-MQTT-Display</title>
 <link rel='stylesheet' type='text/css' href='rmd.css'>
 </head>
-<body>
+<body onload="UpdateCheck()">
 <H1>Roc-MQTT-Display</H1>
 <p><strong>%VER%</strong></p>
+<p><b><span id="nversion" style="color:#ff0000"></span></b></p>
+<a id="nurl" target='_blank'>Release Notes</a>
 <p><strong>%WIFI_DEVICENAME%</strong></p>
 <button type='button' class='button' title='WiFi and MQTT access settings' onclick='buttonSecret()'>Access</button>   
 <button type='button' class='button' title='General configuration' onclick='buttonConfig()'>Configuration</button>   
@@ -25,6 +27,22 @@ https://github.com/chrisweather/RocMQTTdisplay
 </br>
 </br>
 <script>
+function UpdateCheck(){
+ var cversion = 1 * ("%VER%");
+ fetch('https://api.github.com/repos/chrisweather/rocmqttdisplay/releases/latest')
+ .then(result => result.json())
+ .then((output) => {
+ var lversion = 1 * (output.tag_name.substring(1));
+ var lurl = output.html_url;
+ document.getElementById("nurl").setAttribute("href",lurl);
+ if (lversion > cversion) { 
+  document.getElementById("nversion").innerHTML = "New version available: " + lversion;
+ }
+ else {
+  document.getElementById("nversion").innerHTML = "";
+ }
+ }).catch(err => console.error(err));
+}
 function buttonSecret() {
  window.open('/sec','_self');
 }

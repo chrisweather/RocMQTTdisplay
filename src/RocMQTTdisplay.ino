@@ -2,10 +2,10 @@
                              Roc-MQTT-Display
 Dynamic Passenger Information for Model Railroad Stations controlled by Rocrail or other 
 sources via MQTT. A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to 
-eight 0.91" 128x32 I2C OLED displays. Several D1 mini can run together so the total number 
+eight I2C OLED displays. Several D1 mini can run together so the total number 
 of displays is not limited.
 
-Version 1.07  April 24, 2022
+Version 1.08  October 30, 2022
 
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
@@ -70,22 +70,27 @@ https://github.com/chrisweather/RocMQTTdisplay/wiki
 #include <U8g2lib.h>           // U8g2lib by Oliver Kraus https://github.com/olikraus/u8g2
 using namespace std;
 
+
 // !!! SELECT YOUR DISPLAY TYPE HERE !!!
 // 
 // More U8G2 Display Constructors are listed in the U8G2 Wiki: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
 // Please uncomment ONLY ONE constructor! Only one display type can be handled by one Roc-MQTT-Display controller.
 
-// ### 128x32 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
+// ### 128x32 ### 0.91" OLED I2C Display with SSD1306 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
 U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
-// ### 128x64 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
+// ### 128x64 ### 0.96" OLED I2C Display with SSD1306 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
-// ### 64x48 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
+// ### 64x48 ### 0.66" OLED I2C Display with SSD1306 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
 //U8G2_SSD1306_64X48_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
-// ### 96x16 ### OLED I2C Display, Define OLED Display as disp (D2: SDA, D1: SCL)
+// ### 96x16 ### 0.69" OLED I2C Display with SSD1306 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
 //U8G2_SSD1306_96X16_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+
+// These drivers have not been tested with Roc-MQTT-Display
+// ### 128x32 ### 0.87" OLED I2C Display with SSD1316 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
+//U8G2_SSD1316_128X32_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 
 u8g2_uint_t offset1 = 0;  // current offset for the scrolling text
@@ -119,14 +124,14 @@ void send2display7();
 void send2display8();
 
 // Tasks for TaskScheduler
-Task tS1(100 + config.UPDSPEED, TASK_FOREVER, &send2display1, &ts, true);  // Display 1
-Task tS2(100 + config.UPDSPEED, TASK_FOREVER, &send2display2, &ts, true);  // Display 2
-Task tS3(100 + config.UPDSPEED, TASK_FOREVER, &send2display3, &ts, true);  // Display 3
-Task tS4(100 + config.UPDSPEED, TASK_FOREVER, &send2display4, &ts, true);  // Display 4
-Task tS5(100 + config.UPDSPEED, TASK_FOREVER, &send2display5, &ts, true);  // Display 5
-Task tS6(100 + config.UPDSPEED, TASK_FOREVER, &send2display6, &ts, true);  // Display 6
-Task tS7(100 + config.UPDSPEED, TASK_FOREVER, &send2display7, &ts, true);  // Display 7
-Task tS8(100 + config.UPDSPEED, TASK_FOREVER, &send2display8, &ts, true);  // Display 8
+Task tS1(5 + config.UPDSPEED, TASK_FOREVER, &send2display1, &ts, true);  // Display 1
+Task tS2(5 + config.UPDSPEED, TASK_FOREVER, &send2display2, &ts, false);  // Display 2
+Task tS3(5 + config.UPDSPEED, TASK_FOREVER, &send2display3, &ts, false);  // Display 3
+Task tS4(5 + config.UPDSPEED, TASK_FOREVER, &send2display4, &ts, false);  // Display 4
+Task tS5(5 + config.UPDSPEED, TASK_FOREVER, &send2display5, &ts, false);  // Display 5
+Task tS6(5 + config.UPDSPEED, TASK_FOREVER, &send2display6, &ts, false);  // Display 6
+Task tS7(5 + config.UPDSPEED, TASK_FOREVER, &send2display7, &ts, false);  // Display 7
+Task tS8(5 + config.UPDSPEED, TASK_FOREVER, &send2display8, &ts, false);  // Display 8
 
 // Define WIFI/MQTT Client
 EspMQTTClient client( sec.WIFI_SSID, sec.WIFI_PW, config.MQTT_IP, sec.MQTT_USER, sec.MQTT_PW, config.WIFI_DEVICENAME, config.MQTT_PORT );
@@ -254,6 +259,11 @@ void setup()
   }
 
   TPL = 0;
+  // Load sec from file
+  Serial.print(F("\nLoading sec from \n"));
+  Serial.println(secfile);
+  loadSecData(secfile, sec);
+  
   // Load config from file
   Serial.print(F("\nLoading configuration from \n"));
   Serial.println(configfile);
@@ -267,16 +277,12 @@ void setup()
   //Read display width and height from display constructor
   config.DISPWIDTH = disp.getDisplayWidth();
   config.DISPHEIGHT = disp.getDisplayHeight();
-
-  // Load sec from file
-  Serial.print(F("\nLoading sec from \n"));
-  Serial.println(secfile);
-  loadSecData(secfile, sec);
-
+  
   // Load template data from file
   Serial.print(F("\nLoading template data from \n"));
   Serial.println(templatefile);
-  loadTemplate(templatefile, templ);
+  //loadTemplate(templatefile, templ);
+  loadTemplate(templatefile);
 /*
   Save template data to file
   Serial.print(F("\nSaving template data to "));
@@ -442,17 +448,6 @@ void setup()
     printFile(template09);
   }
 
-  if (config.MUX == 0){
-    tS2.disable();
-    tS3.disable();
-    tS4.disable();
-    tS5.disable();
-    tS6.disable();
-    tS7.disable();
-    tS8.disable();
-    tS1.setInterval(20 + config.UPDSPEED);
-  }
-
   // Switch off Wemos D1 mini onboard LED
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -463,13 +458,11 @@ void setup()
   Serial.print(F("\nCurrent MQTT broker IP-adress: "));
   Serial.println(config.MQTT_IP);
   if (strlen(config.MQTT_IP) < 7) {
-    Serial.println(F("\nWARNING: MQTT broker IP-adress is missing or incomplete in configuration"));
+    Serial.println(F("\nWARNING: MQTT broker IP-adress is missing or incomplete in CONFIGURATION"));
   }
   Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
   Serial.println(config.WIFI_DEVICENAME);
-  Serial.println(F("                          or "));
-  Serial.print(F("                        http://"));
-  Serial.println(WiFi.localIP());
+  Serial.println(F("FOR DEBUG INFORMATION set 'Enable debug messages' to 1 in CONFIGURATION"));
   Serial.print(F("\n  Displays enabled: "));
   Serial.print(config.NUMDISP);
   Serial.println(F(" / 8"));
@@ -479,6 +472,17 @@ void setup()
   Serial.println(config.DISPHEIGHT);
 
   // Initialize all connected displays
+  if (config.MUX == 0){
+    tS1.setInterval(10 + config.UPDSPEED);
+    tS2.disable();
+    tS3.disable();
+    tS4.disable();
+    tS5.disable();
+    tS6.disable();
+    tS7.disable();
+    tS8.disable();
+  }
+
   if(config.MUX > 0){
     Wire.begin();
   }
@@ -641,6 +645,7 @@ webserver.on("/tpl2imp", []() {         // Define the handling function for the 
 
   webserver.begin();                   // Start the webserver
   Serial.println(F("\nWebserver started and listening for requests"));
+
 } // End of setup
 
 
@@ -666,6 +671,25 @@ void DisplayInit()
 {
   // Loop through all connected displays on the I2C bus
   for (uint8_t i = 0; i < config.NUMDISP; i++) {
+    switch (i){
+    case 0: tS1.enable();
+            //tS1.setInterval(10 + config.UPDSPEED);
+            break;
+    case 1: tS2.enable();
+            break;
+    case 2: tS3.enable();
+            break;
+    case 3: tS4.enable();
+            break;
+    case 4: tS5.enable();
+            break;
+    case 5: tS6.enable();
+            break;
+    case 6: tS7.enable();
+            break;
+    case 7: tS8.enable();
+            break;
+    }
     if (config.MUX > 0){
       DMUX(i);
     }
@@ -750,6 +774,12 @@ void send2display1(void)
   }
   u8g2_uint_t x;
   disp.firstPage();
+  if (TPL_invert[t] == 1){
+    disp.sendF("c", 0x0a7);
+  }
+  else {
+    disp.sendF("c", 0x0a6);
+  }
   //disp.setContrast(DPL_contrast[0]);
   // Message
   // *** Message only, in the middle of the display ***
@@ -893,6 +923,12 @@ void send2display2(void)
   DMUX(1);
   u8g2_uint_t x;
   disp.firstPage();
+  if (TPL_invert[t] == 1){
+    disp.sendF("c", 0x0a7);
+  }
+  else {
+    disp.sendF("c", 0x0a6);
+  }
   //disp.setContrast(DPL_contrast[1]);
   // Message
   // *** Message only, in the middle of the display ***
@@ -996,6 +1032,12 @@ void send2display3(void)
   DMUX(2);
   u8g2_uint_t x;
   disp.firstPage();
+  if (TPL_invert[t] == 1){
+    disp.sendF("c", 0x0a7);
+  }
+  else {
+    disp.sendF("c", 0x0a6);
+  }
   //disp.setContrast(DPL_contrast[2]);
   // Message
   // *** Message only, in the middle of the display ***
@@ -1099,6 +1141,12 @@ void send2display4(void)
   DMUX(3);
   u8g2_uint_t x;
   disp.firstPage();
+  if (TPL_invert[t] == 1){
+    disp.sendF("c", 0x0a7);
+  }
+  else {
+    disp.sendF("c", 0x0a6);
+  }
   //disp.setContrast(DPL_contrast[3]);
   // Message
   // *** Message only, in the middle of the display ***
@@ -1202,6 +1250,12 @@ void send2display5(void)
   DMUX(4);
   u8g2_uint_t x;
   disp.firstPage();
+  if (TPL_invert[t] == 1){
+    disp.sendF("c", 0x0a7);
+  }
+  else {
+    disp.sendF("c", 0x0a6);
+  }
   //disp.setContrast(DPL_contrast[4]);
   // Message
   // *** Message only, in the middle of the display ***
@@ -1305,6 +1359,12 @@ void send2display6(void)
   DMUX(5);
   u8g2_uint_t x;
   disp.firstPage();
+  if (TPL_invert[t] == 1){
+    disp.sendF("c", 0x0a7);
+  }
+  else {
+    disp.sendF("c", 0x0a6);
+  }
   //disp.setContrast(DPL_contrast[5]);
   // Message
   // *** Message only, in the middle of the display ***
@@ -1408,6 +1468,12 @@ void send2display7(void)
   DMUX(6);
   u8g2_uint_t x;
   disp.firstPage();
+  if (TPL_invert[t] == 1){
+    disp.sendF("c", 0x0a7);
+  }
+  else {
+    disp.sendF("c", 0x0a6);
+  }
   //disp.setContrast(DPL_contrast[6]);
   // Message
   // *** Message only, in the middle of the display ***
@@ -1511,6 +1577,12 @@ void send2display8(void)
   DMUX(7);
   u8g2_uint_t x;
   disp.firstPage();
+  if (TPL_invert[t] == 1){
+    disp.sendF("c", 0x0a7);
+  }
+  else {
+    disp.sendF("c", 0x0a6);
+  }
   //disp.setContrast(DPL_contrast[7]);
   // Message
   // *** Message only, in the middle of the display ***
@@ -1629,6 +1701,36 @@ void switchLogo(uint8_t t, String ZZA_Type)
   else if (ZZA_Type == logoId[9]){
     disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[9], logoh[9], logo9);
   }
+  else if (ZZA_Type == logoId[10]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[10], logoh[10], logo10);
+  }
+  else if (ZZA_Type == logoId[11]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[11], logoh[11], logo11);
+  }
+  else if (ZZA_Type == logoId[12]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[12], logoh[12], logo12);
+  }
+  else if (ZZA_Type == logoId[13]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[13], logoh[13], logo13);
+  }
+  else if (ZZA_Type == logoId[14]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[14], logoh[14], logo14);
+  }
+  else if (ZZA_Type == logoId[15]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[15], logoh[15], logo15);
+  }
+  else if (ZZA_Type == logoId[16]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[16], logoh[16], logo16);
+  }
+  else if (ZZA_Type == logoId[17]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[17], logoh[17], logo17);
+  }
+  else if (ZZA_Type == logoId[18]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[18], logoh[18], logo18);
+  }
+  else if (ZZA_Type == logoId[19]){
+    disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[19], logoh[19], logo19);
+  }
   
   /*switch (i){ 
     case 1: disp.drawXBM( TPL_6logox[t], TPL_6logoy[t], TPL_6logow[t], TPL_6logoh[t], logo1);
@@ -1666,6 +1768,10 @@ void screenSaver(int s){
     }    
     //DMUX(i);
     disp.setPowerSave(s);
+    // AEh : Display OFF
+    // AFh : Display ON
+    //disp.sendF("c", 0x0ae);
+    //disp.sendF("c", 0x0af);
   }
 }
 
@@ -1766,9 +1872,28 @@ void runCmd(){
 }
 
 
-// This function is called once WIFI and MQTT are connected
+// This function is called when WIFI and MQTT are connected
 void onConnectionEstablished()
 {
+  // Subscribe MQTT client to topic: "rmdtest/connectiontest" to test the broker connection when debug messages are enabled
+  if (config.MQTT_DEBUG == 1){
+    client.subscribe("rmdtest/connectiontest", [](const String & payload0){
+      if (payload0 == "rmdtest"){
+        Serial.println((String)"\nMQTT broker successfully connected at " + config.MQTT_IP + ":" + config.MQTT_PORT + "\n");
+      }
+      else {
+        Serial.println((String)"\nNO connection to MQTT broker at " + config.MQTT_IP + ":" + config.MQTT_PORT + " !!!\n");
+      }
+    }, 1);
+    Serial.println(F("Send test message to broker:"));
+    client.publish("rmdtest/connectiontest", "rmdtest");
+    Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
+    Serial.println(config.WIFI_DEVICENAME);
+    Serial.println(F("                          or "));
+    Serial.print(F("                        http://"));
+    Serial.println(WiFi.localIP());
+  }
+
   // Subscribe MQTT client to topic: "rocrail/service/info/clock" to receive Rocrail time
   //client.subscribe("rocrail/service/info/clock", [](const String & payload1) {
   client.subscribe(config.MQTT_TOPIC1, [](const String & payload1) {

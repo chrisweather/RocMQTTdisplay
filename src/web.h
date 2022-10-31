@@ -1,5 +1,5 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 1.07
+// Version 1.08
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -12,6 +12,7 @@
 // Define WEBSERVER
 ESP8266WebServer webserver(80);
 String buf1 = "";
+
 
 // ROOT
 void loadRoot()
@@ -41,6 +42,7 @@ void loadNotFound()
   webserver.streamFile( html404, "text/html" );
   html404.close();
 }
+
 
 // CONFIGURATION
 void loadCfg()
@@ -217,6 +219,16 @@ void loadTpl1()
   buf1.replace("%TPL_LOGOID7%", String(logoId[7]));
   buf1.replace("%TPL_LOGOID8%", String(logoId[8]));
   buf1.replace("%TPL_LOGOID9%", String(logoId[9]));
+  buf1.replace("%TPL_LOGOID10%", String(logoId[10]));
+  buf1.replace("%TPL_LOGOID11%", String(logoId[11]));
+  buf1.replace("%TPL_LOGOID12%", String(logoId[12]));
+  buf1.replace("%TPL_LOGOID13%", String(logoId[13]));
+  buf1.replace("%TPL_LOGOID14%", String(logoId[14]));
+  buf1.replace("%TPL_LOGOID15%", String(logoId[15]));
+  buf1.replace("%TPL_LOGOID16%", String(logoId[16]));
+  buf1.replace("%TPL_LOGOID17%", String(logoId[17]));
+  buf1.replace("%TPL_LOGOID18%", String(logoId[18]));
+  buf1.replace("%TPL_LOGOID19%", String(logoId[19]));
 
   buf1.replace("%TPL_LOGO0W%", String(logow[0]));
   buf1.replace("%TPL_LOGO1W%", String(logow[1]));
@@ -228,6 +240,16 @@ void loadTpl1()
   buf1.replace("%TPL_LOGO7W%", String(logow[7]));
   buf1.replace("%TPL_LOGO8W%", String(logow[8]));
   buf1.replace("%TPL_LOGO9W%", String(logow[9]));
+  buf1.replace("%TPL_LOGO10W%", String(logow[10]));
+  buf1.replace("%TPL_LOGO11W%", String(logow[11]));
+  buf1.replace("%TPL_LOGO12W%", String(logow[12]));
+  buf1.replace("%TPL_LOGO13W%", String(logow[13]));
+  buf1.replace("%TPL_LOGO14W%", String(logow[14]));
+  buf1.replace("%TPL_LOGO15W%", String(logow[15]));
+  buf1.replace("%TPL_LOGO16W%", String(logow[16]));
+  buf1.replace("%TPL_LOGO17W%", String(logow[17]));
+  buf1.replace("%TPL_LOGO18W%", String(logow[18]));
+  buf1.replace("%TPL_LOGO19W%", String(logow[19]));
 
   buf1.replace("%TPL_LOGO0H%", String(logoh[0]));
   buf1.replace("%TPL_LOGO1H%", String(logoh[1]));
@@ -239,6 +261,16 @@ void loadTpl1()
   buf1.replace("%TPL_LOGO7H%", String(logoh[7]));
   buf1.replace("%TPL_LOGO8H%", String(logoh[8]));
   buf1.replace("%TPL_LOGO9H%", String(logoh[9]));
+  buf1.replace("%TPL_LOGO10H%", String(logoh[10]));
+  buf1.replace("%TPL_LOGO11H%", String(logoh[11]));
+  buf1.replace("%TPL_LOGO12H%", String(logoh[12]));
+  buf1.replace("%TPL_LOGO13H%", String(logoh[13]));
+  buf1.replace("%TPL_LOGO14H%", String(logoh[14]));
+  buf1.replace("%TPL_LOGO15H%", String(logoh[15]));
+  buf1.replace("%TPL_LOGO16H%", String(logoh[16]));
+  buf1.replace("%TPL_LOGO17H%", String(logoh[17]));
+  buf1.replace("%TPL_LOGO18H%", String(logoh[18]));
+  buf1.replace("%TPL_LOGO19H%", String(logoh[19]));
 
   String lbuf = "";
   
@@ -371,6 +403,136 @@ void loadTpl1()
   }
   buf1.replace("%TPL_LOGO9%", String(lbuf));
 
+  lbuf = "";
+  for (i = 0; i < (logo10size); i++){
+    if (uint8_t(logo10[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo10[i], HEX);
+    if (i < (logo10size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO10%", String(lbuf));
+
+  lbuf = "";
+  for (i = 0; i < (logo11size); i++){
+    if (uint8_t(logo11[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo11[i], HEX);
+    if (i < (logo11size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO11%", String(lbuf));
+
+  lbuf = "";
+  for (i = 0; i < (logo12size); i++){
+    if (uint8_t(logo12[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo12[i], HEX);
+    if (i < (logo12size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO12%", String(lbuf));
+
+  lbuf = "";
+  for (i = 0; i < (logo13size); i++){
+    if (uint8_t(logo13[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo13[i], HEX);
+    if (i < (logo13size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO13%", String(lbuf));
+
+  lbuf = "";
+  for (i = 0; i < (logo14size); i++){
+    if (uint8_t(logo14[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo14[i], HEX);
+    if (i < (logo14size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO14%", String(lbuf));
+
+  lbuf = "";
+  for (i = 0; i < (logo15size); i++){
+    if (uint8_t(logo15[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo15[i], HEX);
+    if (i < (logo15size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO15%", String(lbuf));
+
+  lbuf = "";
+  for (i = 0; i < (logo16size); i++){
+    if (uint8_t(logo16[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo16[i], HEX);
+    if (i < (logo16size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO16%", String(lbuf));
+
+  lbuf = "";
+  for (i = 0; i < (logo17size); i++){
+    if (uint8_t(logo17[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo17[i], HEX);
+    if (i < (logo17size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO17%", String(lbuf));
+
+  lbuf = "";
+  for (i = 0; i < (logo18size); i++){
+    if (uint8_t(logo18[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo18[i], HEX);
+    if (i < (logo18size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO18%", String(lbuf));
+
+  lbuf = "";
+  for (i = 0; i < (logo19size); i++){
+    if (uint8_t(logo19[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo19[i], HEX);
+    if (i < (logo19size - 1)) lbuf += String(", ");
+  }
+  buf1.replace("%TPL_LOGO19%", String(lbuf));
+  
   webserver.setContentLength( buf1.length() );
   webserver.send( 200, "text/html", buf1 );
   buf1 = "";
@@ -390,6 +552,16 @@ void handleTpl1Submit()
       if (webserver.argName(i) == "f_TPL_LOGOID7") { webserver.arg(webserver.argName(i)).toCharArray(logoId[7], sizeof(logoId[7])); }
       if (webserver.argName(i) == "f_TPL_LOGOID8") { webserver.arg(webserver.argName(i)).toCharArray(logoId[8], sizeof(logoId[8])); }
       if (webserver.argName(i) == "f_TPL_LOGOID9") { webserver.arg(webserver.argName(i)).toCharArray(logoId[9], sizeof(logoId[9])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID10") { webserver.arg(webserver.argName(i)).toCharArray(logoId[10], sizeof(logoId[10])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID11") { webserver.arg(webserver.argName(i)).toCharArray(logoId[11], sizeof(logoId[11])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID12") { webserver.arg(webserver.argName(i)).toCharArray(logoId[12], sizeof(logoId[12])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID13") { webserver.arg(webserver.argName(i)).toCharArray(logoId[13], sizeof(logoId[13])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID14") { webserver.arg(webserver.argName(i)).toCharArray(logoId[14], sizeof(logoId[14])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID15") { webserver.arg(webserver.argName(i)).toCharArray(logoId[15], sizeof(logoId[15])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID16") { webserver.arg(webserver.argName(i)).toCharArray(logoId[16], sizeof(logoId[16])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID17") { webserver.arg(webserver.argName(i)).toCharArray(logoId[17], sizeof(logoId[17])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID18") { webserver.arg(webserver.argName(i)).toCharArray(logoId[18], sizeof(logoId[18])); }
+      if (webserver.argName(i) == "f_TPL_LOGOID19") { webserver.arg(webserver.argName(i)).toCharArray(logoId[19], sizeof(logoId[19])); }
       
       if (webserver.argName(i) == "f_TPL_LOGO0W") { logow[0] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_LOGO1W") { logow[1] = webserver.arg(webserver.argName(i)).toInt(); }
@@ -401,6 +573,16 @@ void handleTpl1Submit()
       if (webserver.argName(i) == "f_TPL_LOGO7W") { logow[7] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_LOGO8W") { logow[8] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_LOGO9W") { logow[9] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO10W") { logow[10] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO11W") { logow[11] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO12W") { logow[12] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO13W") { logow[13] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO14W") { logow[14] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO15W") { logow[15] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO16W") { logow[16] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO17W") { logow[17] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO18W") { logow[18] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO19W") { logow[19] = webserver.arg(webserver.argName(i)).toInt(); }
       
       if (webserver.argName(i) == "f_TPL_LOGO0H") { logoh[0] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_LOGO1H") { logoh[1] = webserver.arg(webserver.argName(i)).toInt(); }
@@ -412,8 +594,19 @@ void handleTpl1Submit()
       if (webserver.argName(i) == "f_TPL_LOGO7H") { logoh[7] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_LOGO8H") { logoh[8] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_LOGO9H") { logoh[9] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO10H") { logoh[10] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO11H") { logoh[11] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO12H") { logoh[12] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO13H") { logoh[13] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO14H") { logoh[14] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO15H") { logoh[15] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO16H") { logoh[16] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO17H") { logoh[17] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO18H") { logoh[18] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_LOGO19H") { logoh[19] = webserver.arg(webserver.argName(i)).toInt(); }
     }
-    saveTemplate(templatefile, templ);
+    //saveTemplate(templatefile, templ);
+    saveTemplate(templatefile);
     unsigned long tn = 0;
     if(millis() > tn + 2000){
       tn = millis();
@@ -440,6 +633,7 @@ void loadTpl2()
 
   buf2.replace("%TPL_NAME0%", String(TPL_name[TPL]));
   buf2.replace("%TPL_SIDE0%", String(TPL_side[TPL]));
+  buf2.replace("%TPL_INV0%", String(TPL_invert[TPL]));
   
   buf2.replace("%TPL_0FONT0%", String(TPL_0font[TPL]));
   buf2.replace("%TPL_0MAXWIDTH0%", String(TPL_0maxwidth[TPL]));
@@ -529,6 +723,7 @@ void handleTpl2Submit()
     for ( uint8_t i = 0; i < webserver.args(); i++ ) {
       if (webserver.argName(i) == "f_TPL_NAME0") { webserver.arg(webserver.argName(i)).toCharArray(TPL_name[TPL], sizeof(TPL_name[TPL])); }
       if (webserver.argName(i) == "f_TPL_SIDE0") { TPL_side[TPL] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_TPL_INV0") { TPL_invert[TPL] = webserver.arg(webserver.argName(i)).toInt(); }
 
       if (webserver.argName(i) == "f_TPL_0FONT0") { TPL_0font[TPL] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_0MAXWIDTH0") { TPL_0maxwidth[TPL] = webserver.arg(webserver.argName(i)).toInt(); }

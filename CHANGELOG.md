@@ -1,5 +1,18 @@
 ## Roc-MQTT-Display Changelog
 
+### Roc-MQTT-Display release 1.08
+2022-10-30 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
+
+-   added MQTT broker connection test to debug mode
+-   improved debug messages in serial monitor
+-   Added constructor for 128x32 0.87" OLED I2C Display with SSD1316 controller. Not tested yet 
+-   Template - added Invert switch to templates. Inverts the whole display
+-   Template - increased number of logos from 10 to 20
+-   Template - added NS logo (thanks @ksw2404)
+-   Webinterface - added update check
+-   Wiki - Troubleshooting page added
+-   3D printer data for 128x32 display case
+
 ### Roc-MQTT-Display release 1.07
 2022-04-24 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
 

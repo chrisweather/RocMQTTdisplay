@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.07
+// Version 1.08
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -24,7 +24,7 @@ struct Sec {
 };
 
 struct Config {
-  const char* VER = "Version 1.07";
+  const char* VER = "1.08";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
   uint16_t WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
@@ -243,12 +243,13 @@ void saveConfiguration(const char *configfile, const Config &config)
 
 
 // Load template data from file - fonts, logos
-void loadTemplate(const char *templatefile, Template &templ)
+//void loadTemplate(const char *templatefile, Template &templ)
+void loadTemplate(const char *templatefile)
 {
   // Open template data json file for reading
   File file = LittleFS.open(templatefile, "r");
   delay(200);
-  StaticJsonDocument<1024> doc;
+  StaticJsonDocument<1400> doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
@@ -270,6 +271,16 @@ void loadTemplate(const char *templatefile, Template &templ)
   strlcpy(logoId[7], doc["LOGOID7"] | "", sizeof(logoId[7]));
   strlcpy(logoId[8], doc["LOGOID8"] | "", sizeof(logoId[8]));
   strlcpy(logoId[9], doc["LOGOID9"] | "", sizeof(logoId[9]));
+  strlcpy(logoId[10], doc["LOGOID10"] | "", sizeof(logoId[10]));
+  strlcpy(logoId[11], doc["LOGOID11"] | "", sizeof(logoId[11]));
+  strlcpy(logoId[12], doc["LOGOID12"] | "", sizeof(logoId[12]));
+  strlcpy(logoId[13], doc["LOGOID13"] | "", sizeof(logoId[13]));
+  strlcpy(logoId[14], doc["LOGOID14"] | "", sizeof(logoId[14]));
+  strlcpy(logoId[15], doc["LOGOID15"] | "", sizeof(logoId[15]));
+  strlcpy(logoId[16], doc["LOGOID16"] | "", sizeof(logoId[16]));
+  strlcpy(logoId[17], doc["LOGOID17"] | "", sizeof(logoId[17]));
+  strlcpy(logoId[18], doc["LOGOID18"] | "", sizeof(logoId[18]));
+  strlcpy(logoId[19], doc["LOGOID19"] | "", sizeof(logoId[19]));
 
   logow[0] = doc["LOGO0W"] | 10;
   logow[1] = doc["LOGO1W"] | 10;
@@ -281,6 +292,16 @@ void loadTemplate(const char *templatefile, Template &templ)
   logow[7] = doc["LOGO7W"] | 10;
   logow[8] = doc["LOGO8W"] | 10;
   logow[9] = doc["LOGO9W"] | 10;
+  logow[10] = doc["LOGO10W"] | 10;
+  logow[11] = doc["LOGO11W"] | 10;
+  logow[12] = doc["LOGO12W"] | 10;
+  logow[13] = doc["LOGO13W"] | 10;
+  logow[14] = doc["LOGO14W"] | 10;
+  logow[15] = doc["LOGO15W"] | 10;
+  logow[16] = doc["LOGO16W"] | 10;
+  logow[17] = doc["LOGO17W"] | 10;
+  logow[18] = doc["LOGO18W"] | 10;
+  logow[19] = doc["LOGO19W"] | 10;
 
   logoh[0] = doc["LOGO0H"] | 10;
   logoh[1] = doc["LOGO1H"] | 10;
@@ -292,7 +313,16 @@ void loadTemplate(const char *templatefile, Template &templ)
   logoh[7] = doc["LOGO7H"] | 10;
   logoh[8] = doc["LOGO8H"] | 10;
   logoh[9] = doc["LOGO9H"] | 10;
-
+  logoh[10] = doc["LOGO10H"] | 10;
+  logoh[11] = doc["LOGO11H"] | 10;
+  logoh[12] = doc["LOGO12H"] | 10;
+  logoh[13] = doc["LOGO13H"] | 10;
+  logoh[14] = doc["LOGO14H"] | 10;
+  logoh[15] = doc["LOGO15H"] | 10;
+  logoh[16] = doc["LOGO16H"] | 10;
+  logoh[17] = doc["LOGO17H"] | 10;
+  logoh[18] = doc["LOGO18H"] | 10;
+  logoh[19] = doc["LOGO19H"] | 10;
 /*
   strlcpy(logo0, doc["LOGO0"] | "", sizeof(logo0));
   strlcpy(logo1, doc["LOGO1"] | "", sizeof(logo1));
@@ -311,7 +341,8 @@ void loadTemplate(const char *templatefile, Template &templ)
 
 
 // Save template data to a file - fonts, logos
-void saveTemplate(const char *templatefile, const Template &templ)
+//void saveTemplate(const char *templatefile, const Template &templ)
+void saveTemplate(const char *templatefile)
 {
   // Delete existing file, otherwise the template data will be appended to the file
   LittleFS.remove(templatefile);
@@ -323,7 +354,7 @@ void saveTemplate(const char *templatefile, const Template &templ)
     return;
   }
 
-  StaticJsonDocument<1024> doc;
+  StaticJsonDocument<1400> doc;
   doc["LOGOID0"] = logoId[0];
   doc["LOGOID1"] = logoId[1];
   doc["LOGOID2"] = logoId[2];
@@ -334,6 +365,16 @@ void saveTemplate(const char *templatefile, const Template &templ)
   doc["LOGOID7"] = logoId[7];
   doc["LOGOID8"] = logoId[8];
   doc["LOGOID9"] = logoId[9];
+  doc["LOGOID10"] = logoId[10];
+  doc["LOGOID11"] = logoId[11];
+  doc["LOGOID12"] = logoId[12];
+  doc["LOGOID13"] = logoId[13];
+  doc["LOGOID14"] = logoId[14];
+  doc["LOGOID15"] = logoId[15];
+  doc["LOGOID16"] = logoId[16];
+  doc["LOGOID17"] = logoId[17];
+  doc["LOGOID18"] = logoId[18];
+  doc["LOGOID19"] = logoId[19];
   
   doc["LOGO0W"] = logow[0];
   doc["LOGO1W"] = logow[1];
@@ -345,7 +386,17 @@ void saveTemplate(const char *templatefile, const Template &templ)
   doc["LOGO7W"] = logow[7];
   doc["LOGO8W"] = logow[8];
   doc["LOGO9W"] = logow[9];
-
+  doc["LOGO10W"] = logow[10];
+  doc["LOGO11W"] = logow[11];
+  doc["LOGO12W"] = logow[12];
+  doc["LOGO13W"] = logow[13];
+  doc["LOGO14W"] = logow[14];
+  doc["LOGO15W"] = logow[15];
+  doc["LOGO16W"] = logow[16];
+  doc["LOGO17W"] = logow[17];
+  doc["LOGO18W"] = logow[18];
+  doc["LOGO19W"] = logow[19];
+  
   doc["LOGO0H"] = logoh[0];
   doc["LOGO1H"] = logoh[1];
   doc["LOGO2H"] = logoh[2];
@@ -356,9 +407,30 @@ void saveTemplate(const char *templatefile, const Template &templ)
   doc["LOGO7H"] = logoh[7];
   doc["LOGO8H"] = logoh[8];
   doc["LOGO9H"] = logoh[9];
-
+  doc["LOGO10H"] = logoh[10];
+  doc["LOGO11H"] = logoh[11];
+  doc["LOGO12H"] = logoh[12];
+  doc["LOGO13H"] = logoh[13];
+  doc["LOGO14H"] = logoh[14];
+  doc["LOGO15H"] = logoh[15];
+  doc["LOGO16H"] = logoh[16];
+  doc["LOGO17H"] = logoh[17];
+  doc["LOGO18H"] = logoh[18];
+  doc["LOGO19H"] = logoh[19];
 /*
-  doc["LOGO0"] = logo0;
+  String lbuf = "";
+  for (uint8_t i = 0; i < (logo0size); i++){
+    if (uint8_t(logo0[i]) < 16){
+      lbuf += String("0x0");
+    }
+    else {
+      lbuf += String("0x");
+    }
+    lbuf += String(logo0[i], HEX);
+    if (i < (logo0size - 1)) lbuf += String(", ");
+  }
+  doc["LOGO0"] = lbuf;
+
   doc["LOGO1"] = logo1;
   doc["LOGO2"] = logo2;
   doc["LOGO3"] = logo3;
@@ -407,6 +479,7 @@ void loadTemplateFile(const char *templatexx)
   strlcpy(TPL_id[TPL], doc["TPLID"] | "T", sizeof(TPL_id[TPL]));
   strlcpy(TPL_name[TPL], doc["TPLNAME"] | "", sizeof(TPL_name[TPL]));
   TPL_side[TPL] = doc["TPLSIDE"] | 0;
+  TPL_invert[TPL] = doc["TPLINV"] | 0;
 // Field 0 - Station
   TPL_0font[TPL] = doc["TPL0FONT"] | 2;
   TPL_0maxwidth[TPL] = doc["TPL0MAXWIDTH"] | 116;
@@ -494,6 +567,7 @@ void importTemplateFile(char *tcontent)
   strlcpy(TPL_id[TPL], doc["TPLID"] | "T", sizeof(TPL_id[TPL]));
   strlcpy(TPL_name[TPL], doc["TPLNAME"] | "Template", sizeof(TPL_name[TPL]));
   TPL_side[TPL] = doc["TPLSIDE"] | 0;
+  TPL_invert[TPL] = doc["TPLINV"] | 0;
 // Field 0 - Station
   TPL_0font[TPL] = doc["TPL0FONT"] | 2;
   TPL_0maxwidth[TPL] = doc["TPL0MAXWIDTH"] | 116;
@@ -575,6 +649,7 @@ void saveTemplateFile(const char *templatexx)
   doc["TPLID"] = TPL_id[TPL];
   doc["TPLNAME"] = TPL_name[TPL];
   doc["TPLSIDE"] = TPL_side[TPL];
+  doc["TPLINV"] = TPL_invert[TPL];
 // Field 0 - Station
   doc["TPL0FONT"] = TPL_0font[TPL];
   doc["TPL0MAXWIDTH"] = TPL_0maxwidth[TPL];
