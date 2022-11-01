@@ -8,7 +8,7 @@
 -   Added constructor for 128x32 0.87" OLED I2C Display with SSD1316 controller. Not tested yet 
 -   Template - added Invert switch to templates. Inverts the whole display
 -   Template - increased number of logos from 10 to 20
--   Template - added NS logo (thanks @ksw2404)
+-   Template - added NS logo (thanks ksw2404)
 -   Webinterface - added update check
 -   Wiki - Troubleshooting page added
 -   3D printer data for 128x32 display case
