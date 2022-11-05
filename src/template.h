@@ -1,5 +1,5 @@
 // Roc-MQTT-Display TEMPLATES
-// Version 1.08
+// Version 1.08 rerelease
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 

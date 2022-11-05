@@ -5,7 +5,7 @@ sources via MQTT. A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can dri
 eight I2C OLED displays. Several D1 mini can run together so the total number 
 of displays is not limited.
 
-Version 1.08  October 30, 2022
+Version 1.08 rerelease  November 5, 2022
 
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
@@ -455,14 +455,14 @@ void setup()
 
   Serial.println(F("\nRoc-MQTT-Display"));
   Serial.println(config.VER);
-  Serial.print(F("\nCurrent MQTT broker IP-adress: "));
-  Serial.println(config.MQTT_IP);
+  Serial.println(F("FOR DEBUG INFORMATION set 'Enable debug messages' to 1 in CONFIGURATION"));
+  //Serial.print(F("\nCurrent MQTT broker IP-adress: "));
+  //Serial.println(config.MQTT_IP);
   if (strlen(config.MQTT_IP) < 7) {
     Serial.println(F("\nWARNING: MQTT broker IP-adress is missing or incomplete in CONFIGURATION"));
   }
-  Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
-  Serial.println(config.WIFI_DEVICENAME);
-  Serial.println(F("FOR DEBUG INFORMATION set 'Enable debug messages' to 1 in CONFIGURATION"));
+  //Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
+  //Serial.println(config.WIFI_DEVICENAME);
   Serial.print(F("\n  Displays enabled: "));
   Serial.print(config.NUMDISP);
   Serial.println(F(" / 8"));
@@ -535,10 +535,10 @@ void setup()
     }
   });
   ArduinoOTA.begin();
-  Serial.print(F("\nOTA Ready -> Port: "));
-  Serial.print(config.OTA_HOSTNAME);
-  Serial.print(F(" at "));
-  Serial.println(WiFi.localIP());
+  //Serial.print(F("\nOTA Ready -> Port: "));
+  //Serial.print(config.OTA_HOSTNAME);
+  //Serial.print(F(" at "));
+  //Serial.println(WiFi.localIP());
 
   // Initialize WEBSERVER
   webserver.on("/", []() {             // Define the handling function for / path
@@ -563,6 +563,10 @@ void setup()
 
   webserver.on("/tpl1", []() {         // Define the handling function for the /tpl1 path
     loadTpl1();
+  });
+
+  webserver.on("/tpl1sel", []() {      // Define the handling function for the /tpl1sel path
+    handleTpl1Select();
   });
 
   webserver.on("/tpl2", []() {         // Define the handling function for the /tpl2 path
@@ -1887,12 +1891,17 @@ void onConnectionEstablished()
     }, 1);
     Serial.println(F("Send test message to broker:"));
     client.publish("rmdtest/connectiontest", "rmdtest");
-    Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
-    Serial.println(config.WIFI_DEVICENAME);
-    Serial.println(F("                          or "));
-    Serial.print(F("                        http://"));
-    Serial.println(WiFi.localIP());
   }
+  Serial.print(F("\nOTA Ready -> Port: "));
+  Serial.print(config.OTA_HOSTNAME);
+  Serial.print(F(" at "));
+  Serial.println(WiFi.localIP());
+
+  Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
+  Serial.println(config.WIFI_DEVICENAME);
+  Serial.println(F("                          or "));
+  Serial.print(F("                        http://"));
+  Serial.println(WiFi.localIP());
 
   // Subscribe MQTT client to topic: "rocrail/service/info/clock" to receive Rocrail time
   //client.subscribe("rocrail/service/info/clock", [](const String & payload1) {

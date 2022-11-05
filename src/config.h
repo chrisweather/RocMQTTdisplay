@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.08
+// Version 1.08 rerelease
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -249,7 +249,7 @@ void loadTemplate(const char *templatefile)
   // Open template data json file for reading
   File file = LittleFS.open(templatefile, "r");
   delay(200);
-  StaticJsonDocument<1400> doc;
+  StaticJsonDocument<1800> doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
@@ -354,7 +354,7 @@ void saveTemplate(const char *templatefile)
     return;
   }
 
-  StaticJsonDocument<1400> doc;
+  StaticJsonDocument<1800> doc;
   doc["LOGOID0"] = logoId[0];
   doc["LOGOID1"] = logoId[1];
   doc["LOGOID2"] = logoId[2];

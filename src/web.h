@@ -1,5 +1,5 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 1.08
+// Version 1.08 rerelease
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -536,6 +536,20 @@ void loadTpl1()
   webserver.setContentLength( buf1.length() );
   webserver.send( 200, "text/html", buf1 );
   buf1 = "";
+}
+
+void handleTpl1Select()
+{
+  if (webserver.args() > 0 ) {
+    for ( uint8_t i = 0; i < webserver.args(); i++ ) {
+      if (webserver.argName(i) == "f_TPL_NO") { TPL = webserver.arg(webserver.argName(i)).toInt(); }
+    }
+    unsigned long tn = 0;
+    if(millis() > tn + 2000){
+      tn = millis();
+    }
+    loadTpl1();
+  }
 }
 
 void handleTpl1Submit()
