@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
 Roc-MQTT-Display
-Version 1.08
+Version 1.09
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
@@ -53,45 +53,66 @@ function buttonDownload() {
 <tr><td>Display update intervall</td><td><input type='number' class='infield' name='f_UPDSPEED' value='%UPDSPEED%' title='Slow down display update intervall by increasing the number, e.g. 30 = base speed + 30ms' size='4' maxlength='3' min='0' max='100' ></td></tr>
 <tr><td>Screensaver (min)</td><td><input type='number' class='infield' name='f_SCREENSAVER' value='%SCREENSAVER%' title='minutes without message received until screenSaver switches all displays into power save mode, 0=off' size='5' maxlength='4' min='0' max='600' ></td></tr>
 <tr><td>Screenshot Display 1</td><td><input type='number' class='infield' name='f_PRINTBUF' value='%PRINTBUF%' title='0=off, 1=print screenshot from buffer of display 1 to serial out as XBM image' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td>Displays</td></tr>
 <tr><td>Display IDs</td><td><table id='tbl2'><tr>
-<td><input type='text' class='infield2' name='f_DPL_ID0' value='%DPL_ID0%' title='Name of display 1 connected to this controller, e.g. D01' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID1' value='%DPL_ID1%' title='Name of display 2 connected to this controller, e.g. D02' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID2' value='%DPL_ID2%' title='Name of display 3 connected to this controller, e.g. D03' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID3' value='%DPL_ID3%' title='Name of display 4 connected to this controller, e.g. D04' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID4' value='%DPL_ID4%' title='Name of display 5 connected to this controller, e.g. D05' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID5' value='%DPL_ID5%' title='Name of display 6 connected to this controller, e.g. D06' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID6' value='%DPL_ID6%' title='Name of display 7 connected to this controller, e.g. D07' size='3' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_ID7' value='%DPL_ID7%' title='Name of display 8 connected to this controller, e.g. D08' size='3' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID0' value='%DPL_ID0%' title='Name of display 1 connected to this controller, e.g. D01' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID1' value='%DPL_ID1%' title='Name of display 2 connected to this controller, e.g. D02' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID2' value='%DPL_ID2%' title='Name of display 3 connected to this controller, e.g. D03' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID3' value='%DPL_ID3%' title='Name of display 4 connected to this controller, e.g. D04' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID4' value='%DPL_ID4%' title='Name of display 5 connected to this controller, e.g. D05' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID5' value='%DPL_ID5%' title='Name of display 6 connected to this controller, e.g. D06' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID6' value='%DPL_ID6%' title='Name of display 7 connected to this controller, e.g. D07' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_ID7' value='%DPL_ID7%' title='Name of display 8 connected to this controller, e.g. D08' size='4' maxlength='3' ></td>
+</tr></table></td></tr>
+<tr><td>Station</td><td><table id='tbl2'><tr>
+<td><input type='text' class='infield2' name='f_DPL_STATION00' value='%DPL_STATION00%' title='Station, where this display is installed' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION01' value='%DPL_STATION01%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION02' value='%DPL_STATION02%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION03' value='%DPL_STATION03%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION04' value='%DPL_STATION04%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION05' value='%DPL_STATION05%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION06' value='%DPL_STATION06%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION07' value='%DPL_STATION07%' size='4' maxlength='3' ></td>
+</tr></table></td></tr>
+<tr><td>Track</td><td><table id='tbl2'><tr>
+<td><input type='number' class='infield2' name='f_DPL_TRACK0' value='%DPL_TRACK0%' title='Track Number, where this display is installed' size='4' maxlength='2' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK1' value='%DPL_TRACK1%' size='4' maxlength='2' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK2' value='%DPL_TRACK2%' size='4' maxlength='2' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK3' value='%DPL_TRACK3%' size='4' maxlength='2' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK4' value='%DPL_TRACK4%' size='4' maxlength='2' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK5' value='%DPL_TRACK5%' size='4' maxlength='2' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK6' value='%DPL_TRACK6%' size='4' maxlength='2' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK7' value='%DPL_TRACK7%' size='4' maxlength='2' min='1' max='99' ></td>
 </tr></table></td></tr>
 <tr><td>Flip</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_FLIP0' value='%DPL_FLIP0%' title='1 = Flip this display by 180&deg;' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP1' value='%DPL_FLIP1%' title='1 = Flip this display by 180&deg;' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP2' value='%DPL_FLIP2%' title='1 = Flip this display by 180&deg;' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP3' value='%DPL_FLIP3%' title='1 = Flip this display by 180&deg;' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP4' value='%DPL_FLIP4%' title='1 = Flip this display by 180&deg;' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP5' value='%DPL_FLIP5%' title='1 = Flip this display by 180&deg;' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP6' value='%DPL_FLIP6%' title='1 = Flip this display by 180&deg;' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP7' value='%DPL_FLIP7%' title='1 = Flip this display by 180&deg;' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP0' value='%DPL_FLIP0%' title='1 = Flip this display by 180&deg;' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP1' value='%DPL_FLIP1%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP2' value='%DPL_FLIP2%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP3' value='%DPL_FLIP3%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP4' value='%DPL_FLIP4%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP5' value='%DPL_FLIP5%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP6' value='%DPL_FLIP6%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP7' value='%DPL_FLIP7%' size='4' maxlength='1' min='0' max='1' ></td>
 </tr></table></td></tr>
 <tr><td>Contrast</td><td><table id='tbl2'><tr>
 <td><input type='number' class='infield2' name='f_DPL_CONTRAST0' value='%DPL_CONTRAST0%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST1' value='%DPL_CONTRAST1%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST2' value='%DPL_CONTRAST2%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST3' value='%DPL_CONTRAST3%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST4' value='%DPL_CONTRAST4%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST5' value='%DPL_CONTRAST5%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST6' value='%DPL_CONTRAST6%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST7' value='%DPL_CONTRAST7%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST1' value='%DPL_CONTRAST1%' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST2' value='%DPL_CONTRAST2%' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST3' value='%DPL_CONTRAST3%' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST4' value='%DPL_CONTRAST4%' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST5' value='%DPL_CONTRAST5%' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST6' value='%DPL_CONTRAST6%' size='4' maxlength='4' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST7' value='%DPL_CONTRAST7%' size='4' maxlength='4' min='0' max='255' ></td>
 </tr></table></td></tr>
 <tr><td>Display Side</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_SIDE0' value='%DPL_SIDE0%' title='0=Side A <- track on left side, 1=Side B -> track on right side' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE1' value='%DPL_SIDE1%' title='0=Side A <- track on left side, 1=Side B -> track on right side' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE2' value='%DPL_SIDE2%' title='0=Side A <- track on left side, 1=Side B -> track on right side' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE3' value='%DPL_SIDE3%' title='0=Side A <- track on left side, 1=Side B -> track on right side' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE4' value='%DPL_SIDE4%' title='0=Side A <- track on left side, 1=Side B -> track on right side' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE5' value='%DPL_SIDE5%' title='0=Side A <- track on left side, 1=Side B -> track on right side' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE6' value='%DPL_SIDE6%' title='0=Side A <- track on left side, 1=Side B -> track on right side' size='3' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE7' value='%DPL_SIDE7%' title='0=Side A <- track on left side, 1=Side B -> track on right side' size='3' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE0' value='%DPL_SIDE0%' title='0=Side A <- track on left side, 1=Side B -> track on right side of the display' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE1' value='%DPL_SIDE1%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE2' value='%DPL_SIDE2%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE3' value='%DPL_SIDE3%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE4' value='%DPL_SIDE4%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE5' value='%DPL_SIDE5%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE6' value='%DPL_SIDE6%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE7' value='%DPL_SIDE7%' size='4' maxlength='1' min='0' max='1' ></td>
 </tr></table></td></tr>
 </table>
 </form>
