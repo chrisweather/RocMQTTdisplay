@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.08 rerelease
+// Version 1.09
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -24,7 +24,7 @@ struct Sec {
 };
 
 struct Config {
-  const char* VER = "1.08";
+  const char* VER = "1.09";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
   uint16_t WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
@@ -57,12 +57,13 @@ struct Config {
 };
 
 // Configuration for displays connected to this controller (Disp) 1-8
-//                          Disp1, Disp2, Disp3, Disp4, Disp5, Disp6, Disp7, Disp8
-char     DPL_id[8][4] =    { "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08" };  // ID's of Displays 1-8 connected to this controller, e.g. D01...D99
-uint8_t  DPL_flip[] =      {     0,     1,     1,     0,     0,     1,     1,     0 };  // 0,1  180 degree hardware based rotation of the internal frame buffer when 1
-//uint8_t  DPL_rotation[] =  {     0,     0,     0,     0,     0,     0,     0,     0 };  // 0,90,180,270  software based display content rotation by 0, 90, 180, 270 degrees, still work in progress
-uint8_t  DPL_contrast[] =  {     1,     1,     1,     1,     1,     1,     1,     1 };  // 0-255  0=display off (works with some displays only), default = 1, 255 max brightness, change requires reboot
-uint8_t  DPL_side[] =      {     1,     0,     0,     1,     1,     0,     0,     1 };  // 0,1  0=Side A, 1=Side B
+//                            Disp1, Disp2, Disp3, Disp4, Disp5, Disp6, Disp7, Disp8
+char     DPL_id[8][4] =      { "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08" };  // ID's of Displays 1-8 connected to this controller, e.g. D01...D99
+char     DPL_station[8][4] = {    "",    "",    "",    "",    "",    "",    "",    "" };  // Station, where the display is installed, e.g. Hbg, Kln, Ams, Wie, ...
+uint8_t  DPL_track[] =       {     1,     1,     1,     1,     1,     1,     1,     1 };  // 1...99  track, where the display is installed, e.g. 1...99
+uint8_t  DPL_flip[] =        {     0,     1,     1,     0,     0,     1,     1,     0 };  // 0,1  180 degree hardware based rotation of the internal frame buffer when 1
+uint8_t  DPL_contrast[] =    {     1,     1,     1,     1,     1,     1,     1,     1 };  // 0-255  0=display off (works with some displays only), default = 1, 255 max brightness, change requires reboot
+uint8_t  DPL_side[] =        {     1,     0,     0,     1,     1,     0,     0,     1 };  // 0,1  0=Side A, 1=Side B
 
 struct Template {
 };
@@ -92,7 +93,7 @@ void loadConfiguration(const char *configfile, Config &config)
   // Open config json file for reading
   File file = LittleFS.open(configfile, "r");
   delay(200);
-  StaticJsonDocument<1800> doc;
+  StaticJsonDocument<2500> doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
@@ -135,6 +136,22 @@ void loadConfiguration(const char *configfile, Config &config)
   strlcpy(DPL_id[5], doc["DPL_ID5"] | "D06", sizeof(DPL_id[5]));
   strlcpy(DPL_id[6], doc["DPL_ID6"] | "D07", sizeof(DPL_id[6]));
   strlcpy(DPL_id[7], doc["DPL_ID7"] | "D08", sizeof(DPL_id[7]));
+  strlcpy(DPL_station[0], doc["DPL_STATION00"] | "", sizeof(DPL_station[0]));
+  strlcpy(DPL_station[1], doc["DPL_STATION01"] | "", sizeof(DPL_station[1]));
+  strlcpy(DPL_station[2], doc["DPL_STATION02"] | "", sizeof(DPL_station[2]));
+  strlcpy(DPL_station[3], doc["DPL_STATION03"] | "", sizeof(DPL_station[3]));
+  strlcpy(DPL_station[4], doc["DPL_STATION04"] | "", sizeof(DPL_station[4]));
+  strlcpy(DPL_station[5], doc["DPL_STATION05"] | "", sizeof(DPL_station[5]));
+  strlcpy(DPL_station[6], doc["DPL_STATION06"] | "", sizeof(DPL_station[6]));
+  strlcpy(DPL_station[7], doc["DPL_STATION07"] | "", sizeof(DPL_station[7]));
+  DPL_track[0] = doc["DPL_TRACK0"] | 1;
+  DPL_track[1] = doc["DPL_TRACK1"] | 1;
+  DPL_track[2] = doc["DPL_TRACK2"] | 1;
+  DPL_track[3] = doc["DPL_TRACK3"] | 1;
+  DPL_track[4] = doc["DPL_TRACK4"] | 1;
+  DPL_track[5] = doc["DPL_TRACK5"] | 1;
+  DPL_track[6] = doc["DPL_TRACK6"] | 1;
+  DPL_track[7] = doc["DPL_TRACK7"] | 1;
   DPL_flip[0] = doc["DPL_FLIP0"] | 0;
   DPL_flip[1] = doc["DPL_FLIP1"] | 0;
   DPL_flip[2] = doc["DPL_FLIP2"] | 0;
@@ -208,6 +225,22 @@ void saveConfiguration(const char *configfile, const Config &config)
   doc["DPL_ID5"] = DPL_id[5];
   doc["DPL_ID6"] = DPL_id[6];
   doc["DPL_ID7"] = DPL_id[7];
+  doc["DPL_STATION00"] = DPL_station[0];
+  doc["DPL_STATION01"] = DPL_station[1];
+  doc["DPL_STATION02"] = DPL_station[2];
+  doc["DPL_STATION03"] = DPL_station[3];
+  doc["DPL_STATION04"] = DPL_station[4];
+  doc["DPL_STATION05"] = DPL_station[5];
+  doc["DPL_STATION06"] = DPL_station[6];
+  doc["DPL_STATION07"] = DPL_station[7];
+  doc["DPL_TRACK0"] = DPL_track[0];
+  doc["DPL_TRACK1"] = DPL_track[1];
+  doc["DPL_TRACK2"] = DPL_track[2];
+  doc["DPL_TRACK3"] = DPL_track[3];
+  doc["DPL_TRACK4"] = DPL_track[4];
+  doc["DPL_TRACK5"] = DPL_track[5];
+  doc["DPL_TRACK6"] = DPL_track[6];
+  doc["DPL_TRACK7"] = DPL_track[7];
   doc["DPL_FLIP0"] = DPL_flip[0];
   doc["DPL_FLIP1"] = DPL_flip[1];
   doc["DPL_FLIP2"] = DPL_flip[2];

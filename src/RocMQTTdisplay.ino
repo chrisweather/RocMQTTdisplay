@@ -1,11 +1,11 @@
 /*########################################################################################
-                             Roc-MQTT-Display
+                             Rail-MQTT-Display
 Dynamic Passenger Information for Model Railroad Stations controlled by Rocrail or other 
 sources via MQTT. A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to 
 eight I2C OLED displays. Several D1 mini can run together so the total number 
 of displays is not limited.
 
-Version 1.08 rerelease  November 5, 2022
+Version 1.09  November 14, 2022
 
 Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay

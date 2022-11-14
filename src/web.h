@@ -1,5 +1,5 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 1.08 rerelease
+// Version 1.09
 // Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -88,6 +88,22 @@ void loadCfg()
   buf1.replace("%DPL_ID5%", String(DPL_id[5]));
   buf1.replace("%DPL_ID6%", String(DPL_id[6]));
   buf1.replace("%DPL_ID7%", String(DPL_id[7]));
+  buf1.replace("%DPL_STATION00%", String(DPL_station[0]));
+  buf1.replace("%DPL_STATION01%", String(DPL_station[1]));
+  buf1.replace("%DPL_STATION02%", String(DPL_station[2]));
+  buf1.replace("%DPL_STATION03%", String(DPL_station[3]));
+  buf1.replace("%DPL_STATION04%", String(DPL_station[4]));
+  buf1.replace("%DPL_STATION05%", String(DPL_station[5]));
+  buf1.replace("%DPL_STATION06%", String(DPL_station[6]));
+  buf1.replace("%DPL_STATION07%", String(DPL_station[7]));
+  buf1.replace("%DPL_TRACK0%", String(DPL_track[0]));
+  buf1.replace("%DPL_TRACK1%", String(DPL_track[1]));
+  buf1.replace("%DPL_TRACK2%", String(DPL_track[2]));
+  buf1.replace("%DPL_TRACK3%", String(DPL_track[3]));
+  buf1.replace("%DPL_TRACK4%", String(DPL_track[4]));
+  buf1.replace("%DPL_TRACK5%", String(DPL_track[5]));
+  buf1.replace("%DPL_TRACK6%", String(DPL_track[6]));
+  buf1.replace("%DPL_TRACK7%", String(DPL_track[7]));
   buf1.replace("%DPL_FLIP0%", String(DPL_flip[0]));
   buf1.replace("%DPL_FLIP1%", String(DPL_flip[1]));
   buf1.replace("%DPL_FLIP2%", String(DPL_flip[2]));
@@ -153,6 +169,22 @@ void handleCfgSubmit()
       if (webserver.argName(i) == "f_DPL_ID5") { webserver.arg(webserver.argName(i)).toCharArray(DPL_id[5], sizeof(DPL_id[5])); }
       if (webserver.argName(i) == "f_DPL_ID6") { webserver.arg(webserver.argName(i)).toCharArray(DPL_id[6], sizeof(DPL_id[6])); }
       if (webserver.argName(i) == "f_DPL_ID7") { webserver.arg(webserver.argName(i)).toCharArray(DPL_id[7], sizeof(DPL_id[7])); }
+      if (webserver.argName(i) == "f_DPL_STATION00") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[0], sizeof(DPL_station[0])); }
+      if (webserver.argName(i) == "f_DPL_STATION01") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[1], sizeof(DPL_station[1])); }
+      if (webserver.argName(i) == "f_DPL_STATION02") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[2], sizeof(DPL_station[2])); }
+      if (webserver.argName(i) == "f_DPL_STATION03") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[3], sizeof(DPL_station[3])); }
+      if (webserver.argName(i) == "f_DPL_STATION04") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[4], sizeof(DPL_station[4])); }
+      if (webserver.argName(i) == "f_DPL_STATION05") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[5], sizeof(DPL_station[5])); }
+      if (webserver.argName(i) == "f_DPL_STATION06") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[6], sizeof(DPL_station[6])); }
+      if (webserver.argName(i) == "f_DPL_STATION07") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[7], sizeof(DPL_station[7])); }
+      if (webserver.argName(i) == "f_DPL_TRACK0") { DPL_track[0] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DPL_TRACK1") { DPL_track[1] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DPL_TRACK2") { DPL_track[2] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DPL_TRACK3") { DPL_track[3] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DPL_TRACK4") { DPL_track[4] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DPL_TRACK5") { DPL_track[5] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DPL_TRACK6") { DPL_track[6] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DPL_TRACK7") { DPL_track[7] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_DPL_FLIP0") { DPL_flip[0] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_DPL_FLIP1") { DPL_flip[1] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_DPL_FLIP2") { DPL_flip[2] = webserver.arg(webserver.argName(i)).toInt(); }
@@ -273,7 +305,7 @@ void loadTpl1()
   buf1.replace("%TPL_LOGO19H%", String(logoh[19]));
 
   String lbuf = "";
-  
+/*  
   for (i = 0; i < (logo0size); i++){
     if (uint8_t(logo0[i]) < 16){
       lbuf += String("0x0");
@@ -532,7 +564,28 @@ void loadTpl1()
     if (i < (logo19size - 1)) lbuf += String(", ");
   }
   buf1.replace("%TPL_LOGO19%", String(lbuf));
-  
+  */
+  buf1.replace("%TPL_LOGO0%", String(lbuf));
+  buf1.replace("%TPL_LOGO1%", String(lbuf));
+  buf1.replace("%TPL_LOGO2%", String(lbuf));
+  buf1.replace("%TPL_LOGO3%", String(lbuf));
+  buf1.replace("%TPL_LOGO4%", String(lbuf));
+  buf1.replace("%TPL_LOGO5%", String(lbuf));
+  buf1.replace("%TPL_LOGO6%", String(lbuf));
+  buf1.replace("%TPL_LOGO7%", String(lbuf));
+  buf1.replace("%TPL_LOGO8%", String(lbuf));
+  buf1.replace("%TPL_LOGO9%", String(lbuf));
+  buf1.replace("%TPL_LOGO10%", String(lbuf));
+  buf1.replace("%TPL_LOGO11%", String(lbuf));
+  buf1.replace("%TPL_LOGO12%", String(lbuf));
+  buf1.replace("%TPL_LOGO13%", String(lbuf));
+  buf1.replace("%TPL_LOGO14%", String(lbuf));
+  buf1.replace("%TPL_LOGO15%", String(lbuf));
+  buf1.replace("%TPL_LOGO16%", String(lbuf));
+  buf1.replace("%TPL_LOGO17%", String(lbuf));
+  buf1.replace("%TPL_LOGO18%", String(lbuf));
+  buf1.replace("%TPL_LOGO19%", String(lbuf));
+
   webserver.setContentLength( buf1.length() );
   webserver.send( 200, "text/html", buf1 );
   buf1 = "";

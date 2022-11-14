@@ -1,5 +1,13 @@
 ## Roc-MQTT-Display Changelog
 
+### Roc-MQTT-Display release 1.09
+2022-11-14 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
+
+-   OTA default password set to 'RMDOTA'
+-   Webinterface - optimized
+-   Webinterface - added Station and Track info for each display in configuration.
+-   Fixes - for Issues #31, #32
+
 ### Roc-MQTT-Display release 1.08
 2022-10-30 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
 
