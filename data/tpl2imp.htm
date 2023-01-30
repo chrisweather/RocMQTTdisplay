@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
 Roc-MQTT-Display
-Version 1.09
-Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
+Version 1.10
+Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
 <html>
@@ -41,11 +41,10 @@ function buttonImport() {
  ta = "";
 }
 </script>
-
 <button type='button' class='button' title='Home' onclick='buttonHome()'>Home</button>   
 <button type='button' class='button' title='Template settings for Template 0-9' onclick='buttonTemplate2()'>Templates 2</button>   
 <button type='button' class='button' title='Import Template' onclick='buttonImport()'>Import</button>   
-
+</br></br>
 <table id='tbl1'>
 <form id='formImpTpl' name='formImpTpl' action='/submittpl2imp' method='POST'>
 <tr><td>
@@ -55,9 +54,8 @@ TPLID must be set to T0, T1, ... or T9. The existing template with that TPLID wi
 </textarea></td></tr>
 </form>
 </table>
-
 <footer>
-<p>Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.</p>
+<p>Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.</p>
 <p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
 </footer>
 </body>

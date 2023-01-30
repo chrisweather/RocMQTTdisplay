@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
 Roc-MQTT-Display
-Version 1.09
-Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
+Version 1.10
+Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
 <html>
@@ -19,12 +19,10 @@ function buttonHome() {
  window.open('/','_self');
 }
 </script>
-
 <form action='/submitsec' method='POST'>
 <button type='button' class='button' title='Home' onclick='buttonHome()'>Home</button>   
 <input type='submit' class='button' title='Save settings' value='Save'>
-</br>
-
+</br></br>
 <table id='tbl1'>
 <tr><td>WIFI SSID</td><td><input type='text' class='infield' name='f_WIFI_SSID' value='%WIFI_SSID%' title='Name of your Wifi network' size='51' maxlength='50' ></td></tr>
 <tr><td>WIFI PW</td><td><input type='password' class='infield' name='f_WIFI_PW' value='' title='Your Wifi password' size='51' maxlength='50' required ></td></tr>
@@ -35,7 +33,7 @@ function buttonHome() {
 </table>
 </form>
 <footer>
-<p>Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.</p>
+<p>Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.</p>
 <p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
 </footer>
 </body>

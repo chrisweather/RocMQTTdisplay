@@ -1,6 +1,6 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.09
-// Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
+// Version 1.10
+// Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
 #ifndef CONFIG_H
@@ -15,16 +15,17 @@
 uint8_t TPL = 0;
 
 struct Sec {
-  char WIFI_SSID[50];     // 
-  char WIFI_PW[50];       // 
-  char OTA_PW[50];        // 
-  char OTA_HASH[50];      // 
-  char MQTT_USER[50];     // 
-  char MQTT_PW[50];       // 
+  char WIFI_SSID[50];              // 
+  char WIFI_PW[50];                // 
+  char OTA_PW[50];                 // 
+  char OTA_HASH[50];               // 
+  char MQTT_USER[50];              // 
+  char MQTT_PW[50];                // 
 };
+Sec sec;                           // global sec object
 
 struct Config {
-  const char* VER = "1.09";
+  const char* VER = "1.10";
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
   uint16_t WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
@@ -37,7 +38,7 @@ struct Config {
 // MQTT
   char     MQTT_IP[18];            // MQTT broker IP-adress
   uint16_t MQTT_PORT = 1883;       // MQTT broker Port, default = 1883, currently hardcoded, change here if required
-  uint16_t MQTT_MSGSIZE;           // Max. MQTT packet size, default = 128 bytes
+  uint16_t MQTT_MSGSIZE;           // Max. MQTT packet size, default = 350 bytes
   uint16_t MQTT_KEEPALIVE1;        // MQTT keep alive, default = 15 sec, min = 1 sec
   uint16_t MQTT_RECONDELAY;        // Delay between MQTT reconnection attempts, default = 15000 ms
   uint8_t  MQTT_DEBUG;             // Enable MQTT debugging messages sent to serial output, 0=off, 1=on
@@ -55,11 +56,12 @@ struct Config {
   uint8_t  SCREENSAVER;            // minutes without MQTT message received until screenSaver switches all displays into power save mode, 0=off
   uint8_t  PRINTBUF;               // When 1: Print display buffer of display 1 to serial out as XBM, default: 0
 };
+Config config;
 
 // Configuration for displays connected to this controller (Disp) 1-8
 //                            Disp1, Disp2, Disp3, Disp4, Disp5, Disp6, Disp7, Disp8
 char     DPL_id[8][4] =      { "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08" };  // ID's of Displays 1-8 connected to this controller, e.g. D01...D99
-char     DPL_station[8][4] = {    "",    "",    "",    "",    "",    "",    "",    "" };  // Station, where the display is installed, e.g. Hbg, Kln, Ams, Wie, ...
+char     DPL_station[8][8] = {    "",    "",    "",    "",    "",    "",    "",    "" };  // Station, where the display is installed, e.g. Hamburg, Köln, Amsterd, Wien, ...
 uint8_t  DPL_track[] =       {     1,     1,     1,     1,     1,     1,     1,     1 };  // 1...99  track, where the display is installed, e.g. 1...99
 uint8_t  DPL_flip[] =        {     0,     1,     1,     0,     0,     1,     1,     0 };  // 0,1  180 degree hardware based rotation of the internal frame buffer when 1
 uint8_t  DPL_contrast[] =    {     1,     1,     1,     1,     1,     1,     1,     1 };  // 0-255  0=display off (works with some displays only), default = 1, 255 max brightness, change requires reboot
@@ -67,13 +69,11 @@ uint8_t  DPL_side[] =        {     1,     0,     0,     1,     1,     0,     0, 
 
 struct Template {
 };
-
-const char *secfile = "/rmdsec.txt";         // 8.3 filename
-Sec sec;                                     // global sec object
-const char *configfile = "/rmdcfg.txt";
-Config config;
-const char *templatefile = "/rmdtpl.txt";
 Template templ;
+
+const char *secfile      = "/rmdsec.txt";      // 8.3 filename
+const char *configfile   = "/rmdcfg.txt";
+const char *templatefile = "/rmdtpl.txt";
 
 const char *template00 = "/rmdtpl00.txt";
 const char *template01 = "/rmdtpl01.txt";
@@ -100,7 +100,7 @@ void loadConfiguration(const char *configfile, Config &config)
     Serial.print(F("deserializeJson() returned "));
     Serial.println(error.c_str());
     if (doc.capacity() == 0) {
-     Serial.println("allocation failed!");
+     Serial.println(F("allocation failed!"));
     }
   }
 
@@ -113,7 +113,7 @@ void loadConfiguration(const char *configfile, Config &config)
   strlcpy(config.NTP_TZ, doc["NTP_TZ"] | "CET-1CEST,M3.5.0,M10.5.0/3", sizeof(config.NTP_TZ));
   strlcpy(config.MQTT_IP, doc["MQTT_IP"] | "", sizeof(config.MQTT_IP));
   config.MQTT_PORT = doc["MQTT_PORT"] | 1883;
-  config.MQTT_MSGSIZE = doc["MQTT_MSGSIZE"] | 256;
+  config.MQTT_MSGSIZE = doc["MQTT_MSGSIZE"] | 350;
   config.MQTT_KEEPALIVE1 = doc["MQTT_KEEPALIVE"] | 15;
   config.MQTT_RECONDELAY = doc["MQTT_RECONDELAY"] | 10000;
   strlcpy(config.MQTT_TOPIC1, doc["MQTT_TOPIC1"] | "rocrail/service/info/clock", sizeof(config.MQTT_TOPIC1));
@@ -272,6 +272,45 @@ void saveConfiguration(const char *configfile, const Config &config)
   }
   file.close();
   delay(1000);
+}
+
+
+// Send configuration via MQTT
+String sendConfiguration(const Config &config)
+{
+String ConfigRMD = "";
+StaticJsonDocument<768> doc;
+  doc["RMDCFG"] = config.WIFI_DEVICENAME;
+  doc["V"] = config.VER;
+  doc["I0"] = DPL_id[0];
+  doc["I1"] = DPL_id[1];
+  doc["I2"] = DPL_id[2];
+  doc["I3"] = DPL_id[3];
+  doc["I4"] = DPL_id[4];
+  doc["I5"] = DPL_id[5];
+  doc["I6"] = DPL_id[6];
+  doc["I7"] = DPL_id[7];
+  doc["T0"] = DPL_track[0];
+  doc["T1"] = DPL_track[1];
+  doc["T2"] = DPL_track[2];
+  doc["T3"] = DPL_track[3];
+  doc["T4"] = DPL_track[4];
+  doc["T5"] = DPL_track[5];
+  doc["T6"] = DPL_track[6];
+  doc["T7"] = DPL_track[7];
+  doc["S0"] = DPL_station[0];
+  doc["S1"] = DPL_station[1];
+  doc["S2"] = DPL_station[2];
+  doc["S3"] = DPL_station[3];
+  doc["S4"] = DPL_station[4];
+  doc["S5"] = DPL_station[5];
+  doc["S6"] = DPL_station[6];
+  doc["S7"] = DPL_station[7];
+  // Serialize JSON to variable
+  if (serializeJson(doc, ConfigRMD) == 0) {
+    Serial.println(F("Failed to write json to variable"));
+  }
+  return ConfigRMD;
 }
 
 

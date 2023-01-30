@@ -5,9 +5,9 @@ sources via MQTT. A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can dri
 eight I2C OLED displays. Several D1 mini can run together so the total number 
 of displays is not limited.
 
-Version 1.09  November 14, 2022
+Version 1.10  January 29, 2023
 
-Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
+Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 
 ##########################################################################################
@@ -51,7 +51,6 @@ https://github.com/chrisweather/RocMQTTdisplay/wiki
     Example 6: ZZAMSG#D01D02#T0#Station01#1#Bonn#10:22#IC 56#IC#5min delayed###
 
     Example 7: Stationname: ZZAMSG#D01#T6#Bogenhausen#########
-
 
 ########################################################################################*/
 
@@ -142,15 +141,19 @@ unsigned long lastNTP = 0;    // used by NTP
 time_t now;
 tm tm;
 String ntptime = "00:00";
-String rrtime = "00:00";
 String ntpdate = "dd.mm.yyyy";
+String rrtime = "00:00";
+String rrtimelast = "00:00";
 String rrdate =  "dd.mm.yyyy";
+String rrdatelast = "01.01.2000";
+String RMDcfg = "";
 
 String ZZA1_Targets =     "";
 String ZZA1_Template =    "";
 String ZZA1_Station =     "";
 String ZZA1_Track =       "";
 String ZZA1_Destination = "";
+String ZZA1_DepartureO =  "";
 String ZZA1_Departure =   "";
 String ZZA1_Train =       "";
 String ZZA1_Type =        "";
@@ -163,6 +166,7 @@ String ZZA2_Template =    "";
 String ZZA2_Station =     "";
 String ZZA2_Track =       "";
 String ZZA2_Destination = "";
+String ZZA2_DepartureO =  "";
 String ZZA2_Departure =   "";
 String ZZA2_Train =       "";
 String ZZA2_Type =        "";
@@ -175,6 +179,7 @@ String ZZA3_Template =    "";
 String ZZA3_Station =     "";
 String ZZA3_Track =       "";
 String ZZA3_Destination = "";
+String ZZA3_DepartureO =  "";
 String ZZA3_Departure =   "";
 String ZZA3_Train =       "";
 String ZZA3_Type =        "";
@@ -187,6 +192,7 @@ String ZZA4_Template =    "";
 String ZZA4_Station =     "";
 String ZZA4_Track =       "";
 String ZZA4_Destination = "";
+String ZZA4_DepartureO =  "";
 String ZZA4_Departure =   "";
 String ZZA4_Train =       "";
 String ZZA4_Type =        "";
@@ -199,6 +205,7 @@ String ZZA5_Template =    "";
 String ZZA5_Station =     "";
 String ZZA5_Track =       "";
 String ZZA5_Destination = "";
+String ZZA5_DepartureO =  "";
 String ZZA5_Departure =   "";
 String ZZA5_Train =       "";
 String ZZA5_Type =        "";
@@ -211,6 +218,7 @@ String ZZA6_Template =    "";
 String ZZA6_Station =     "";
 String ZZA6_Track =       "";
 String ZZA6_Destination = "";
+String ZZA6_DepartureO =  "";
 String ZZA6_Departure =   "";
 String ZZA6_Train =       "";
 String ZZA6_Type =        "";
@@ -223,6 +231,7 @@ String ZZA7_Template =    "";
 String ZZA7_Station =     "";
 String ZZA7_Track =       "";
 String ZZA7_Destination = "";
+String ZZA7_DepartureO =  "";
 String ZZA7_Departure =   "";
 String ZZA7_Train =       "";
 String ZZA7_Type =        "";
@@ -235,6 +244,7 @@ String ZZA8_Template =    "";
 String ZZA8_Station =     "";
 String ZZA8_Track =       "";
 String ZZA8_Destination = "";
+String ZZA8_DepartureO =  "";
 String ZZA8_Departure =   "";
 String ZZA8_Train =       "";
 String ZZA8_Type =        "";
@@ -786,7 +796,7 @@ void send2display1(void)
   }
   //disp.setContrast(DPL_contrast[0]);
   // Message
-  // *** Message only, in the middle of the display ***
+  // *** Message only ***
   if (TPL_6scroll[t] != 1){
     if (ZZA1_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
@@ -802,7 +812,7 @@ void send2display1(void)
     }
   }
   else {
-    // *** Scrolling message on top ***
+    // *** Scrolling message ***
     if (ZZA1_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width1 = disp.getUTF8Width(ZZA1_MessageLoop.c_str());
@@ -818,7 +828,7 @@ void send2display1(void)
       }
       x = offset1;
       do {
-        disp.drawUTF8(x, TPL_6posy[t], ZZA1_MessageLoop.c_str());  // !!!!!!!!!!!!!
+        disp.drawUTF8(x, TPL_6posy[t], ZZA1_MessageLoop.c_str());
         x += width1;
       //} while( x < disp.getDisplayWidth());
       } while( x < config.DISPWIDTH);
@@ -935,7 +945,7 @@ void send2display2(void)
   }
   //disp.setContrast(DPL_contrast[1]);
   // Message
-  // *** Message only, in the middle of the display ***
+  // *** Message only ***
   if (TPL_6scroll[t] != 1){
     if (ZZA2_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
@@ -951,7 +961,7 @@ void send2display2(void)
     }
   }
   else {
-    // *** Scrolling message on top ***
+    // *** Scrolling message ***
     if (ZZA2_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width2 = disp.getUTF8Width(ZZA2_MessageLoop.c_str());
@@ -965,7 +975,8 @@ void send2display2(void)
       }
       x = offset2;
       do {
-        disp.drawUTF8(x, 8, ZZA2_MessageLoop.c_str());
+        //disp.drawUTF8(x, 8, ZZA2_MessageLoop.c_str());
+        disp.drawUTF8(x, TPL_6posy[t], ZZA2_MessageLoop.c_str());
         x += width2;
       } while( x < config.DISPWIDTH);
     }
@@ -1044,7 +1055,7 @@ void send2display3(void)
   }
   //disp.setContrast(DPL_contrast[2]);
   // Message
-  // *** Message only, in the middle of the display ***
+  // *** Message only ***
   if (TPL_6scroll[t] != 1){
     if (ZZA3_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
@@ -1060,7 +1071,7 @@ void send2display3(void)
     }
   }
   else {
-    // *** Scrolling message on top ***
+    // *** Scrolling message ***
     if (ZZA3_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width3 = disp.getUTF8Width(ZZA3_MessageLoop.c_str());
@@ -1074,7 +1085,7 @@ void send2display3(void)
       }
       x = offset3;
       do {
-        disp.drawUTF8(x, 8, ZZA3_MessageLoop.c_str());
+        disp.drawUTF8(x, TPL_6posy[t], ZZA3_MessageLoop.c_str());
         x += width3;
       } while( x < config.DISPWIDTH);
     }
@@ -1153,7 +1164,7 @@ void send2display4(void)
   }
   //disp.setContrast(DPL_contrast[3]);
   // Message
-  // *** Message only, in the middle of the display ***
+  // *** Message only ***
   if (TPL_6scroll[t] != 1){
     if (ZZA4_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
@@ -1169,7 +1180,7 @@ void send2display4(void)
     }
   }
   else {
-    // *** Scrolling message on top ***
+    // *** Scrolling message ***
     if (ZZA4_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width4 = disp.getUTF8Width(ZZA4_MessageLoop.c_str());
@@ -1183,7 +1194,7 @@ void send2display4(void)
       }
       x = offset4;
       do {
-        disp.drawUTF8(x, 8, ZZA4_MessageLoop.c_str());
+        disp.drawUTF8(x, TPL_6posy[t], ZZA4_MessageLoop.c_str());
         x += width4;
       } while( x < disp.getDisplayWidth());
     }
@@ -1262,7 +1273,7 @@ void send2display5(void)
   }
   //disp.setContrast(DPL_contrast[4]);
   // Message
-  // *** Message only, in the middle of the display ***
+  // *** Message only ***
   if (TPL_6scroll[t] != 1){
     if (ZZA5_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
@@ -1278,7 +1289,7 @@ void send2display5(void)
     }
   }
   else {
-    // *** Scrolling message on top ***
+    // *** Scrolling message ***
     if (ZZA5_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width5 = disp.getUTF8Width(ZZA5_MessageLoop.c_str());
@@ -1292,7 +1303,7 @@ void send2display5(void)
       }
       x = offset5;
       do {
-        disp.drawUTF8(x, 8, ZZA5_MessageLoop.c_str());
+        disp.drawUTF8(x, TPL_6posy[t], ZZA5_MessageLoop.c_str());
         x += width5;
       } while( x < config.DISPWIDTH);
     }
@@ -1371,7 +1382,7 @@ void send2display6(void)
   }
   //disp.setContrast(DPL_contrast[5]);
   // Message
-  // *** Message only, in the middle of the display ***
+  // *** Message only ***
   if (TPL_6scroll[t] != 1){
     if (ZZA6_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
@@ -1387,7 +1398,7 @@ void send2display6(void)
     }
   }
   else {
-    // *** Scrolling message on top ***
+    // *** Scrolling message ***
     if (ZZA6_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width6 = disp.getUTF8Width(ZZA6_MessageLoop.c_str());
@@ -1401,7 +1412,7 @@ void send2display6(void)
       }
       x = offset6;
       do {
-        disp.drawUTF8(x, 8, ZZA6_MessageLoop.c_str());
+        disp.drawUTF8(x, TPL_6posy[t], ZZA6_MessageLoop.c_str());
         x += width6;
       } while( x < config.DISPWIDTH);
     }
@@ -1480,7 +1491,7 @@ void send2display7(void)
   }
   //disp.setContrast(DPL_contrast[6]);
   // Message
-  // *** Message only, in the middle of the display ***
+  // *** Message only ***
   if (TPL_6scroll[t] != 1){
     if (ZZA7_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
@@ -1496,7 +1507,7 @@ void send2display7(void)
     }
   }
   else {
-    // *** Scrolling message on top ***
+    // *** Scrolling message ***
     if (ZZA7_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width7 = disp.getUTF8Width(ZZA7_MessageLoop.c_str());
@@ -1510,7 +1521,7 @@ void send2display7(void)
       }
       x = offset7;
       do {
-        disp.drawUTF8(x, 8, ZZA7_MessageLoop.c_str());
+        disp.drawUTF8(x, TPL_6posy[t], ZZA7_MessageLoop.c_str());
         x += width7;
       } while( x < config.DISPWIDTH);
     }
@@ -1589,7 +1600,7 @@ void send2display8(void)
   }
   //disp.setContrast(DPL_contrast[7]);
   // Message
-  // *** Message only, in the middle of the display ***
+  // *** Message only ***
   if (TPL_6scroll[t] != 1){
     if (ZZA8_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
@@ -1605,7 +1616,7 @@ void send2display8(void)
     }
   }
   else {
-    // *** Scrolling message on top ***
+    // *** Scrolling message ***
     if (ZZA8_Message.length() > 1){
       disp.setFont(fontno[TPL_6font[t]]);
       width8 = disp.getUTF8Width(ZZA8_MessageLoop.c_str());
@@ -1619,7 +1630,7 @@ void send2display8(void)
       }
       x = offset8;
       do {
-        disp.drawUTF8(x, 8, ZZA8_MessageLoop.c_str());
+        disp.drawUTF8(x, TPL_6posy[t], ZZA8_MessageLoop.c_str());
         x += width8;
       } while( x < config.DISPWIDTH);
     }
@@ -1817,6 +1828,8 @@ void runCmd(){
   ZZA1_Message.replace("{rrdate}", rrdate);
   ZZA1_MessageLoop = " +++ " + ZZA1_Message;
   width1 = disp.getUTF8Width(ZZA1_MessageLoop.c_str());
+  ZZA1_Departure = ZZA1_DepartureO;
+  ZZA1_Departure.replace("{rrtime}", rrtime);
 
   ZZA2_Message = ZZA2_MessageO;
   ZZA2_Message.replace("{ntptime}", ntptime);
@@ -1825,6 +1838,8 @@ void runCmd(){
   ZZA2_Message.replace("{rrdate}", rrdate);
   ZZA2_MessageLoop = " +++ " + ZZA2_Message;
   width2 = disp.getUTF8Width(ZZA2_MessageLoop.c_str());
+  ZZA2_Departure = ZZA2_DepartureO;
+  ZZA2_Departure.replace("{rrtime}", rrtime);
 
   ZZA3_Message = ZZA3_MessageO;
   ZZA3_Message.replace("{ntptime}", ntptime);
@@ -1833,6 +1848,8 @@ void runCmd(){
   ZZA3_Message.replace("{rrdate}", rrdate);
   ZZA3_MessageLoop = " +++ " + ZZA3_Message;
   width3 = disp.getUTF8Width(ZZA3_MessageLoop.c_str());
+  ZZA3_Departure = ZZA3_DepartureO;
+  ZZA3_Departure.replace("{rrtime}", rrtime);
 
   ZZA4_Message = ZZA4_MessageO;
   ZZA4_Message.replace("{ntptime}", ntptime);
@@ -1841,6 +1858,8 @@ void runCmd(){
   ZZA4_Message.replace("{rrdate}", rrdate);
   ZZA4_MessageLoop = " +++ " + ZZA4_Message;
   width4 = disp.getUTF8Width(ZZA4_MessageLoop.c_str());
+  ZZA4_Departure = ZZA4_DepartureO;
+  ZZA4_Departure.replace("{rrtime}", rrtime);
 
   ZZA5_Message = ZZA5_MessageO;
   ZZA5_Message.replace("{ntptime}", ntptime);
@@ -1849,6 +1868,8 @@ void runCmd(){
   ZZA5_Message.replace("{rrdate}", rrdate);
   ZZA5_MessageLoop = " +++ " + ZZA5_Message;
   width5 = disp.getUTF8Width(ZZA5_MessageLoop.c_str());
+  ZZA5_Departure = ZZA5_DepartureO;
+  ZZA5_Departure.replace("{rrtime}", rrtime);
 
   ZZA6_Message = ZZA6_MessageO;
   ZZA6_Message.replace("{ntptime}", ntptime);
@@ -1857,6 +1878,8 @@ void runCmd(){
   ZZA6_Message.replace("{rrdate}", rrdate);
   ZZA6_MessageLoop = " +++ " + ZZA6_Message;
   width6 = disp.getUTF8Width(ZZA6_MessageLoop.c_str());
+  ZZA6_Departure = ZZA6_DepartureO;
+  ZZA6_Departure.replace("{rrtime}", rrtime);
 
   ZZA7_Message = ZZA7_MessageO;
   ZZA7_Message.replace("{ntptime}", ntptime);
@@ -1865,6 +1888,8 @@ void runCmd(){
   ZZA7_Message.replace("{rrdate}", rrdate);
   ZZA7_MessageLoop = " +++ " + ZZA7_Message;
   width7 = disp.getUTF8Width(ZZA7_MessageLoop.c_str());
+  ZZA7_Departure = ZZA7_DepartureO;
+  ZZA7_Departure.replace("{rrtime}", rrtime);
 
   ZZA8_Message = ZZA8_MessageO;
   ZZA8_Message.replace("{ntptime}", ntptime);
@@ -1873,25 +1898,14 @@ void runCmd(){
   ZZA8_Message.replace("{rrdate}", rrdate);
   ZZA8_MessageLoop = " +++ " + ZZA8_Message;
   width8 = disp.getUTF8Width(ZZA8_MessageLoop.c_str());
+  ZZA8_Departure = ZZA8_DepartureO;
+  ZZA8_Departure.replace("{rrtime}", rrtime);
 }
 
 
 // This function is called when WIFI and MQTT are connected
 void onConnectionEstablished()
 {
-  // Subscribe MQTT client to topic: "rmdtest/connectiontest" to test the broker connection when debug messages are enabled
-  if (config.MQTT_DEBUG == 1){
-    client.subscribe("rmdtest/connectiontest", [](const String & payload0){
-      if (payload0 == "rmdtest"){
-        Serial.println((String)"\nMQTT broker successfully connected at " + config.MQTT_IP + ":" + config.MQTT_PORT + "\n");
-      }
-      else {
-        Serial.println((String)"\nNO connection to MQTT broker at " + config.MQTT_IP + ":" + config.MQTT_PORT + " !!!\n");
-      }
-    }, 1);
-    Serial.println(F("Send test message to broker:"));
-    client.publish("rmdtest/connectiontest", "rmdtest");
-  }
   Serial.print(F("\nOTA Ready -> Port: "));
   Serial.print(config.OTA_HOSTNAME);
   Serial.print(F(" at "));
@@ -1902,58 +1916,81 @@ void onConnectionEstablished()
   Serial.println(F("                          or "));
   Serial.print(F("                        http://"));
   Serial.println(WiFi.localIP());
+  //Serial.println("\n");
 
-  // Subscribe MQTT client to topic: "rocrail/service/info/clock" to receive Rocrail time
-  //client.subscribe("rocrail/service/info/clock", [](const String & payload1) {
+  // Subscribe MQTT client to topic "rmnet" to test the broker connection and communicate with other RM modules
+  if (client.isMqttConnected() == true){
+    Serial.println((String)"\nMQTT broker successfully connected at " + config.MQTT_IP + ":" + config.MQTT_PORT + "\n");
+  }
+  // Subscribe MQTT client to topic: "rmnet/#"
+  client.subscribe("rmnet/#", [](const String & payload0){
+    if (payload0 == "sendrmdcfg"){
+      Serial.println(F("Publish configuration: "));
+      client.publish("rmnet/config", sendConfiguration(config), false);
+    }
+  }, 1);
+
+  // Subscribe MQTT client to topic "rocrail/service/info/clock" to receive Rocrail time
   client.subscribe(config.MQTT_TOPIC1, [](const String & payload1) {
     //Serial.println(payload1);
     // <clock divider="1" hour="18" minute="40" wday="5" mday="12" month="2" year="2021" time="1613151626" temp="20" bri="255" lux="0" pressure="0" humidity="0" cmd="sync"/>
-    String h = payload1.substring(payload1.indexOf("hour") + 6, payload1.indexOf("minute") - 2);
-    if (h.length() < 2){
-      h = "0" + h;
+    if (payload1.indexOf("sync") < 1){
+      //rrtime = "00:00";
+      rrtime = rrtimelast;
+      //rrdate = "01.01.2000";
+      rrdate = rrdatelast;
     }
-    String m = payload1.substring(payload1.indexOf("minute") + 8, payload1.indexOf("wday") - 2);
-    if (m.length() < 2){
-      m = "0" + m;
-    }
-    uint8_t w = (payload1.substring(payload1.indexOf("wday") + 6, payload1.indexOf("mday") - 2)).toInt();
-    String wd = "";
-    switch (w) {
-      case 1: wd = "Mo";
-              break;
-      case 2: wd = "Di";
-              break;
-      case 3: wd = "Mi";
-              break;
-      case 4: wd = "Do";
-              break;
-      case 5: wd = "Fr";
-              break;
-      case 6: wd = "Sa";
-              break;
-      case 7: wd = "So";
-              break;
-    }
-    String d = payload1.substring(payload1.indexOf("mday") + 6, payload1.indexOf("month") - 2);
-    if (d.length() < 2){
-      d = "0" + d;
-    }
-    String mo = payload1.substring(payload1.indexOf("month") + 7, payload1.indexOf("year") - 2);
-    if (mo.length() < 2){
-      mo = "0" + mo;
-    }
-    String y = payload1.substring(payload1.indexOf("year") + 6, payload1.indexOf("time") - 2);
+    else
+    {
+      String h = payload1.substring(payload1.indexOf("hour") + 6, payload1.indexOf("minute") - 2);
+      if (h.length() < 2){
+        h = "0" + h;
+      }
+      String m = payload1.substring(payload1.indexOf("minute") + 8, payload1.indexOf("wday") - 2);
+      if (m.length() < 2){
+        m = "0" + m;
+      }
+      uint8_t w = (payload1.substring(payload1.indexOf("wday") + 6, payload1.indexOf("mday") - 2)).toInt();
+      String wd = "";
+      switch (w) {
+        case 1: wd = "Mo";
+                break;
+        case 2: wd = "Di";
+                break;
+        case 3: wd = "Mi";
+                break;
+        case 4: wd = "Do";
+                break;
+        case 5: wd = "Fr";
+                break;
+        case 6: wd = "Sa";
+                break;
+        case 7: wd = "So";
+                break;
+      }
+      String d = payload1.substring(payload1.indexOf("mday") + 6, payload1.indexOf("month") - 2);
+      if (d.length() < 2){
+        d = "0" + d;
+      }
+      String mo = payload1.substring(payload1.indexOf("month") + 7, payload1.indexOf("year") - 2);
+      if (mo.length() < 2){
+        mo = "0" + mo;
+      }
+      String y = payload1.substring(payload1.indexOf("year") + 6, payload1.indexOf("time") - 2);
     
-    rrtime = h + ":" + m;
-    rrdate = d + "." + mo + "." + y;
+      rrtime = h + ":" + m;
+      rrtimelast = rrtime;
+      rrdate = d + "." + mo + "." + y;
+      rrdatelast = rrdate;
+    }
     runCmd();
   }, 1);
 
-  // Subscribe MQTT client to topic: "rocrail/service/info/tx" to receive messages sent by Rocrail text fields or other MQTT sources
+  // Subscribe MQTT client to topic "rocrail/service/info/tx" to receive messages sent by Rocrail text fields or other MQTT sources
   client.subscribe(config.MQTT_TOPIC2, [](const String & payload2) {
     String pld = payload2.substring(payload2.indexOf("ZZAMSG"), payload2.length() - 4);
     if (config.MQTT_DEBUG == 1){
-      Serial.println("Received message: " + payload2);
+      Serial.println("Received message:  " + payload2);
       Serial.println("Received payload:  " + pld);
       //Serial.println(strlen(config.MQTT_DELIMITER));
       //Serial.println(config.MQTT_DELIMITER);
@@ -1976,7 +2013,6 @@ void onConnectionEstablished()
       uint8_t start09 = start08 + 1 + pld.substring(start08).indexOf("#");  // Train Type e.g. ICE, IC, ...
       uint8_t start10 = start09 + 1 + pld.substring(start09).indexOf("#");  // Message Text
 
-
       // Deactivate / Reset ScreenSaver
       screenSaver(0);
       lastMsg = millis();
@@ -1988,12 +2024,14 @@ void onConnectionEstablished()
         ZZA1_Station = pld.substring(start03, start04 -1);
         ZZA1_Track = pld.substring(start04, start05 -1);
         ZZA1_Destination = pld.substring(start05, start06 -1);
-        ZZA1_Departure = pld.substring(start06, start07 -1);
+        ZZA1_DepartureO = pld.substring(start06, start07 -1);
+        ZZA1_Departure = ZZA1_DepartureO;
         ZZA1_Train = pld.substring(start07, start08 -1);
         ZZA1_Type = pld.substring(start08, start09 -1);
         ZZA1_MessageO = pld.substring(start09, start10 -1);
         ZZA1_Message = ZZA1_MessageO;
         if (pld.indexOf("{") > 0){
+          ZZA1_Departure.replace("{rrtime}", rrtime);
           ZZA1_Message.replace("{ntptime}", ntptime);
           ZZA1_Message.replace("{ntpdate}", ntpdate);
           ZZA1_Message.replace("{rrtime}", rrtime);
@@ -2010,12 +2048,14 @@ void onConnectionEstablished()
         ZZA2_Station = pld.substring(start03, start04 -1);
         ZZA2_Track = pld.substring(start04, start05 -1);
         ZZA2_Destination = pld.substring(start05, start06 -1);
-        ZZA2_Departure = pld.substring(start06, start07 -1);
+        ZZA2_DepartureO = pld.substring(start06, start07 -1);
+        ZZA2_Departure = ZZA2_DepartureO;
         ZZA2_Train = pld.substring(start07, start08 -1);
         ZZA2_Type = pld.substring(start08, start09 -1);
         ZZA2_MessageO = pld.substring(start09, start10 -1);
         ZZA2_Message = ZZA2_MessageO;
         if (pld.indexOf("{") > 0){
+          ZZA2_Departure.replace("{rrtime}", rrtime);
           ZZA2_Message.replace("{ntptime}", ntptime);
           ZZA2_Message.replace("{ntpdate}", ntpdate);
           ZZA2_Message.replace("{rrtime}", rrtime);
@@ -2032,12 +2072,14 @@ void onConnectionEstablished()
         ZZA3_Station = pld.substring(start03, start04 -1);
         ZZA3_Track = pld.substring(start04, start05 -1);
         ZZA3_Destination = pld.substring(start05, start06 -1);
-        ZZA3_Departure = pld.substring(start06, start07 -1);
+        ZZA3_DepartureO = pld.substring(start06, start07 -1);
+        ZZA3_Departure = ZZA3_DepartureO;
         ZZA3_Train = pld.substring(start07, start08 -1);
         ZZA3_Type = pld.substring(start08, start09 -1);
         ZZA3_MessageO = pld.substring(start09, start10 -1);
         ZZA3_Message = ZZA3_MessageO;
         if (pld.indexOf("{") > 0){
+          ZZA3_Departure.replace("{rrtime}", rrtime);
           ZZA3_Message.replace("{ntptime}", ntptime);
           ZZA3_Message.replace("{ntpdate}", ntpdate);
           ZZA3_Message.replace("{rrtime}", rrtime);
@@ -2054,12 +2096,14 @@ void onConnectionEstablished()
         ZZA4_Station = pld.substring(start03, start04 -1);
         ZZA4_Track = pld.substring(start04, start05 -1);
         ZZA4_Destination = pld.substring(start05, start06 -1);
-        ZZA4_Departure = pld.substring(start06, start07 -1);
+        ZZA4_DepartureO = pld.substring(start06, start07 -1);
+        ZZA4_Departure = ZZA4_DepartureO;
         ZZA4_Train = pld.substring(start07, start08 -1);
         ZZA4_Type = pld.substring(start08, start09 -1);
         ZZA4_MessageO = pld.substring(start09, start10 -1);
         ZZA4_Message = ZZA4_MessageO;
         if (pld.indexOf("{") > 0){
+          ZZA4_Departure.replace("{rrtime}", rrtime);
           ZZA4_Message.replace("{ntptime}", ntptime);
           ZZA4_Message.replace("{ntpdate}", ntpdate);
           ZZA4_Message.replace("{rrtime}", rrtime);
@@ -2076,12 +2120,14 @@ void onConnectionEstablished()
         ZZA5_Station = pld.substring(start03, start04 -1);
         ZZA5_Track = pld.substring(start04, start05 -1);
         ZZA5_Destination = pld.substring(start05, start06 -1);
-        ZZA5_Departure = pld.substring(start06, start07 -1);
+        ZZA5_DepartureO = pld.substring(start06, start07 -1);
+        ZZA5_Departure = ZZA5_DepartureO;
         ZZA5_Train = pld.substring(start07, start08 -1);
         ZZA5_Type = pld.substring(start08, start09 -1);
         ZZA5_MessageO = pld.substring(start09, start10 -1);
         ZZA5_Message = ZZA5_MessageO;
         if (pld.indexOf("{") > 0){
+          ZZA5_Departure.replace("{rrtime}", rrtime);
           ZZA5_Message.replace("{ntptime}", ntptime);
           ZZA5_Message.replace("{ntpdate}", ntpdate);
           ZZA5_Message.replace("{rrtime}", rrtime);
@@ -2098,12 +2144,14 @@ void onConnectionEstablished()
         ZZA6_Station = pld.substring(start03, start04 -1);
         ZZA6_Track = pld.substring(start04, start05 -1);
         ZZA6_Destination = pld.substring(start05, start06 -1);
-        ZZA6_Departure = pld.substring(start06, start07 -1);
+        ZZA6_DepartureO = pld.substring(start06, start07 -1);
+        ZZA6_Departure = ZZA6_DepartureO;
         ZZA6_Train = pld.substring(start07, start08 -1);
         ZZA6_Type = pld.substring(start08, start09 -1);
         ZZA6_MessageO = pld.substring(start09, start10 -1);
         ZZA6_Message = ZZA6_MessageO;
         if (pld.indexOf("{") > 0){
+          ZZA6_Departure.replace("{rrtime}", rrtime);
           ZZA6_Message.replace("{ntptime}", ntptime);
           ZZA6_Message.replace("{ntpdate}", ntpdate);
           ZZA6_Message.replace("{rrtime}", rrtime);
@@ -2120,12 +2168,14 @@ void onConnectionEstablished()
         ZZA7_Station = pld.substring(start03, start04 -1);
         ZZA7_Track = pld.substring(start04, start05 -1);
         ZZA7_Destination = pld.substring(start05, start06 -1);
-        ZZA7_Departure = pld.substring(start06, start07 -1);
+        ZZA7_DepartureO = pld.substring(start06, start07 -1);
+        ZZA7_Departure = ZZA7_DepartureO;
         ZZA7_Train = pld.substring(start07, start08 -1);
         ZZA7_Type = pld.substring(start08, start09 -1);
         ZZA7_MessageO = pld.substring(start09, start10 -1);
         ZZA7_Message = ZZA7_MessageO;
         if (pld.indexOf("{") > 0){
+          ZZA7_Departure.replace("{rrtime}", rrtime);
           ZZA7_Message.replace("{ntptime}", ntptime);
           ZZA7_Message.replace("{ntpdate}", ntpdate);
           ZZA7_Message.replace("{rrtime}", rrtime);
@@ -2142,12 +2192,14 @@ void onConnectionEstablished()
         ZZA8_Station = pld.substring(start03, start04 -1);
         ZZA8_Track = pld.substring(start04, start05 -1);
         ZZA8_Destination = pld.substring(start05, start06 -1);
-        ZZA8_Departure = pld.substring(start06, start07 -1);
+        ZZA8_DepartureO = pld.substring(start06, start07 -1);
+        ZZA8_Departure = ZZA8_DepartureO;
         ZZA8_Train = pld.substring(start07, start08 -1);
         ZZA8_Type = pld.substring(start08, start09 -1);
         ZZA8_MessageO = pld.substring(start09, start10 -1);
         ZZA8_Message = ZZA8_MessageO;
         if (pld.indexOf("{") > 0){
+          ZZA8_Departure.replace("{rrtime}", rrtime);
           ZZA8_Message.replace("{ntptime}", ntptime);
           ZZA8_Message.replace("{ntpdate}", ntpdate);
           ZZA8_Message.replace("{rrtime}", rrtime);
@@ -2169,9 +2221,9 @@ void onConnectionEstablished()
 void loop()
 {
   client.loop();             // WIFI, MQTT
-  
+
   ArduinoOTA.handle();       // OTA
-  
+
   webserver.handleClient();  // WEBSERVER handling of incoming requests
 
   updateTime();              // NTP update time information

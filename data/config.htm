@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
 Roc-MQTT-Display
-Version 1.09
-Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
+Version 1.10
+Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
 <html>
@@ -22,13 +22,11 @@ function buttonDownload() {
  window.open('/download?file=/rmdcfg.txt','_blank');
 }
 </script>
-
 <form action='/submitcfg' method='POST'>
 <button type='button' class='button' title='Home' onclick='buttonHome()'>Home</button>   
 <button type='button' class='button' title='Download' onclick='buttonDownload()'>Download</button>   
 <input type='submit' class='button' title='Save settings' value='Save'>
-</br>
-
+</br></br>
 <table id='tbl1'>
 <tr><td>WIFI Devicename</td><td><input type='text' class='infield' name='f_WIFI_DEVICENAME' value='%WIFI_DEVICENAME%' title='Name of this controller in your Wifi network' size='19' maxlength='18' ></td></tr>
 <tr><td>WIFI reconnect delay (ms)</td><td><input type='number' class='infield' name='f_WIFI_RECONDELAY' value='%WIFI_RECONDELAY%' title='Wait x ms until reconnect attempt in case of connection loss' size='7' maxlength='6' min='5000' ></td></tr>
@@ -65,14 +63,14 @@ function buttonDownload() {
 <td><input type='text' class='infield2' name='f_DPL_ID7' value='%DPL_ID7%' title='Name of display 8 connected to this controller, e.g. D08' size='4' maxlength='3' ></td>
 </tr></table></td></tr>
 <tr><td>Station</td><td><table id='tbl2'><tr>
-<td><input type='text' class='infield2' name='f_DPL_STATION00' value='%DPL_STATION00%' title='Station, where this display is installed' size='4' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_STATION01' value='%DPL_STATION01%' size='4' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_STATION02' value='%DPL_STATION02%' size='4' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_STATION03' value='%DPL_STATION03%' size='4' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_STATION04' value='%DPL_STATION04%' size='4' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_STATION05' value='%DPL_STATION05%' size='4' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_STATION06' value='%DPL_STATION06%' size='4' maxlength='3' ></td>
-<td><input type='text' class='infield2' name='f_DPL_STATION07' value='%DPL_STATION07%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION00' value='%DPL_STATION00%' title='Station, where this display is installed' size='8' maxlength='7' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION01' value='%DPL_STATION01%' size='8' maxlength='7' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION02' value='%DPL_STATION02%' size='8' maxlength='7' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION03' value='%DPL_STATION03%' size='8' maxlength='7' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION04' value='%DPL_STATION04%' size='8' maxlength='7' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION05' value='%DPL_STATION05%' size='8' maxlength='7' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION06' value='%DPL_STATION06%' size='8' maxlength='7' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION07' value='%DPL_STATION07%' size='8' maxlength='7' ></td>
 </tr></table></td></tr>
 <tr><td>Track</td><td><table id='tbl2'><tr>
 <td><input type='number' class='infield2' name='f_DPL_TRACK0' value='%DPL_TRACK0%' title='Track Number, where this display is installed' size='4' maxlength='2' min='1' max='99' ></td>
@@ -117,7 +115,7 @@ function buttonDownload() {
 </table>
 </form>
 <footer>
-<p>Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.</p>
+<p>Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.</p>
 <p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
 </footer>
 </body>

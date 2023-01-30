@@ -1,5 +1,15 @@
 ## Roc-MQTT-Display Changelog
 
+### Roc-MQTT-Display release 1.10
+2023-01-29 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
+
+-   fixed an issue with scrolltext message field positioning - Thanks to Markus smn346
+-   added the option to use variable {rrtime} (Rocrail time) also in the departure field - Thanks to Markus smn346 for suggesting it!
+-   added station field to configuration, so every physical display can be assigned to a station, for future use
+-   added communication with other RM modules (for future use)
+-   Template - added ÖBB design templates - Thanks to Markus smn346 for sharing them!
+-   Hardware - added 3D printer data for Controller - Thanks to by Peter psuser1 for designing and sharing!
+
 ### Roc-MQTT-Display release 1.09
 2022-11-14 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
 

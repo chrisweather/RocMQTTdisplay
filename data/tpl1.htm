@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
 Roc-MQTT-Display
-Version 1.09
-Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.
+Version 1.10
+Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
 <html>
@@ -22,13 +22,11 @@ function buttonDownload() {
  window.open('/download?file=/rmdtpl.txt','_blank');
 }
 </script>
-
 <form action='/submittpl1' method='POST'>
 <button type='button' class='button' title='Home' onclick='buttonHome()'>Home</button>   
 <button type='button' class='button' title='Download' onclick='buttonDownload()'>Download</button>   
 <input type='submit' class='button' title='Save settings' value='Save'>
-</br>
-
+</br></br>
 <table id='tbl1'>
 <tr><td><a href='https://github.com/olikraus/u8g2/wiki/fntlistall' target='_blank'>Font 0</td><td> </td><td><input type='text' class='infield' name='f_TPL_FONT0' value='%TPL_FONT0%' title='Fontname from U8G2 font list (Read Only at the moment)' size='51' maxlength='50' readonly ></td></tr>
 <tr><td>Font 1</td><td> </td><td><input type='text' class='infield' name='f_TPL_FONT1' value='%TPL_FONT1%' size='51' maxlength='50' readonly ></td></tr>
@@ -65,7 +63,7 @@ function buttonDownload() {
 </table>
 </form>
 <footer>
-<p>Copyright (c) 2020-2022 Christian Heinrichs. All rights reserved.</p>
+<p>Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.</p>
 <p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
 </footer>
 </body>
