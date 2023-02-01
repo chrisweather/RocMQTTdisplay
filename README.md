@@ -11,9 +11,9 @@ Several controllers can run in parallel so the total number of displays is not l
 A friend of mine was looking for an easy way to run displays with live data in his model railroad environment. Right after this conversation this project was born.
 Since then it's a work in progress with already many nice features. If you want to share your experience with this code or have ideas for more features you are welcome to share them in the Issues or Discussions area. Have fun.
 
-### Roc-MQTT-Display Module
+### Roc-MQTT-Display Module 
 
-Latest Version 1.10 
+Latest Version 1.10  
 January 29, 2023 
 
 Thank you for your interest in the Roc-MQTT-Display project.
