@@ -11,6 +11,8 @@ Several controllers can run in parallel so the total number of displays is not l
 A friend of mine was looking for an easy way to run displays with live data in his model railroad environment. Right after this conversation this project was born.
 Since then it's a work in progress with already many nice features. If you want to share your experience with this code or have ideas for more features you are welcome to share them in the Issues or Discussions area. Have fun.
 
+### Roc-MQTT-Display Module
+
 Latest Version 1.10 
 January 29, 2023 
 
@@ -41,7 +43,7 @@ The goal of this project is to provide simple to use and inexpensive displays to
 - Webinterface for configuration
 - Updates via OTA
 
-Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://github.com/chrisweather/RocMQTTdisplay/wiki).
+Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://gith**ub.com/chrisweather/RocMQTTdisplay/wiki).
 
 Several more ideas and features are on the to do list.
 Please share your experience and ideas for improvements via GitHub Issues or Discussions function in English or Deutsch.  
