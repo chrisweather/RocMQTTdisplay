@@ -43,10 +43,14 @@ The goal of this project is to provide simple to use and inexpensive displays to
 - Webinterface for configuration
 - Updates via OTA
 
-Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://gith**ub.com/chrisweather/RocMQTTdisplay/wiki).
+Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://github.com/chrisweather/RocMQTTdisplay/wiki).
 
 Several more ideas and features are on the to do list.
 Please share your experience and ideas for improvements via GitHub Issues or Discussions function in English or Deutsch.  
 
 <img src="doc/InAction1.jpg" width="90%" alt="Trainstation"/>
 Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.  
+
+This project is also compatible now with the great display hardware work from this project [MobaLedLib 0.87" OLED-Adapter](https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter).  
+
+[**4 displays in action**](https://github.com/chrisweather/RocMQTTdisplay/assets/23246503/b6afaf83-e6d6-4c20-8327-4cd326259a30)  
