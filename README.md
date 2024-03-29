@@ -1,6 +1,6 @@
 # Roc-MQTT-Display
 
-Copyright (c) 2020-2023 Christian Heinrichs.
+Copyright (c) 2020-2024 Christian Heinrichs.
 All rights reserved.
 
 
@@ -52,7 +52,7 @@ Please share your experience and ideas for improvements via GitHub Issues or Dis
 Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.  
 <br>
 <br>
-This project is also compatible now with the great display hardware work from this project [MobaLedLib 0.87" OLED-Adapter](https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter).<br>
+This project is also compatible now with the great display hardware work from this project [MobaLedLib 0.87 OLED-Adapter](https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter).<br>
 Version 1.12 is in final testing and will be published soon. The Wiki will be updated then with the details for cabling and configuration.<br>
-Here you can find a preview of the OLED-Adapter with four 0.87" 128x32 displays.<br>
+Here you can find a preview of the OLED-Adapter with four 0.87 128x32 displays.<br>
 [**4 displays in action**](https://github.com/chrisweather/RocMQTTdisplay/assets/23246503/b6afaf83-e6d6-4c20-8327-4cd326259a30)  
