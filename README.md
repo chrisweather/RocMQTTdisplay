@@ -48,10 +48,10 @@ Architecture, Hard- and Software Requirements, Installation and Configuration ar
 Several more ideas and features are on the to do list.
 Please share your experience and ideas for improvements via GitHub Issues or Discussions function in English or Deutsch.  
 
-<img src="doc/InAction1.jpg" width="90%" alt="Trainstation"/>
+<img src="doc/InAction1.jpg" width="90%" alt="Trainstation with display"/>  
 Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.  
-
-This project is also compatible now with the great display hardware work from this project [MobaLedLib 0.87" OLED-Adapter](https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter).
+  
+This project is also compatible now with the great display hardware work from this project [MobaLedLib 0.87" OLED-Adapter](https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter).  
 Version 1.12 is in final testing and will be published soon. The Wiki will be updated then with the details for cabling and configuration.  
 Here you can find a preview of the OLED-Adapter with four 0.87" 128x32 displays.  
 [**4 displays in action**](https://github.com/chrisweather/RocMQTTdisplay/assets/23246503/4d15ef67-ca1c-4e37-88cf-b6d6ea18246c)  
