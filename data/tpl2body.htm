@@ -1,79 +1,78 @@
 <!--
 Roc-MQTT-Display
-Version 1.10
-Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
+Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
 <form name='formData' action='/submittpl2' method='POST'>
 <input type='submit' class='button' title='Save settings' value='Save'>
 <table id='tbl1'>
 <tr><td></td><td>Name</td><td><input type='text' class='infield' name='f_TPL_NAME0' value='%TPL_NAME0%' title='Name of the template' size='31' maxlength='30' ></td></tr>
-<tr><td></td><td>Side</td><td><input type='number' class='infield' name='f_TPL_SIDE0' value='%TPL_SIDE0%' title='Side of this template, 0=Side A, 1=Side B' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td></td><td>Invert</td><td><input type='number' class='infield' name='f_TPL_INV0' value='%TPL_INV0%' title='Invert display, 0=Normal, 1=Inverted' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>Side</td><td><input type='number' class='infield' name='f_TPL_SIDE0' value='%TPL_SIDE0%' title='Side of this template, 0=Side A, 1=Side B' size='2' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>Invert</td><td><input type='number' class='infield' name='f_TPL_INV0' value='%TPL_INV0%' title='Invert display, 0=Normal, 1=Inverted' size='2' maxlength='1' min='0' max='1' ></td></tr>
 
-<tr><td>Field 0 - Station</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_0FONT0' value='%TPL_0FONT0%' title='Font for Stationname' size='1' maxlength='1' min='0' max='9' ></td></tr>
-<tr><td></td><td>MaxWidth</td><td><input type='number' class='infield' name='f_TPL_0MAXWIDTH0' value='%TPL_0MAXWIDTH0%' title='Max width in pixel before Font2 is used' size='3' maxlength='3' min='0' ></td></tr>
-<tr><td></td><td>Font2</td><td><input type='number' class='infield' name='f_TPL_0FONT20' value='%TPL_0FONT20%' title='Narrow Font for longer Stationnames' size='1' maxlength='1' min='0' max='9' ></td></tr>
-<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_0DRAWCOLOR0' value='%TPL_0DRAWCOLOR0%' title='0, 1, 2' size='1' maxlength='1' min='0' max='2' ></td></tr>
-<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_0FONTMODE0' value='%TPL_0FONTMODE0%' title='0=solid, 1=transparent' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_0POSX0' value='%TPL_0POSX0%' title='Position x for Stationname' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_0POSY0' value='%TPL_0POSY0%' title='Position y for Stationname' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>Scroll</td><td><input type='number' class='infield' name='f_TPL_0SCROLL0' value='%TPL_0SCROLL0%' title='(not working yet, future feature) Scroll Stationname, 0=off, 1=on' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td>Field 0 - Station</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_0FONT0' value='%TPL_0FONT0%' title='Font for Stationname' size='2' maxlength='1' min='0' max='9' ></td></tr>
+<tr><td></td><td>MaxWidth</td><td><input type='number' class='infield' name='f_TPL_0MAXWIDTH0' value='%TPL_0MAXWIDTH0%' title='Max width in pixel before Font2 is used' size='4' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>Font2</td><td><input type='number' class='infield' name='f_TPL_0FONT20' value='%TPL_0FONT20%' title='Narrow Font for longer Stationnames' size='2' maxlength='1' min='0' max='9' ></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_0DRAWCOLOR0' value='%TPL_0DRAWCOLOR0%' title='0, 1, 2' size='2' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_0FONTMODE0' value='%TPL_0FONTMODE0%' title='0=solid, 1=transparent' size='2' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_0POSX0' value='%TPL_0POSX0%' title='Position x for Stationname' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_0POSY0' value='%TPL_0POSY0%' title='Position y for Stationname' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>Scroll</td><td><input type='number' class='infield' name='f_TPL_0SCROLL0' value='%TPL_0SCROLL0%' title='(not working yet, future feature) Scroll Stationname, 0=off, 1=on' size='2' maxlength='1' min='0' max='1' ></td></tr>
 
-<tr><td>Field 1 - Track</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_1FONT0' value='%TPL_1FONT0%' title='Font for Tracknumber' size='1' maxlength='1' min='0' max='9' ></td></tr>
-<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_1DRAWCOLOR0' value='%TPL_1DRAWCOLOR0%' title='0, 1, 2' size='1' maxlength='1' min='0' max='2' ></td></tr>
-<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_1FONTMODE0' value='%TPL_1FONTMODE0%' title='0=solid, 1=transparent' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_1POSX0' value='%TPL_1POSX0%' title='Position x for Tracknumer' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_1POSY0' value='%TPL_1POSY0%' title='Position y for Tracknumber' size='3' maxlength='3' ></td></tr>
+<tr><td>Field 1 - Track</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_1FONT0' value='%TPL_1FONT0%' title='Font for Tracknumber' size='2' maxlength='1' min='0' max='9' ></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_1DRAWCOLOR0' value='%TPL_1DRAWCOLOR0%' title='0, 1, 2' size='2' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_1FONTMODE0' value='%TPL_1FONTMODE0%' title='0=solid, 1=transparent' size='2' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_1POSX0' value='%TPL_1POSX0%' title='Position x for Tracknumer' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_1POSY0' value='%TPL_1POSY0%' title='Position y for Tracknumber' size='4' maxlength='3' ></td></tr>
 
-<tr><td>Field 2 - Destination</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_2FONT0' value='%TPL_2FONT0%' title='Font for Destinationname' size='1' maxlength='1' min='0' max='9' ></td></tr>
-<tr><td></td><td>MaxWidth</td><td><input type='number' class='infield' name='f_TPL_2MAXWIDTH0' value='%TPL_2MAXWIDTH0%' title='Max width in pixel before Font2 is used' size='3' maxlength='3' min='0' ></td></tr>
-<tr><td></td><td>Font2</td><td><input type='number' class='infield' name='f_TPL_2FONT20' value='%TPL_2FONT20%' title='Narrow Font for longer Destinationname' size='1' maxlength='1' min='0' max='9' ></td></tr>
-<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_2DRAWCOLOR0' value='%TPL_2DRAWCOLOR0%' title='0, 1, 2' size='1' maxlength='1' min='0' max='2' ></td></tr>
-<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_2FONTMODE0' value='%TPL_2FONTMODE0%' title='0=solid, 1=transparent' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_2POSX0' value='%TPL_2POSX0%' title='Position x for Destinationname' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_2POSY0' value='%TPL_2POSY0%' title='Position y for Destinationname' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>Scroll</td><td><input type='number' class='infield' name='f_TPL_2SCROLL0' value='%TPL_2SCROLL0%' title='(not working yet, future feature) Scroll Destinationname, 0=off, 1=on' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td>Field 2 - Destination</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_2FONT0' value='%TPL_2FONT0%' title='Font for Destinationname' size='2' maxlength='1' min='0' max='9' ></td></tr>
+<tr><td></td><td>MaxWidth</td><td><input type='number' class='infield' name='f_TPL_2MAXWIDTH0' value='%TPL_2MAXWIDTH0%' title='Max width in pixel before Font2 is used' size='4' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>Font2</td><td><input type='number' class='infield' name='f_TPL_2FONT20' value='%TPL_2FONT20%' title='Narrow Font for longer Destinationname' size='2' maxlength='1' min='0' max='9' ></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_2DRAWCOLOR0' value='%TPL_2DRAWCOLOR0%' title='0, 1, 2' size='2' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_2FONTMODE0' value='%TPL_2FONTMODE0%' title='0=solid, 1=transparent' size='2' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_2POSX0' value='%TPL_2POSX0%' title='Position x for Destinationname' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_2POSY0' value='%TPL_2POSY0%' title='Position y for Destinationname' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>Scroll</td><td><input type='number' class='infield' name='f_TPL_2SCROLL0' value='%TPL_2SCROLL0%' title='(not working yet, future feature) Scroll Destinationname, 0=off, 1=on' size='2' maxlength='1' min='0' max='1' ></td></tr>
 
-<tr><td>Field 3 - Departure</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_3FONT0' value='%TPL_3FONT0%' title='Font for Departuretime' size='1' maxlength='1' min='0' max='9' ></td></tr>
-<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_3DRAWCOLOR0' value='%TPL_3DRAWCOLOR0%' title='0, 1, 2' size='1' maxlength='1' min='0' max='2' ></td></tr>
-<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_3FONTMODE0' value='%TPL_3FONTMODE0%' title='0=solid, 1=transparent' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_3POSX0' value='%TPL_3POSX0%' title='Position x for Departuretime' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_3POSY0' value='%TPL_3POSY0%' title='Position y for Departuretime' size='3' maxlength='3' ></td></tr>
+<tr><td>Field 3 - Departure</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_3FONT0' value='%TPL_3FONT0%' title='Font for Departuretime' size='2' maxlength='1' min='0' max='9' ></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_3DRAWCOLOR0' value='%TPL_3DRAWCOLOR0%' title='0, 1, 2' size='2' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_3FONTMODE0' value='%TPL_3FONTMODE0%' title='0=solid, 1=transparent' size='2' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_3POSX0' value='%TPL_3POSX0%' title='Position x for Departuretime' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_3POSY0' value='%TPL_3POSY0%' title='Position y for Departuretime' size='4' maxlength='3' ></td></tr>
 
-<tr><td>Field 4 - Train</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_4FONT0' value='%TPL_4FONT0%' title='Font for Trainnumber' size='1' maxlength='1' min='0' max='9' ></td></tr>
-<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_4DRAWCOLOR0' value='%TPL_4DRAWCOLOR0%' title='0, 1, 2' size='1' maxlength='1' min='0' max='2' ></td></tr>
-<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_4FONTMODE0' value='%TPL_4FONTMODE0%' title='0=solid, 1=transparent' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_4POSX0' value='%TPL_4POSX0%' title='Position x for Trainnumber' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_4POSY0' value='%TPL_4POSY0%' title='Position y for Trainnumber' size='3' maxlength='3' ></td></tr>
+<tr><td>Field 4 - Train</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_4FONT0' value='%TPL_4FONT0%' title='Font for Trainnumber' size='2' maxlength='1' min='0' max='9' ></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_4DRAWCOLOR0' value='%TPL_4DRAWCOLOR0%' title='0, 1, 2' size='2' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_4FONTMODE0' value='%TPL_4FONTMODE0%' title='0=solid, 1=transparent' size='2' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_4POSX0' value='%TPL_4POSX0%' title='Position x for Trainnumber' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_4POSY0' value='%TPL_4POSY0%' title='Position y for Trainnumber' size='4' maxlength='3' ></td></tr>
 
-<tr><td>Field 5 - TrainType</td><td>LogoX</td><td><input type='number' class='infield' name='f_TPL_5LOGOX0' value='%TPL_5LOGOX0%' title='Position x for Logo' size='3' maxlength='3' min='0' ></td></tr>
-<tr><td></td><td>LogoY</td><td><input type='number' class='infield' name='f_TPL_5LOGOY0' value='%TPL_5LOGOY0%' title='Position y for Logo' size='3' maxlength='3' ></td></tr>
+<tr><td>Field 5 - TrainType</td><td>LogoX</td><td><input type='number' class='infield' name='f_TPL_5LOGOX0' value='%TPL_5LOGOX0%' title='Position x for Logo' size='4' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>LogoY</td><td><input type='number' class='infield' name='f_TPL_5LOGOY0' value='%TPL_5LOGOY0%' title='Position y for Logo' size='4' maxlength='3' ></td></tr>
 
-<tr><td>Field 6 - Message</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_6FONT0' value='%TPL_6FONT0%' title='Font for Message' size='1' maxlength='1' min='0' max='9' ></td></tr>
-<tr><td></td><td>MaxWidth</td><td><input type='number' class='infield' name='f_TPL_6MAXWIDTH0' value='%TPL_6MAXWIDTH0%' title='Max width in pixel before Font2 is used' size='3' maxlength='3' min='0' ></td></tr>
-<tr><td></td><td>Font2</td><td><input type='number' class='infield' name='f_TPL_6FONT20' value='%TPL_6FONT20%' title='Narrow Font for longer Messages' size='1' maxlength='1' min='0' max='9' ></td></tr>
-<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_6DRAWCOLOR0' value='%TPL_6DRAWCOLOR0%' title='0, 1, 2 depends on selected font' size='1' maxlength='1' min='0' max='2' ></td></tr>
-<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_6FONTMODE0' value='%TPL_6FONTMODE0%' title='0=solid, 1=transparent' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_6POSX0' value='%TPL_6POSX0%' title='Position x for Message' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_6POSY0' value='%TPL_6POSY0%' title='Position y for Message, bottom of font' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>Scroll</td><td><input type='number' class='infield' name='f_TPL_6SCROLL0' value='%TPL_6SCROLL0%' title='Scroll Message, 0=off, 1=on' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td>Field 6 - Message</td><td>Font</td><td><input type='number' class='infield' name='f_TPL_6FONT0' value='%TPL_6FONT0%' title='Font for Message' size='2' maxlength='1' min='0' max='9' ></td></tr>
+<tr><td></td><td>MaxWidth</td><td><input type='number' class='infield' name='f_TPL_6MAXWIDTH0' value='%TPL_6MAXWIDTH0%' title='Max width in pixel before Font2 is used' size='4' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>Font2</td><td><input type='number' class='infield' name='f_TPL_6FONT20' value='%TPL_6FONT20%' title='Narrow Font for longer Messages' size='2' maxlength='1' min='0' max='9' ></td></tr>
+<tr><td></td><td>DrawColor</td><td><input type='number' class='infield' name='f_TPL_6DRAWCOLOR0' value='%TPL_6DRAWCOLOR0%' title='0, 1, 2 depends on selected font' size='2' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode</td><td><input type='number' class='infield' name='f_TPL_6FONTMODE0' value='%TPL_6FONTMODE0%' title='0=solid, 1=transparent' size='2' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>PosX</td><td><input type='number' class='infield' name='f_TPL_6POSX0' value='%TPL_6POSX0%' title='Position x for Message' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>PosY</td><td><input type='number' class='infield' name='f_TPL_6POSY0' value='%TPL_6POSY0%' title='Position y for Message, bottom of font' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>Scroll</td><td><input type='number' class='infield' name='f_TPL_6SCROLL0' value='%TPL_6SCROLL0%' title='Scroll Message, 0=off, 1=on' size='2' maxlength='1' min='0' max='1' ></td></tr>
 
-<tr><td>Field 6 - Scrollbox</td><td>BoxX</td><td><input type='number' class='infield' name='f_TPL_6BOXX0' value='%TPL_6BOXX0%' title='x position for message scrollbox, starts top left' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>BoxY</td><td><input type='number' class='infield' name='f_TPL_6BOXY0' value='%TPL_6BOXY0%' title='y position for message scrollbox' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>BoxW</td><td><input type='number' class='infield' name='f_TPL_6BOXW0' value='%TPL_6BOXW0%' title='width of message scrollbox' size='3' maxlength='3' min='0' ></td></tr>
-<tr><td></td><td>BoxH</td><td><input type='number' class='infield' name='f_TPL_6BOXH0' value='%TPL_6BOXH0%' title='height of message scrollbox, 0=no box' size='3' maxlength='3' min='0' ></td></tr>
+<tr><td>Field 6 - Scrollbox</td><td>BoxX</td><td><input type='number' class='infield' name='f_TPL_6BOXX0' value='%TPL_6BOXX0%' title='x position for message scrollbox, starts top left' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>BoxY</td><td><input type='number' class='infield' name='f_TPL_6BOXY0' value='%TPL_6BOXY0%' title='y position for message scrollbox' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>BoxW</td><td><input type='number' class='infield' name='f_TPL_6BOXW0' value='%TPL_6BOXW0%' title='width of message scrollbox' size='4' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>BoxH</td><td><input type='number' class='infield' name='f_TPL_6BOXH0' value='%TPL_6BOXH0%' title='height of message scrollbox, 0=no box' size='4' maxlength='3' min='0' ></td></tr>
 
-<tr><td>Field 6 - Blackbox</td><td>DrawColor2</td><td><input type='number' class='infield' name='f_TPL_6DRAWCOLOR20' value='%TPL_6DRAWCOLOR20%' title='0, 1, 2' size='1' maxlength='1' min='0' max='2' ></td></tr>
-<tr><td></td><td>FontMode2</td><td><input type='number' class='infield' name='f_TPL_6FONTMODE20' value='%TPL_6FONTMODE20%' title='0=solid, 1=transparent' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td></td><td>Box2X</td><td><input type='number' class='infield' name='f_TPL_6BOX2X0' value='%TPL_6BOX2X0%' title='x position for black box left or right of message scrollbox' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>Box2Y</td><td><input type='number' class='infield' name='f_TPL_6BOX2Y0' value='%TPL_6BOX2Y0%' title='y position for black box left or right of message scrollbox' size='3' maxlength='3' ></td></tr>
-<tr><td></td><td>Box2W</td><td><input type='number' class='infield' name='f_TPL_6BOX2W0' value='%TPL_6BOX2W0%' title='width of black box left or right of message scrollbox' size='3' maxlength='3' min='0' ></td></tr>
-<tr><td></td><td>Box2H</td><td><input type='number' class='infield' name='f_TPL_6BOX2H0' value='%TPL_6BOX2H0%' title='height of black box left or right of message scrollbox' size='3' maxlength='3' min='0' ></td></tr>
+<tr><td>Field 6 - Blackbox</td><td>DrawColor2</td><td><input type='number' class='infield' name='f_TPL_6DRAWCOLOR20' value='%TPL_6DRAWCOLOR20%' title='0, 1, 2' size='2' maxlength='1' min='0' max='2' ></td></tr>
+<tr><td></td><td>FontMode2</td><td><input type='number' class='infield' name='f_TPL_6FONTMODE20' value='%TPL_6FONTMODE20%' title='0=solid, 1=transparent' size='2' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td></td><td>Box2X</td><td><input type='number' class='infield' name='f_TPL_6BOX2X0' value='%TPL_6BOX2X0%' title='x position for black box left or right of message scrollbox' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>Box2Y</td><td><input type='number' class='infield' name='f_TPL_6BOX2Y0' value='%TPL_6BOX2Y0%' title='y position for black box left or right of message scrollbox' size='4' maxlength='3' ></td></tr>
+<tr><td></td><td>Box2W</td><td><input type='number' class='infield' name='f_TPL_6BOX2W0' value='%TPL_6BOX2W0%' title='width of black box left or right of message scrollbox' size='4' maxlength='3' min='0' ></td></tr>
+<tr><td></td><td>Box2H</td><td><input type='number' class='infield' name='f_TPL_6BOX2H0' value='%TPL_6BOX2H0%' title='height of black box left or right of message scrollbox' size='4' maxlength='3' min='0' ></td></tr>
 </table>
 </form>
 <footer>
-<p>Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.</p>
+<p>Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved. Version 1.12</p>
 <p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
 </footer>
 </body>

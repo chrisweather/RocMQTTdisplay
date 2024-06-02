@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
 Roc-MQTT-Display
-Version 1.10
-Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
+Version 1.12
+Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
 <html>
@@ -12,7 +12,7 @@ https://github.com/chrisweather/RocMQTTdisplay
 <link rel='stylesheet' type='text/css' href='rmd.css'>
 </head>
 <body>
-<H1>Roc-MQTT-Display - Templates 2</H1>
+<H1>Roc-MQTT-Display - Templates</H1>
 <p><strong>%WIFI_DEVICENAME%</strong></p>
 <script>
 function buttonHome() {
@@ -22,37 +22,43 @@ function CheckTplRadio() {
   tplradiobtn = document.getElementById('%TPL_ID0%');
   tplradiobtn.checked = true;
 }
+function downloadFile(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    link.click();
+}
 function buttonDownload() {
  switch(Number(tplradiobtn.value)) {
   case 0:
-    window.open('/download?file=/rmdtpl00.txt','_blank');
+    downloadFile('/download?file=/rmdtpl00.txt','rmdtpl00.txt');
     break;
   case 1:
-    window.open('/download?file=/rmdtpl01.txt','_blank');
+    downloadFile('/download?file=/rmdtpl01.txt','rmdtpl01.txt');
     break;
   case 2:
-    window.open('/download?file=/rmdtpl02.txt','_blank');
+    downloadFile('/download?file=/rmdtpl02.txt','rmdtpl02.txt');
     break;
   case 3:
-    window.open('/download?file=/rmdtpl03.txt','_blank');
+    downloadFile('/download?file=/rmdtpl03.txt','rmdtpl03.txt');
     break;
   case 4:
-    window.open('/download?file=/rmdtpl04.txt','_blank');
+    downloadFile('/download?file=/rmdtpl04.txt','rmdtpl04.txt');
     break;
   case 5:
-    window.open('/download?file=/rmdtpl05.txt','_blank');
+    downloadFile('/download?file=/rmdtpl05.txt','rmdtpl05.txt');
     break;
   case 6:
-    window.open('/download?file=/rmdtpl06.txt','_blank');
+    downloadFile('/download?file=/rmdtpl06.txt','rmdtpl06.txt');
     break;
   case 7:
-    window.open('/download?file=/rmdtpl07.txt','_blank');
+    downloadFile('/download?file=/rmdtpl07.txt','rmdtpl07.txt');
     break;
   case 8:
-    window.open('/download?file=/rmdtpl08.txt','_blank');
+    downloadFile('/download?file=/rmdtpl08.txt','rmdtpl08.txt');
     break;
   case 9:
-    window.open('/download?file=/rmdtpl09.txt','_blank');
+    downloadFile('/download?file=/rmdtpl09.txt','rmdtpl09.txt');
     break;
   default:
     break;
@@ -67,11 +73,10 @@ function SelTpl() {
 window.onload = CheckTplRadio;
 </script>
 <button type='button' class='button' title='Home' onclick='buttonHome()'>Home</button>   
-<button type='button' class='button' title='Download' onclick='buttonDownload()'>Download</button>   
+<button type='button' class='button' title='Download selected Template' onclick='buttonDownload()'>Download</button>   
 <button type='button' class='button' title='Import' onclick='buttonImport()'>Import</button>   
-
 <table id='tbl1'>
-<tr><td><br>Template</td><td><br>
+<tr><td></br><b>Select a Template</b></td><td></br>
 <form name='formSelTpl' action='/tpl2sel' method='POST'>
   <input type='radio' id='T0' name='f_TPL_NO' value='0' title='Select a template' onchange='this.form.submit()'> 
   <label for='T0'>T0</label> 
@@ -93,6 +98,6 @@ window.onload = CheckTplRadio;
   <label for='T8'>T8</label>
   <input type='radio' id='T9' name='f_TPL_NO' value='9' title='Select a template' onchange='this.form.submit()'> 
   <label for='T9'>T9</label>
-  <br>
+  </br></br>
 </form>
 </td></tr>

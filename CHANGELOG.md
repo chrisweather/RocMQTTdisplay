@@ -1,5 +1,22 @@
 ## Roc-MQTT-Display Changelog
 
+### Roc-MQTT-Display release 1.12
+2024-06-02 - tested with Arduino IDE 1.8.19 with latest versions of included libraries 
+
+-   Displays - Tested constructor for 128x32 0.87" OLED I2C Display with SSD1316 controller
+-   Successfully tested and documented compatibility with the OLED Adapters from this project: https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter
+-   Displays - Added constructor for 64x32 0.49" OLED I2C Display with SSD1316 controller. Not tested yet.
+-   Displays - Added constructor for 72x40 0.42" OLED I2C Display with SSD1316 controller. Not tested yet.
+-   Added support for ESP32 boards (do NOT update "esp32" in Arduino IDE Boardmanager to version 3.0, this version has bugs that break WiFi code!)
+-   Webinterface - Added Demo Mode, shows different display modes and content, ends automatically after one run through
+-   Webinterface - share statistics of hardware for future development focus
+-   Webinterface - Several improvements
+-   Updates - OTA Network Port will be enabled only when the Update site in the Webinterface has been opened
+-   Updates - Preparation for Web Upload of .bin files without Arduino IDE for the next release
+
+### Roc-MQTT-Display release 1.11
+never published this version
+
 ### Roc-MQTT-Display release 1.10
 2023-01-29 - tested with Arduino IDE 1.8.19 with latest versions of included libraries
 
@@ -23,7 +40,7 @@
 
 -   added MQTT broker connection test to debug mode
 -   improved debug messages in serial monitor
--   Added constructor for 128x32 0.87" OLED I2C Display with SSD1316 controller. Not tested yet 
+-   Added constructor for 128x32 0.87" OLED I2C Display with SSD1316 controller. Not tested yet.
 -   Template - added Invert switch to templates. Inverts the whole display
 -   Template - increased number of logos from 10 to 20
 -   Template - added NS logo (thanks ksw2404)

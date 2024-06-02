@@ -1,6 +1,6 @@
 // Roc-MQTT-Display TEMPLATES
-// Version 1.10
-// Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
+// Version 1.12
+// Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
 #ifndef TEMPLATE_H
@@ -12,9 +12,9 @@
 char TPL_id[10][3] =    { "T0","T1","T2","T3","T4","T5","T6","T7","T8","T9" }; // do not change TPL_id here!
 char TPL_name[10][30] = { "Train Announcement - Side A", "Train Announcement - Side B", "Local Train - Side A", "Local Train - Side B", "Message Only, 1 Line - Side A", "Message Only, 1 Line - Side B", "Stationname, 1 Line - Side A", "Template7", "Template8", "Template9" };
 
-// TEMPLATE SETTINGS       T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
-uint8_t TPL_side[] =    {   0,   1,   0,   1,   0,   1,   0,   0,   0,   0 };  // 0,1    0=Side A, 1=Side B
-uint8_t TPL_invert[] =  {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,1    0=Normal, 1=Inverted
+// TEMPLATE SETTINGS            T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
+uint8_t TPL_side[] =         {   0,   1,   0,   1,   0,   1,   0,   0,   0,   0 };  // 0,1    0=Side A, 1=Side B
+uint8_t TPL_invert[] =       {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,1    0=Normal, 1=Inverted
 
 // Station (Field 0)            T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
 uint8_t  TPL_0font[] =       {   2,   2,   2,   1,   1,   1,   1,   1,   1,   1 };  // 0-9    font 1
@@ -22,67 +22,67 @@ uint8_t  TPL_0maxwidth[] =   { 116, 116,   0,   0,   0,   0, 127,   0,   0,   0 
 uint8_t  TPL_0font2[] =      {   3,   3,   1,   1,   1,   1,   2,   1,   1,   1 };  // 0-9    font 2
 uint8_t  TPL_0drawcolor[] =  {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2  Foreground color 0=black, 1=white
 uint8_t  TPL_0fontmode[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1    Background 0=solid, 1=transparent
-int TPL_0posx[] =       {   0,   0,   0,   0,   3,   0,   0,   0,   0,   0 };  // x position change from center +-
-int TPL_0posy[] =       {   0,   0,  -5,  -5,  -5,  -5,  20,   0,   0,   0 };  // 0-31   y position
-uint8_t TPL_0scroll[] =     {   0,   0,   0,   0,   1,   0,   0,   0,   0,   0 };  // 0,1    scoll text  0=no, 1=yes
+int TPL_0posx[] =            {   0,   0,   0,   0,   3,   0,   0,   0,   0,   0 };  // x position change from center +-
+int TPL_0posy[] =            {  -5,  -5,  -5,  -5,  -5,  -5,  20,   0,   0,   0 };  // 0-31   y position
+uint8_t TPL_0scroll[] =      {   0,   0,   0,   0,   1,   0,   0,   0,   0,   0 };  // 0,1    scoll text  0=no, 1=yes
 
-// Track (Field 1)         T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
-uint8_t TPL_1font[] =       {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0-9
-uint8_t TPL_1drawcolor[] =  {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
-uint8_t TPL_1fontmode[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
-int TPL_1posx[] =       {   0, 118,   0, 118,   0, 119,   0,   0,   0,   0 };  // 0-127  x left bottom corner of font
-int TPL_1posy[] =       {  30,  30,  30,  30,  28,  28,   0,   0,   0,   0 };  // 0-31   y left bottom corner of font
+// Track (Field 1)              T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
+uint8_t TPL_1font[] =        {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0-9
+uint8_t TPL_1drawcolor[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
+uint8_t TPL_1fontmode[] =    {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
+int TPL_1posx[] =            {   0, 118,   0, 118,   0, 119,   0,   0,   0,   0 };  // 0-127  x left bottom corner of font
+int TPL_1posy[] =            {  30,  30,  30,  30,  28,  28,   0,   0,   0,   0 };  // 0-31   y left bottom corner of font
 
-// Destination (Field 2)   T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
-uint8_t TPL_2font[] =       {   2,   2,   2,   2,   1,   1,   1,   1,   1,   1 };  // 0-9
-uint8_t TPL_2maxwidth[] =   { 116, 116, 112, 112,   0,   0,   0,   0,   0,   0 };  // 0-127  max text width before font2 is used
-uint8_t TPL_2font2[] =      {   3,   3,   3,   3,   1,   1,   1,   1,   1,   1 };  // 0-9    for longer Destination names
-uint8_t TPL_2drawcolor[] =  {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
-uint8_t TPL_2fontmode[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
-int TPL_2posx[] =       {  20,   0,  20,   0,   0,   0,   0,   0,   0,   0 };  // 0-127
-int TPL_2posy[] =       {  30,  30,  29,  29,   0,   0,   0,   0,   0,   0 };  // 0-31
-uint8_t TPL_2scroll[] =     {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,1
+// Destination (Field 2)        T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
+uint8_t TPL_2font[] =        {   2,   2,   2,   2,   1,   1,   1,   1,   1,   1 };  // 0-9
+uint8_t TPL_2maxwidth[] =    { 116, 116, 112, 112,   0,   0,   0,   0,   0,   0 };  // 0-127  max text width before font2 is used
+uint8_t TPL_2font2[] =       {   3,   3,   3,   3,   1,   1,   1,   1,   1,   1 };  // 0-9    for longer Destination names
+uint8_t TPL_2drawcolor[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
+uint8_t TPL_2fontmode[] =    {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
+int TPL_2posx[] =            {  20,   0,  20,   0,   0,   0,   0,   0,   0,   0 };  // 0-127
+int TPL_2posy[] =            {  30,  30,  29,  29,   0,   0,   0,   0,   0,   0 };  // 0-31
+uint8_t TPL_2scroll[] =      {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,1
 
-// Departure (Field 3)     T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
-uint8_t TPL_3font[] =       {   4,   4,   4,   4,   1,   1,   1,   1,   1,   1 };  // 0-9
-uint8_t TPL_3drawcolor[] =  {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
-uint8_t TPL_3fontmode[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
-int TPL_3posx[] =       { 100,   0, 100,   0,   0,   0,   0,   0,   0,   0 };  // 0-127
-int TPL_3posy[] =       {   8,   8,   8,   8,   0,   0,   0,   0,   0,   0 };  // 0-31
+// Departure (Field 3)          T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
+uint8_t TPL_3font[] =        {   4,   4,   4,   4,   1,   1,   1,   1,   1,   1 };  // 0-9
+uint8_t TPL_3drawcolor[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
+uint8_t TPL_3fontmode[] =    {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
+int TPL_3posx[] =            { 100,   0, 100,   0,   0,   0,   0,   0,   0,   0 };  // 0-127
+int TPL_3posy[] =            {   8,   8,   8,   8,   0,   0,   0,   0,   0,   0 };  // 0-31
 
-// Train (Field 4)         T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
-uint8_t TPL_4font[] =       {   5,   5,   4,   4,   1,   1,   1,   1,   1,   1 };  // 0-9
-uint8_t TPL_4drawcolor[] =  {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
-uint8_t TPL_4fontmode[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
-int TPL_4posx[] =       {  93,   0,  80,  32,   0,   0,   0,   0,   0,   0 };  // 0-127
-int TPL_4posy[] =       {  17,  17,   8,   8,   0,   0,   0,   0,   0,   0 };  // 0-31
+// Train (Field 4)              T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
+uint8_t TPL_4font[] =        {   5,   5,   4,   4,   1,   1,   1,   1,   1,   1 };  // 0-9
+uint8_t TPL_4drawcolor[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
+uint8_t TPL_4fontmode[] =    {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
+int TPL_4posx[] =            {  93,   0,  80,  32,   0,   0,   0,   0,   0,   0 };  // 0-127
+int TPL_4posy[] =            {  17,  17,   8,   8,   0,   0,   0,   0,   0,   0 };  // 0-31
 
-// TrainType (Field 5)     T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
-int TPL_5logox[] =      {   0, 110,   0, 112,   0, 110,   0,   0,   0,   0 };  // 0-127  x left top corner of logo bitmap
-int TPL_5logoy[] =      {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0-31   y left top corner of logo bitmap
+// TrainType (Field 5)          T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
+int TPL_5logox[] =           {   0, 110,   0, 112,   0, 110,   0,   0,   0,   0 };  // 0-127  x left top corner of logo bitmap
+int TPL_5logoy[] =           {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0-31   y left top corner of logo bitmap
 
-// Message (Field 6)       T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
+// Message (Field 6)            T0,  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9
 //  Text
-uint8_t TPL_6font[] =       {   6,   6,   1,   1,   2,   2,   1,   1,   1,   1 };  // 0-9
-uint8_t TPL_6maxwidth[] =   { 116, 116, 116, 116, 117, 117,   0,   0,   0,   0 };  // 0-127  max text width before font2 is used
-uint8_t TPL_6font2[] =      {   1,   1,   1,   1,   3,   3,   1,   1,   1,   1 };  // 0-9
-uint8_t TPL_6drawcolor[] =  {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
-uint8_t TPL_6fontmode[] =   {   0,   0,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
-int TPL_6posx[] =       {   0,   0,   0,   0,  14,   0,   0,   0,   0,   0 };  // 0-127
-int TPL_6posy[] =       {   8,   8,  -5,  -5,  28,  28,   0,   0,   0,   0 };  // 0-31
-uint8_t TPL_6scroll[] =     {   1,   1,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,1
+uint8_t TPL_6font[] =        {   6,   6,   1,   1,   2,   2,   1,   1,   1,   1 };  // 0-9
+uint8_t TPL_6maxwidth[] =    { 116, 116, 116, 116, 117, 117,   0,   0,   0,   0 };  // 0-127  max text width before font2 is used
+uint8_t TPL_6font2[] =       {   1,   1,   1,   1,   3,   3,   1,   1,   1,   1 };  // 0-9
+uint8_t TPL_6drawcolor[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1,2
+uint8_t TPL_6fontmode[] =    {   0,   0,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
+int TPL_6posx[] =            {   0,   0,   0,   0,  14,   0,   0,   0,   0,   0 };  // 0-127
+int TPL_6posy[] =            {   8,   8,  -5,  -5,  28,  28,   0,   0,   0,   0 };  // 0-31
+uint8_t TPL_6scroll[] =      {   1,   1,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,1
 //  Scrollbox
-int TPL_6boxx[] =       {  20,  36,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,127
-int TPL_6boxy[] =       {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,31
-int TPL_6boxw[] =       {  90,  72,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,127
-int TPL_6boxh[] =       {  10,  10,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,31
+int TPL_6boxx[] =            {  20,  36,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,127
+int TPL_6boxy[] =            {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,31
+int TPL_6boxw[] =            {  90,  72,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,127
+int TPL_6boxh[] =            {  10,  10,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,31
 //  Blackbox
-uint8_t TPL_6drawcolor2[] = {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,1
-uint8_t TPL_6fontmode2[] =  {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
-int TPL_6box2x[] =      {  91,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,127
-int TPL_6box2y[] =      {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,31
-int TPL_6box2w[] =      { 127,  35,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,127
-int TPL_6box2h[] =      {  10,  10,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,31
+uint8_t TPL_6drawcolor2[] =  {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,1
+uint8_t TPL_6fontmode2[] =   {   1,   1,   1,   1,   1,   1,   1,   1,   1,   1 };  // 0,1
+int TPL_6box2x[] =           {  91,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,127
+int TPL_6box2y[] =           {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,31
+int TPL_6box2w[] =           { 127,  35,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,127
+int TPL_6box2h[] =           {  10,  10,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,31
 
 // TEMPLATES Part 1
 // FONTS 0 - 9

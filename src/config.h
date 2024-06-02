@@ -1,11 +1,12 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.10
-// Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
+// Version 1.12
+// Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
 #ifndef CONFIG_H
 #define CONFIG_H
 #include "template.h"         // Roc-MQTT-Display template file
+#include <FS.h>
 #include <LittleFS.h>         // LittleFS file system https://github.com/esp8266/Arduino/tree/master/libraries/LittleFS
 #include <ArduinoJson.h>      // ArduinoJson by Benoît Blanchon https://github.com/bblanchon/ArduinoJson
 
@@ -15,23 +16,24 @@
 uint8_t TPL = 0;
 
 struct Sec {
-  char WIFI_SSID[50];              // 
-  char WIFI_PW[50];                // 
-  char OTA_PW[50];                 // 
-  char OTA_HASH[50];               // 
-  char MQTT_USER[50];              // 
-  char MQTT_PW[50];                // 
+  char WIFI_SSID[50];              // WiFi SSID
+  char WIFI_PW[50];                // WiFi Password
+  char OTA_PW[50];                 // OTA Password
+  char OTA_HASH[50];               // OTA Hash as an alternative to password
+  char MQTT_USER[50];              // MQTT user name
+  char MQTT_PW[50];                // MQTT password
 };
 Sec sec;                           // global sec object
 
 struct Config {
-  const char* VER = "1.10";
+  const char* VER = "1.12";
+  uint8_t  DEMO = 0;               // Demo mode, 0 = off
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
   uint16_t WIFI_RECONDELAY;        // Delay between WiFi reconnection attempts, default = 60000 ms
 // OTA
   char     OTA_HOSTNAME[19];       // Unique OTA Controller Hostname, default when empty: esp8266-[ChipID]
-  uint16_t OTA_PORT;               // OTA Port, default = 8266
+  uint16_t OTA_PORT;               // OTA Port, default = 8266 or 3232
 // NTP
   char     NTP_SERVER[51];         // NTP Time Server pool providing UTC time, Europe: 0.europe.pool.ntp.org, Germany: de.pool.ntp.org
   char     NTP_TZ[51];             // NTP Timezone and Daylight Saving Time start/end  https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
@@ -52,24 +54,20 @@ struct Config {
   uint8_t  MUX;                    // TCA9548A I2C Multiplexer address, default: 112 (0x70), 0=one display connected without multiplexer
   uint8_t  NUMDISP;                // Number of I2C OLED displays connected to this controller, 1-8
   uint16_t STARTDELAY;             // Show Controllername and Display Number x milliseconds longer at startup, helpful during setup
-  uint8_t  UPDSPEED;               // Slow down display update intervall by increasing the number, e.g. 30 = base speed + 30ms
+  uint16_t UPDSPEED;               // Slow down display update intervall by increasing the number, e.g. 30 = base speed + 30ms
   uint8_t  SCREENSAVER;            // minutes without MQTT message received until screenSaver switches all displays into power save mode, 0=off
   uint8_t  PRINTBUF;               // When 1: Print display buffer of display 1 to serial out as XBM, default: 0
 };
 Config config;
 
 // Configuration for displays connected to this controller (Disp) 1-8
-//                            Disp1, Disp2, Disp3, Disp4, Disp5, Disp6, Disp7, Disp8
-char     DPL_id[8][4] =      { "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08" };  // ID's of Displays 1-8 connected to this controller, e.g. D01...D99
-char     DPL_station[8][8] = {    "",    "",    "",    "",    "",    "",    "",    "" };  // Station, where the display is installed, e.g. Hamburg, Köln, Amsterd, Wien, ...
-uint8_t  DPL_track[] =       {     1,     1,     1,     1,     1,     1,     1,     1 };  // 1...99  track, where the display is installed, e.g. 1...99
-uint8_t  DPL_flip[] =        {     0,     1,     1,     0,     0,     1,     1,     0 };  // 0,1  180 degree hardware based rotation of the internal frame buffer when 1
-uint8_t  DPL_contrast[] =    {     1,     1,     1,     1,     1,     1,     1,     1 };  // 0-255  0=display off (works with some displays only), default = 1, 255 max brightness, change requires reboot
-uint8_t  DPL_side[] =        {     1,     0,     0,     1,     1,     0,     0,     1 };  // 0,1  0=Side A, 1=Side B
-
-struct Template {
-};
-Template templ;
+//                              Disp1, Disp2, Disp3, Disp4, Disp5, Disp6, Disp7, Disp8
+char     DPL_id[8][4] =       { "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08" };  // ID's of Displays 1-8 connected to this controller, e.g. D01...D99
+char     DPL_station[8][12] = {    "",    "",    "",    "",    "",    "",    "",    "" };  // Station, where the display is installed, e.g. Hamburg, Köln, Amsterd, Wien, ...
+uint8_t  DPL_track[] =        {     1,     1,     1,     1,     1,     1,     1,     1 };  // 1...99  track, where the display is installed, e.g. 1...99
+uint8_t  DPL_flip[] =         {     0,     1,     1,     0,     0,     1,     1,     0 };  // 0,1  180 degree hardware based rotation of the internal frame buffer when 1
+uint8_t  DPL_contrast[] =     {    50,    50,    50,    50,    50,    50,    50,    50 };  // 0-255  0=display off (works with some displays only), default = 1, 255 max brightness, change requires reboot
+uint8_t  DPL_side[] =         {     1,     0,     0,     1,     1,     0,     0,     1 };  // 0,1  0=Side A, 1=Side B
 
 const char *secfile      = "/rmdsec.txt";      // 8.3 filename
 const char *configfile   = "/rmdcfg.txt";
@@ -92,23 +90,27 @@ void loadConfiguration(const char *configfile, Config &config)
 {
   // Open config json file for reading
   File file = LittleFS.open(configfile, "r");
-  delay(200);
-  StaticJsonDocument<2500> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
     Serial.print(F("deserializeJson() returned "));
     Serial.println(error.c_str());
-    if (doc.capacity() == 0) {
-     Serial.println(F("allocation failed!"));
-    }
   }
 
   // Copy values from JsonDocument to Config, use defaults in case file is not readable
-  strlcpy(config.WIFI_DEVICENAME, doc["WIFI_DEVICENAME"] | "RocMQTTdisplayC01", sizeof(config.WIFI_DEVICENAME));
+  strlcpy(config.WIFI_DEVICENAME, doc["WIFI_DEVICENAME"] | "NewRMDcontroller", sizeof(config.WIFI_DEVICENAME));
   config.WIFI_RECONDELAY = doc["WIFI_RECONDELAY"] | 5000;
-  strlcpy(config.OTA_HOSTNAME, doc["OTA_HOSTNAME"] | "RocMQTTdisplayC01", sizeof(config.OTA_HOSTNAME));
-  config.OTA_PORT = doc["OTA_PORT"] | 8266;
+  strlcpy(config.OTA_HOSTNAME, doc["OTA_HOSTNAME"] | "NewRMDcontroller", sizeof(config.OTA_HOSTNAME));
+  #if defined(ESP8266)                          // ESP8266
+    //config.OTA_PORT = doc["OTA_PORT"] | 8266;
+    config.OTA_PORT = 8266;
+  #elif defined(ESP32)                          // ESP32
+    //config.OTA_PORT = doc["OTA_PORT"] | 3232;
+    config.OTA_PORT = 3232;
+  #else
+    config.OTA_PORT = doc["OTA_PORT"] | 8266;
+  #endif
   strlcpy(config.NTP_SERVER, doc["NTP_SERVER"] | "0.europe.pool.ntp.org", sizeof(config.NTP_SERVER));
   strlcpy(config.NTP_TZ, doc["NTP_TZ"] | "CET-1CEST,M3.5.0,M10.5.0/3", sizeof(config.NTP_TZ));
   strlcpy(config.MQTT_IP, doc["MQTT_IP"] | "", sizeof(config.MQTT_IP));
@@ -193,7 +195,7 @@ void saveConfiguration(const char *configfile, const Config &config)
     return;
   }
 
-  StaticJsonDocument<1800> doc;
+  JsonDocument doc;
   doc["VER"] = config.VER;
   doc["WIFI_DEVICENAME"] = config.WIFI_DEVICENAME;
   doc["WIFI_RECONDELAY"] = config.WIFI_RECONDELAY;
@@ -271,65 +273,20 @@ void saveConfiguration(const char *configfile, const Config &config)
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
-  delay(1000);
-}
-
-
-// Send configuration via MQTT
-String sendConfiguration(const Config &config)
-{
-String ConfigRMD = "";
-StaticJsonDocument<768> doc;
-  doc["RMDCFG"] = config.WIFI_DEVICENAME;
-  doc["V"] = config.VER;
-  doc["I0"] = DPL_id[0];
-  doc["I1"] = DPL_id[1];
-  doc["I2"] = DPL_id[2];
-  doc["I3"] = DPL_id[3];
-  doc["I4"] = DPL_id[4];
-  doc["I5"] = DPL_id[5];
-  doc["I6"] = DPL_id[6];
-  doc["I7"] = DPL_id[7];
-  doc["T0"] = DPL_track[0];
-  doc["T1"] = DPL_track[1];
-  doc["T2"] = DPL_track[2];
-  doc["T3"] = DPL_track[3];
-  doc["T4"] = DPL_track[4];
-  doc["T5"] = DPL_track[5];
-  doc["T6"] = DPL_track[6];
-  doc["T7"] = DPL_track[7];
-  doc["S0"] = DPL_station[0];
-  doc["S1"] = DPL_station[1];
-  doc["S2"] = DPL_station[2];
-  doc["S3"] = DPL_station[3];
-  doc["S4"] = DPL_station[4];
-  doc["S5"] = DPL_station[5];
-  doc["S6"] = DPL_station[6];
-  doc["S7"] = DPL_station[7];
-  // Serialize JSON to variable
-  if (serializeJson(doc, ConfigRMD) == 0) {
-    Serial.println(F("Failed to write json to variable"));
-  }
-  return ConfigRMD;
 }
 
 
 // Load template data from file - fonts, logos
-//void loadTemplate(const char *templatefile, Template &templ)
 void loadTemplate(const char *templatefile)
 {
   // Open template data json file for reading
   File file = LittleFS.open(templatefile, "r");
-  delay(200);
-  StaticJsonDocument<1800> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
     Serial.print(F("deserializeJson() returned "));
     Serial.println(error.c_str());
-    if (doc.capacity() == 0) {
-     Serial.println("allocation failed!");
-    }
   }
   else {
   // Copy values from JsonDocument to templ, use defaults in case file is not readable
@@ -395,25 +352,13 @@ void loadTemplate(const char *templatefile)
   logoh[17] = doc["LOGO17H"] | 10;
   logoh[18] = doc["LOGO18H"] | 10;
   logoh[19] = doc["LOGO19H"] | 10;
-/*
-  strlcpy(logo0, doc["LOGO0"] | "", sizeof(logo0));
-  strlcpy(logo1, doc["LOGO1"] | "", sizeof(logo1));
-  strlcpy(logo2, doc["LOGO2"] | "", sizeof(logo2));
-  strlcpy(logo3, doc["LOGO3"] | "", sizeof(logo3));
-  strlcpy(logo4, doc["LOGO4"] | "", sizeof(logo4));
-  strlcpy(logo5, doc["LOGO5"] | "", sizeof(logo5));
-  strlcpy(logo6, doc["LOGO6"] | "", sizeof(logo6));
-  strlcpy(logo7, doc["LOGO7"] | "", sizeof(logo7));
-  strlcpy(logo8, doc["LOGO8"] | "", sizeof(logo8));
-  strlcpy(logo9, doc["LOGO9"] | "", sizeof(logo9));
-*/
+
   file.close();
   }
 }
 
 
 // Save template data to a file - fonts, logos
-//void saveTemplate(const char *templatefile, const Template &templ)
 void saveTemplate(const char *templatefile)
 {
   // Delete existing file, otherwise the template data will be appended to the file
@@ -426,7 +371,7 @@ void saveTemplate(const char *templatefile)
     return;
   }
 
-  StaticJsonDocument<1800> doc;
+  JsonDocument doc;
   doc["LOGOID0"] = logoId[0];
   doc["LOGOID1"] = logoId[1];
   doc["LOGOID2"] = logoId[2];
@@ -489,36 +434,12 @@ void saveTemplate(const char *templatefile)
   doc["LOGO17H"] = logoh[17];
   doc["LOGO18H"] = logoh[18];
   doc["LOGO19H"] = logoh[19];
-/*
-  String lbuf = "";
-  for (uint8_t i = 0; i < (logo0size); i++){
-    if (uint8_t(logo0[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo0[i], HEX);
-    if (i < (logo0size - 1)) lbuf += String(", ");
-  }
-  doc["LOGO0"] = lbuf;
 
-  doc["LOGO1"] = logo1;
-  doc["LOGO2"] = logo2;
-  doc["LOGO3"] = logo3;
-  doc["LOGO4"] = logo4;
-  doc["LOGO5"] = logo5;
-  doc["LOGO6"] = logo6;
-  doc["LOGO7"] = logo7;
-  doc["LOGO8"] = logo8;
-  doc["LOGO9"] = logo9;
-*/
   // Serialize JSON to file
   if (serializeJson(doc, file) == 0) {
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
-  delay(1000);
 }
 
 
@@ -529,22 +450,14 @@ void loadTemplateFile(const char *templatexx)
   File file = LittleFS.open(templatexx, "r");
   if (!file) {
     Serial.println("file open failed");
-    //delay(300);
-    unsigned long tn = 0;
-    if(millis() > tn + 500){
-      tn = millis();
-    }
   }
 
-  StaticJsonDocument<1600> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
     Serial.print(F("deserializeJson() returned "));
     Serial.println(error.c_str());
-    if (doc.capacity() == 0) {
-     Serial.println("allocation failed!");
-    }
   }
   else {
   // Copy values from JsonDocument to Config, use defaults in case file is not readable
@@ -612,10 +525,7 @@ void loadTemplateFile(const char *templatexx)
   TPL_6box2y[TPL] = doc["TPL6BOX2Y"] | 0;
   TPL_6box2w[TPL] = doc["TPL6BOX2W"] | 127;
   TPL_6box2h[TPL] = doc["TPL6BOX2H"] | 10;
-  unsigned long tn = 0;
-  if(millis() > tn + 1000){
-    tn = millis();
-  }
+
   file.close();
   }
 }
@@ -624,15 +534,12 @@ void loadTemplateFile(const char *templatexx)
 // Import template
 void importTemplateFile(char *tcontent)
 {
-  StaticJsonDocument<1600> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, tcontent);
   if (error) {
     Serial.println(F("Failed to convert json import, using default configuration"));
     Serial.print(F("deserializeJson() returned "));
     Serial.println(error.c_str());
-    if (doc.capacity() == 0) {
-      Serial.println("allocation failed!");
-    }
   }
   else {
   // Copy values from JsonDocument to Config, use defaults in case file is not readable
@@ -717,7 +624,7 @@ void saveTemplateFile(const char *templatexx)
     return;
   }
 
-  StaticJsonDocument<1600> doc;
+  JsonDocument doc;
   doc["TPLID"] = TPL_id[TPL];
   doc["TPLNAME"] = TPL_name[TPL];
   doc["TPLSIDE"] = TPL_side[TPL];
@@ -788,11 +695,6 @@ void saveTemplateFile(const char *templatexx)
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
-  //delay(2000);
-  unsigned long tn = 0;
-  if(millis() > tn + 3000){
-    tn = millis();
-  }
 }
 
 
@@ -801,16 +703,12 @@ void loadSecData(const char *secfile, Sec &sec)
 {
   // Open sec json file for reading
   File file = LittleFS.open(secfile, "r");
-  delay(200);
-  StaticJsonDocument<1024> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to convert json file, using default configuration"));
     Serial.print(F("deserializeJson() returned "));
     Serial.println(error.c_str());
-    if (doc.capacity() == 0) {
-     Serial.println("allocation failed!");
-    }
   }
   // Copy values from JsonDocument to Sec, use defaults in case file is not readable
   strlcpy(sec.WIFI_SSID, doc["WIFI_SSID"] | "", sizeof(sec.WIFI_SSID));
@@ -834,7 +732,7 @@ void saveSec(const char *secfile, const Sec &sec)
     Serial.println(F("Failed to create sec file"));
     return;
   }
-  StaticJsonDocument<1024> doc;
+  JsonDocument doc;
   doc["WIFI_SSID"] = sec.WIFI_SSID;
   doc["WIFI_PW"] = sec.WIFI_PW;
   doc["OTA_PW"] = sec.OTA_PW;
@@ -847,11 +745,6 @@ void saveSec(const char *secfile, const Sec &sec)
     Serial.println(F("Failed to write json to file"));
   }
   file.close();
-  //delay(1000);
-  unsigned long tn = 0;
-  if(millis() > tn + 1000){
-    tn = millis();
-  }
 }
 
 
@@ -875,12 +768,6 @@ void printFile(const char *pfile)
 void stopLittleFS()
 {
   LittleFS.end();
-  //delay(1000);
-  unsigned long tn = 0;
-  if(millis() > tn + 1000){
-    tn = millis();
-  }
 }
-
 
 #endif

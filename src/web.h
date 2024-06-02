@@ -1,31 +1,25 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 1.10
-// Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
+// Version 1.12
+// Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
 #ifndef WEB_H
 #define WEB_H
-#include "ESP8266WebServer.h"  // https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WebServer
-#include <LittleFS.h>          // LittleFS file system https://github.com/esp8266/Arduino/tree/master/libraries/LittleFS
-#include "config.h"            // Roc-MQTT-Display configuration file
+#include <FS.h>
+#include <LittleFS.h>            // LittleFS file system https://github.com/esp8266/Arduino/tree/master/libraries/LittleFS
+#include "config.h"              // Roc-MQTT-Display configuration file
+#if defined(ESP8266)             // ESP8266
+#include <ESP8266WebServer.h>    //
+ESP8266WebServer webserver(80);  //
+#elif defined(ESP32)             // ESP32
+#include <WebServer.h>           //
+WebServer webserver(80);         //
+#else
+#error "This software only works with ESP32 or ESP8266 boards!"
+#endif
 
-// Define WEBSERVER
-ESP8266WebServer webserver(80);
 String buf1 = "";
-
-
-// ROOT
-void loadRoot()
-{
-  File htmlRoot = LittleFS.open( "/index.htm", "r" );
-  buf1 = htmlRoot.readString();
-  htmlRoot.close();
-  buf1.replace("%VER%", config.VER);
-  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
-  webserver.setContentLength( buf1.length() );
-  webserver.send( 200, "text/html", buf1 );
-  buf1 = "";
-}
+String buf2 = "";
 
 // CSS
 void loadCSS()
@@ -35,6 +29,33 @@ void loadCSS()
   htmlCSS.close();
 }
 
+// STATISTICS
+String handleStats()
+{
+  #if defined(ESP8266)
+    String tmt = "mo=ESP8266-"+String(ESP.getChipId())+"&me="+ESP.getFlashChipRealSize()+"&ma="+String(WiFi.macAddress())+"&ds="+config.DISPWIDTH+"x"+config.DISPHEIGHT+"&dn="+config.NUMDISP+"&ve=v"+config.VER;
+  #elif defined(ESP32)
+    String tmt = "mo="+String(ESP.getChipModel())+"&me="+ESP.getFlashChipSize()+"&ma="+String(WiFi.macAddress())+"&ds="+config.DISPWIDTH+"x"+config.DISPHEIGHT+"&dn="+config.NUMDISP+"&ve=v"+config.VER;
+  #else
+    String tmt = "mo=No Data";
+  #endif
+  return tmt;
+}
+
+// ROOT
+void loadRoot()
+{
+  File htmlRoot = LittleFS.open( "/index.htm", "r" );
+  buf1 = htmlRoot.readString();
+  htmlRoot.close();
+  buf1.replace("%VER%", config.VER);
+  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
+  buf1.replace("%STAT%", handleStats());
+  webserver.setContentLength( buf1.length() );
+  webserver.send( 200, "text/html", buf1 );
+  buf1 = "";
+}
+
 // 404 - NotFound
 void loadNotFound()
 {
@@ -42,7 +63,6 @@ void loadNotFound()
   webserver.streamFile( html404, "text/html" );
   html404.close();
 }
-
 
 // CONFIGURATION
 void loadCfg()
@@ -211,13 +231,8 @@ void handleCfgSubmit()
       if (webserver.argName(i) == "f_DPL_SIDE7") { DPL_side[7] = webserver.arg(webserver.argName(i)).toInt(); }
     }
     saveConfiguration(configfile, config);
-    unsigned long tn = 0;
-    if(millis() > tn + 2000){
-      tn = millis();
-    }
   }
 }
-
 
 // TEMPLATE 1 - Fonts, Logos
 void loadTpl1()
@@ -305,266 +320,7 @@ void loadTpl1()
   buf1.replace("%TPL_LOGO19H%", String(logoh[19]));
 
   String lbuf = "";
-/*  
-  for (i = 0; i < (logo0size); i++){
-    if (uint8_t(logo0[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo0[i], HEX);
-    if (i < (logo0size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO0%", String(lbuf));
 
-  lbuf = "";
-  for (i = 0; i < (logo1size); i++){
-    if (uint8_t(logo1[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo1[i], HEX);
-    if (i < (logo1size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO1%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo2size); i++){
-    if (uint8_t(logo2[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo2[i], HEX);
-    if (i < (logo2size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO2%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo3size); i++){
-    if (uint8_t(logo3[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo3[i], HEX);
-    if (i < (logo3size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO3%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo4size); i++){
-    if (uint8_t(logo4[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo4[i], HEX);
-    if (i < (logo4size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO4%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo5size); i++){
-    if (uint8_t(logo5[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo5[i], HEX);
-    if (i < (logo5size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO5%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo6size); i++){
-    if (uint8_t(logo6[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo6[i], HEX);
-    if (i < (logo6size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO6%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo7size); i++){
-    if (uint8_t(logo7[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo7[i], HEX);
-    if (i < (logo7size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO7%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo8size); i++){
-    if (uint8_t(logo8[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo8[i], HEX);
-    if (i < (logo8size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO8%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo9size); i++){
-    if (uint8_t(logo9[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo9[i], HEX);
-    if (i < (logo9size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO9%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo10size); i++){
-    if (uint8_t(logo10[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo10[i], HEX);
-    if (i < (logo10size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO10%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo11size); i++){
-    if (uint8_t(logo11[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo11[i], HEX);
-    if (i < (logo11size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO11%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo12size); i++){
-    if (uint8_t(logo12[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo12[i], HEX);
-    if (i < (logo12size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO12%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo13size); i++){
-    if (uint8_t(logo13[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo13[i], HEX);
-    if (i < (logo13size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO13%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo14size); i++){
-    if (uint8_t(logo14[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo14[i], HEX);
-    if (i < (logo14size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO14%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo15size); i++){
-    if (uint8_t(logo15[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo15[i], HEX);
-    if (i < (logo15size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO15%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo16size); i++){
-    if (uint8_t(logo16[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo16[i], HEX);
-    if (i < (logo16size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO16%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo17size); i++){
-    if (uint8_t(logo17[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo17[i], HEX);
-    if (i < (logo17size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO17%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo18size); i++){
-    if (uint8_t(logo18[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo18[i], HEX);
-    if (i < (logo18size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO18%", String(lbuf));
-
-  lbuf = "";
-  for (i = 0; i < (logo19size); i++){
-    if (uint8_t(logo19[i]) < 16){
-      lbuf += String("0x0");
-    }
-    else {
-      lbuf += String("0x");
-    }
-    lbuf += String(logo19[i], HEX);
-    if (i < (logo19size - 1)) lbuf += String(", ");
-  }
-  buf1.replace("%TPL_LOGO19%", String(lbuf));
-  */
   buf1.replace("%TPL_LOGO0%", String(lbuf));
   buf1.replace("%TPL_LOGO1%", String(lbuf));
   buf1.replace("%TPL_LOGO2%", String(lbuf));
@@ -596,10 +352,6 @@ void handleTpl1Select()
   if (webserver.args() > 0 ) {
     for ( uint8_t i = 0; i < webserver.args(); i++ ) {
       if (webserver.argName(i) == "f_TPL_NO") { TPL = webserver.arg(webserver.argName(i)).toInt(); }
-    }
-    unsigned long tn = 0;
-    if(millis() > tn + 2000){
-      tn = millis();
     }
     loadTpl1();
   }
@@ -672,15 +424,9 @@ void handleTpl1Submit()
       if (webserver.argName(i) == "f_TPL_LOGO18H") { logoh[18] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_TPL_LOGO19H") { logoh[19] = webserver.arg(webserver.argName(i)).toInt(); }
     }
-    //saveTemplate(templatefile, templ);
     saveTemplate(templatefile);
-    unsigned long tn = 0;
-    if(millis() > tn + 2000){
-      tn = millis();
-    }
   }
 }
-
 
 // TEMPLATE data - Settings of template 0 - 9
 void loadTpl2()
@@ -764,10 +510,6 @@ void loadTpl2()
   
   webserver.sendContent( buf2 );  
   buf2 = "";
-  unsigned long tn = 0;
-  if(millis() > tn + 4000){
-    tn = millis();
-  }
 }
 
 void handleTpl2Select()
@@ -775,10 +517,6 @@ void handleTpl2Select()
   if (webserver.args() > 0 ) {
     for ( uint8_t i = 0; i < webserver.args(); i++ ) {
       if (webserver.argName(i) == "f_TPL_NO") { TPL = webserver.arg(webserver.argName(i)).toInt(); }
-    }
-    unsigned long tn = 0;
-    if(millis() > tn + 2000){
-      tn = millis();
     }
     loadTpl2();
   }
@@ -873,10 +611,6 @@ void handleTpl2Submit()
             break;
     case 9: saveTemplateFile(template09);
     }
-    unsigned long tn = 0;
-    if(millis() > tn + 2000){
-      tn = millis();
-    }
   }
 }
 
@@ -902,10 +636,6 @@ void handleTpl2impSubmit()
     }
   }
   importTemplateFile(TPLcontent);
-  unsigned long tn = 0;
-  if(millis() > tn + 4000){
-    tn = millis();
-  }
   //loadTpl2();
 }
 
@@ -945,26 +675,7 @@ void loadSec()
   buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
   buf1.replace("%WIFI_SSID%", String(sec.WIFI_SSID));
   buf1.replace("%MQTT_USER%", String(sec.MQTT_USER));
-/*
-  switch (WiFi.status()){
-  case 0: buf.replace("%WIFI_STATUS%", "");
-          break;
-  case 1: buf.replace("%WIFI_STATUS%", "SSID not available");
-          break;
-  case 2: buf.replace("%WIFI_STATUS%", "");
-          break;
-  case 3: buf.replace("%WIFI_STATUS%", "WIFI successfully connected");
-          break;
-  case 4: buf.replace("%WIFI_STATUS%", "WIFI connection failed");
-          break;
-  case 5: buf.replace("%WIFI_STATUS%", "");
-          break;
-  case 6: buf.replace("%WIFI_STATUS%", "WIFI password incorrect");
-          break;
-  case 255: buf.replace("%WIFI_STATUS%", "");
-          break;
-  }
-*/
+
   webserver.setContentLength( buf1.length() );
   webserver.send( 200, "text/html", buf1 );
   buf1 = "";
@@ -982,11 +693,68 @@ void handleSecSubmit()
       if (webserver.argName(i) == "f_MQTT_PW") { webserver.arg(webserver.argName(i)).toCharArray(sec.MQTT_PW, sizeof(sec.MQTT_PW)); }
     }
     saveSec(secfile, sec);
-    unsigned long tn = 0;
-    if(millis() > tn + 2000){
-      tn = millis();
-    }
   }
+}
+
+/*
+// Statistics
+void handleStats()
+{
+  #if defined(ESP8266)
+    HTTPClient http;
+    String tmt = "mo="+String(ESP.getChipId())+"&ma="+String(WiFi.macAddress())+"&ds="+config.DISPWIDTH+"x"+config.DISPHEIGHT+"&dn="+config.NUMDISP+"&ve=v"+config.VER;
+    Serial.println(ESP.getChipId());
+    Serial.println(WiFi.macAddress() + "-ESP8266-" + config.VER);
+  #elif defined(ESP32)
+    HTTPClient http;
+    String tmt = "mo="+String(ESP.getChipModel())+"&ma="+String(WiFi.macAddress())+"&ds="+config.DISPWIDTH+"x"+config.DISPHEIGHT+"&dn="+config.NUMDISP+"&ve=v"+config.VER;
+    Serial.println(String(ESP.getChipModel()));
+    //Serial.println(String(ESP.getEfuseMac()));
+  #endif
+    Serial.println(WiFi.macAddress());
+    Serial.println(tmt);
+  String statsSrv = "https://heini.zone/rmd/stats.php?";
+  //HTTPClient http;
+  //http.begin(statsSrv + tmt);
+  http.begin(client, statsSrv + tmt);
+  int httpResp = http.GET();
+  if(httpResp > 0) {
+    Serial.printf("HTTP GET response: %d\n", httpResp);
+  }
+  http.end();
+}
+*/
+
+// UPDATE
+void loadUpdate(String updstatus)
+{
+  File htmlUpdate = LittleFS.open( "/update.htm", "r" );
+  buf1 = htmlUpdate.readString();
+  htmlUpdate.close();
+  buf1.replace("%VER%", config.VER);
+  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
+  //buf1.replace("%WIFI_IP%", String(WiFi.localIP()));
+  buf1.replace("%UPDSTATUS%", "");
+  //buf1.replace("%UPDSTATUS%", updstatus);
+  webserver.setContentLength( buf1.length() );
+  webserver.send( 200, "text/html", buf1 );
+  buf1 = "";
+}
+
+void loadUpdateStatus(String updstatus)
+{
+  File htmlUpdate = LittleFS.open( "/update.htm", "r" );
+  buf1 = htmlUpdate.readString();
+  htmlUpdate.close();
+  buf1.replace("%VER%", config.VER);
+  buf1.replace("%WIFI_DEVICENAME%", String(config.WIFI_DEVICENAME));
+  buf1.replace("%UPDSTATUS%", updstatus);
+  webserver.setContentLength( buf1.length() );
+  webserver.send( 200, "text/html", buf1 );
+  
+  yield();
+  buf1 = "";
+  ESP.restart();
 }
 
 #endif

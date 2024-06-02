@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+Roc-MQTT-Display
+Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
+https://github.com/chrisweather/RocMQTTdisplay
+-->
+<html>
+<script>
+function updateCheck(){
+ document.getElementById("upd").style.display = "none";
+ document.getElementById("buttonRestart").disabled = true;
+ document.getElementById("buttonRestart").style.display = "none";
+ document.getElementById("updStart").style.display = "none";
+ document.getElementById("updSuccess").style.display = "none";
+
+ var cversion = 1 * ("%VER%");
+ fetch('https://api.github.com/repos/chrisweather/rocmqttdisplay/releases/latest')
+ .then(result => result.json())
+ .then((output) => {
+ var lversion = (1 * (output.tag_name.substring(1))).toFixed(2);
+ var lurl = output.html_url;
+ lurl = "https://github.com/chrisweather/RocMQTTdisplay/releases";
+ document.getElementById("nurl").setAttribute("href",lurl);
+ if (lversion > cversion) { 
+  document.getElementById("nversion").innerHTML = "New version available: " + lversion;
+ }
+ else {
+  document.getElementById("nversion").innerHTML = "";
+ }
+ }).catch(err => console.error(err));
+}
+function buttonHome() {
+ window.open('/','_self');
+}
+function fileSelected() {
+ document.getElementById("buttonSubmit").disabled = false;
+}
+function onSubmit() {
+ document.getElementById("formUpload").style.display = "none";
+ document.getElementById("updStart").style.display = "block";
+ setIntervall(function(){reloadPage();}, 4000);
+}
+function buttonRestart() {
+ window.open('/update','_self');
+ window.open('/restart','_self');
+}
+function reloadPage() {
+ document.getElementById("updStart").style.display = "none";
+ document.getElementById("updSuccess").style.display = "block";
+}
+</script>
+<head>
+<meta charset="utf-8"/>
+<title>Roc-MQTT-Display</title>
+<link rel='stylesheet' type='text/css' href='rmd.css'>
+</head>
+<body onload="updateCheck()">
+<H1>Roc-MQTT-Display - Update</H1>
+<p><strong>%WIFI_DEVICENAME%</strong></p>
+<p><strong>Version %VER%</strong></p>
+<p><b><span id="nversion" style="color:#ff0000"></span></b></p>
+<a id="nurl" target='_blank'>Release Notes</a>
+</br></br>
+<p>In Arduino IDE, Tools/Port: select the the <strong>COM port</strong> where the controller is connected via USB</p>
+<p>or</p>
+<p>for an update via WLAN, Port: <strong>%WIFI_DEVICENAME% at IP-Address</strong></p>
+<form method='POST' action='/update' enctype='multipart/form-data' id='formUpload' onsubmit='onSubmit()'>
+<button type='button' class='button' title='Home' onclick='buttonHome()'>Home</button>
+</br></br></br></br>
+<div id='upd'>
+<p><strong>Update Controller Software</strong></p>
+<p><a href='https://github.com/chrisweather/RocMQTTdisplay/releases' target='_blank'>Download</a> precompiled .bin file OR compile the sketch and export the .bin file</p>
+<label id='select-file' for='file-input'>Select .bin file: </label> 
+<b><input type='file' name='file-input' id='inputFile' onchange='fileSelected()'></b>   
+<input type='submit' class='button' id='buttonSubmit' title='Start uploading the selected .bin file to the controller' value='Start Update' disabled='true'>
+</br></br>
+</div>
+</form>
+<p><strong>%UPDSTATUS%</strong></p>
+<div id='updStart'><b>Updating...</b><br>Do not close or refresh this page!</div>
+<div id='updSuccess'><b>Update Success!<br>Rebooting...</b><br></div>
+</br>
+<button type='button' class='button' id='buttonRestart' title='Restart' onclick='buttonRestart()' disabled='true'>Restart</button>
+<footer>
+<p>Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved. Version 1.12</p>
+<p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
+</footer>
+</body>
+</html>

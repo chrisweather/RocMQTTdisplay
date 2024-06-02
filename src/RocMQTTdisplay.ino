@@ -1,13 +1,13 @@
 /*########################################################################################
                              Roc-MQTT-Display
 Dynamic Passenger Information for Model Railroad Stations controlled by Rocrail or other 
-sources via MQTT. A Wemos D1 mini ESP8266 and a TCA9548A I2C Multiplexer can drive up to 
-eight I2C OLED displays. Several D1 mini can run together so the total number 
+sources via MQTT. A Wemos D1 mini ESP32 or ESP8266 and a TCA9548A I2C Multiplexer can drive up to 
+eight I2C OLED displays. Several microcontrollers can run parallel so the total number 
 of displays is not limited.
 
-Version 1.10  January 29, 2023
+Version 1.12  June 2, 2024
 
-Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
+Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 
 ##########################################################################################
@@ -58,39 +58,63 @@ https://github.com/chrisweather/RocMQTTdisplay/wiki
 #include <string>
 #include <Wire.h>
 #include <time.h>
-#include "ESP8266WiFi.h"       // https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WiFi
+#if defined(ESP8266)           // ESP8266
+#include <ESP8266WiFi.h>       // 
+#elif defined(ESP32)           // ESP32
+#include <WiFi.h>              // 
+#include <Update.h>            // 
+#else
+#error "This software only works with ESP32 or ESP8266 boards!"
+#endif
+#include <FS.h>
 #include <LittleFS.h>          // LittleFS file system https://github.com/esp8266/Arduino/tree/master/libraries/LittleFS
 #include "config.h"            // Roc-MQTT-Display configuration file
 #include "template.h"          // Roc-MQTT-Display template file
 #include "web.h"               // Roc-MQTT-Display web file
-#include <ArduinoOTA.h>        // ArduinoOTA by Juraj Andrassy https://github.com/jandrassy/ArduinoOTA
-#include "EspMQTTClient.h"     // EspMQTTClient by Patrick Lapointe https://github.com/plapointe6/EspMQTTClient
+//#include <ArduinoOTA.h>        // ArduinoOTA by Juraj Andrassy https://github.com/jandrassy/ArduinoOTA
+#include <EspMQTTClient.h>     // EspMQTTClient by Patrick Lapointe https://github.com/plapointe6/EspMQTTClient
+#define _TASK_TIMECRITICAL     // TaskScheduler by Anatoli Arkhipenko https://github.com/arkhipenko/TaskScheduler
 #include <TaskScheduler.h>     // TaskScheduler by Anatoli Arkhipenko https://github.com/arkhipenko/TaskScheduler
 #include <U8g2lib.h>           // U8g2lib by Oliver Kraus https://github.com/olikraus/u8g2
 using namespace std;
 
 
-// !!! SELECT YOUR DISPLAY TYPE HERE !!!
+// ##### !!! SELECT YOUR DISPLAY TYPE HERE !!! ######################
 // 
 // More U8G2 Display Constructors are listed in the U8G2 Wiki: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
-// Please uncomment ONLY ONE constructor! Only one display type can be handled by one Roc-MQTT-Display controller.
+// Please uncomment ** ONLY ONE ** constructor! Only ONE display type can be handled per Roc-MQTT-Display controller.
 
-// ### 128x32 ### 0.91" OLED I2C Display with SSD1306 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
-U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+// CONNECTOR PINS for DISPLAY/MULTIPLEXER
+//  Lolin D32      ESP32    SCL 22, SDA 21
+//  Lolin D32 Pro  ESP32    SCL 22, SDA 21
+//  Wemos D1 mini  ESP8266  SCL D1, SDA D2
 
-// ### 128x64 ### 0.96" OLED I2C Display with SSD1306 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
+// ### 128x32 ### 0.91" OLED I2C Display with SSD1306 controller
+//U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE); // Most intensive testing done with this constructor
+
+// ### 128x32 ### 0.87" OLED I2C Display with SSD1316 controller (use this constructor for this project: https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter)
+U8G2_SSD1316_128X32_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+
+// ### 128x64 ### 0.96" OLED I2C Display with SSD1306 controller
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
-// ### 64x48 ### 0.66" OLED I2C Display with SSD1306 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
+// ### 64x48 ### 0.66" OLED I2C Display with SSD1306 controller
 //U8G2_SSD1306_64X48_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
-// ### 96x16 ### 0.69" OLED I2C Display with SSD1306 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
-//U8G2_SSD1306_96X16_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+// ### 96x16 ### 0.69" OLED I2C Display with SSD1306 controller
+//U8G2_SSD1306_96X16_ER_2_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
-// These drivers have not been tested with Roc-MQTT-Display
-// ### 128x32 ### 0.87" OLED I2C Display with SSD1316 controller, Define OLED Display as disp (D2: SDA, D1: SCL)
-//U8G2_SSD1316_128X32_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+// ### 72x40 ### 0.42" OLED I2C Display with SSD1306 controller
+//U8G2_SSD1306_72X40_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
+// These drivers have not been tested with Roc-MQTT-Display yet:
+
+// ### 64x32 ### 0.49" OLED I2C Display with SSD1306 controller
+//U8G2_SSD1306_64X32_NONAME_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+//U8G2_ST7567_64X32_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+//U8G2_ST7567_HEM6432_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+
+// ##################################################################
 
 u8g2_uint_t offset1 = 0;  // current offset for the scrolling text
 u8g2_uint_t offset2 = 0;
@@ -100,7 +124,7 @@ u8g2_uint_t offset5 = 0;
 u8g2_uint_t offset6 = 0;
 u8g2_uint_t offset7 = 0;
 u8g2_uint_t offset8 = 0;
-u8g2_uint_t width1 = 0;  // pixel width of the scrolling text (must be < 128 unless U8G2_16BIT is defined, max display 240x240, https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#16-bit-mode)
+u8g2_uint_t width1 = 0;   // pixel width of the scrolling text (must be < 128 unless U8G2_16BIT is defined, max display 240x240, https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#16-bit-mode)
 u8g2_uint_t width2 = 0;
 u8g2_uint_t width3 = 0;
 u8g2_uint_t width4 = 0;
@@ -112,7 +136,9 @@ u8g2_uint_t width8 = 0;
 // Define TaskScheduler 
 Scheduler ts;
 
-// Callback methods prototypes for TaskScheduler
+// TaskScheduler - Callback methods prototypes
+void coreLoop();
+void sendConfiguration();
 void send2display1();
 void send2display2();
 void send2display3();
@@ -121,32 +147,40 @@ void send2display5();
 void send2display6();
 void send2display7();
 void send2display8();
+void DemoModeOn();
+void DemoTimeOn();
 
-// Tasks for TaskScheduler
-Task tS1(5 + config.UPDSPEED, TASK_FOREVER, &send2display1, &ts, true);  // Display 1
-Task tS2(5 + config.UPDSPEED, TASK_FOREVER, &send2display2, &ts, false);  // Display 2
-Task tS3(5 + config.UPDSPEED, TASK_FOREVER, &send2display3, &ts, false);  // Display 3
-Task tS4(5 + config.UPDSPEED, TASK_FOREVER, &send2display4, &ts, false);  // Display 4
-Task tS5(5 + config.UPDSPEED, TASK_FOREVER, &send2display5, &ts, false);  // Display 5
-Task tS6(5 + config.UPDSPEED, TASK_FOREVER, &send2display6, &ts, false);  // Display 6
-Task tS7(5 + config.UPDSPEED, TASK_FOREVER, &send2display7, &ts, false);  // Display 7
-Task tS8(5 + config.UPDSPEED, TASK_FOREVER, &send2display8, &ts, false);  // Display 8
+// TaskScheduler - Tasks
+Task tSc(100, TASK_FOREVER, &coreLoop, &ts, true);                         // Core Loop
+Task tS0(180000, TASK_FOREVER, &sendConfiguration, &ts, true);             // share RMD configuration via MQTT
+Task tS1(60 + config.UPDSPEED, TASK_FOREVER, &send2display1, &ts, true);   // Display 1
+Task tS2(60 + config.UPDSPEED, TASK_FOREVER, &send2display2, &ts, false);  // Display 2
+Task tS3(60 + config.UPDSPEED, TASK_FOREVER, &send2display3, &ts, false);  // Display 3
+Task tS4(60 + config.UPDSPEED, TASK_FOREVER, &send2display4, &ts, false);  // Display 4
+Task tS5(60 + config.UPDSPEED, TASK_FOREVER, &send2display5, &ts, false);  // Display 5
+Task tS6(60 + config.UPDSPEED, TASK_FOREVER, &send2display6, &ts, false);  // Display 6
+Task tS7(60 + config.UPDSPEED, TASK_FOREVER, &send2display7, &ts, false);  // Display 7
+Task tS8(60 + config.UPDSPEED, TASK_FOREVER, &send2display8, &ts, false);  // Display 8
+Task tS9(8000, 15, &DemoModeOn, &ts, false);                               // Demo Mode
+Task tS10(2000, TASK_FOREVER, &DemoTimeOn, &ts, false);                    // Demo Time
 
 // Define WIFI/MQTT Client
-EspMQTTClient client( sec.WIFI_SSID, sec.WIFI_PW, config.MQTT_IP, sec.MQTT_USER, sec.MQTT_PW, config.WIFI_DEVICENAME, config.MQTT_PORT );
+EspMQTTClient client(sec.WIFI_SSID, sec.WIFI_PW, config.MQTT_IP, sec.MQTT_USER, sec.MQTT_PW, config.WIFI_DEVICENAME, config.MQTT_PORT);
 
 // Define global variables
-unsigned long lastMsg = 0;    // used by ScreenSaver
-unsigned long lastNTP = 0;    // used by NTP
+unsigned long lastMsg = 0;        // ScreenSaver
+unsigned long lastNTP = 0;        // NTP
 time_t now;
 tm tm;
-String ntptime = "00:00";
-String ntpdate = "dd.mm.yyyy";
-String rrtime = "00:00";
+uint8_t demonum = 1;              // Demo Mode
+uint8_t demomin = 12;
+String ntptime = "00:00";         // NTP
+String ntpdate = "dd.mm.yyyy";  
+String rrtime = "00:00";          // Rail Time
 String rrtimelast = "00:00";
 String rrdate =  "dd.mm.yyyy";
 String rrdatelast = "01.01.2000";
-String RMDcfg = "";
+String RMDcfg = "";               // RMnet
 
 String ZZA1_Targets =     "";
 String ZZA1_Template =    "";
@@ -258,9 +292,9 @@ void setup()
 {
   Serial.begin(115200);
   while (!Serial) continue;
-  delay(1000);
+  delay(500);
 
-  Serial.print(F("\n\n\nStarting Roc-MQTT-Display..."));
+  Serial.println(F("\n\n\nStarting Roc-MQTT-Display..."));
 
   // Initialize LittleFS File System
   if(!LittleFS.begin()){
@@ -273,7 +307,7 @@ void setup()
   Serial.print(F("\nLoading sec from \n"));
   Serial.println(secfile);
   loadSecData(secfile, sec);
-  
+
   // Load config from file
   Serial.print(F("\nLoading configuration from \n"));
   Serial.println(configfile);
@@ -293,111 +327,36 @@ void setup()
   Serial.println(templatefile);
   //loadTemplate(templatefile, templ);
   loadTemplate(templatefile);
-/*
-  Save template data to file
-  Serial.print(F("\nSaving template data to "));
-  Serial.println(templatefile);
-  saveTemplate(templatefile, templ);
 
-  TPL = 0;
-  // Save template00 to file
-  Serial.print(F("\nSaving template00 to "));
-  Serial.println(template00);
-  saveTemplateFile(template00);
-
-  TPL = 1;
-  // Save template01 to file
-  Serial.print(F("\nSaving template01 to "));
-  Serial.println(template01);
-  saveTemplateFile(template01);
-
-  TPL = 2;
-  // Save template02 to file
-  Serial.print(F("\nSaving template02 to "));
-  Serial.println(template02);
-  saveTemplateFile(template02);
-
-  TPL = 3;
-  // Save template03 to file
-  Serial.print(F("\nSaving template03 to "));
-  Serial.println(template03);
-  saveTemplateFile(template03);
-
-  TPL = 4;
-  // Save template04 to file
-  Serial.print(F("\nSaving template04 to "));
-  Serial.println(template04);
-  saveTemplateFile(template04);
-
-  TPL = 5;
-  // Save template05 to file
-  Serial.print(F("\nSaving template05 to "));
-  Serial.println(template05);
-  saveTemplateFile(template05);
-
-  TPL = 6;
-  // Save template06 to file
-  Serial.print(F("\nSaving template06 to "));
-  Serial.println(template06);
-  saveTemplateFile(template06);
-
-  TPL = 7;
-  // Save template07 to file
-  Serial.print(F("\nSaving template07 to "));
-  Serial.println(template07);
-  saveTemplateFile(template07);
-
-  TPL = 8;
-  // Save template08 to file
-  Serial.print(F("\nSaving template08 to "));
-  Serial.println(template08);
-  saveTemplateFile(template08);
-
-  TPL = 9;
-  // Save template09 to file
-  Serial.print(F("\nSaving template09 to "));
-  Serial.println(template09);
-  saveTemplateFile(template09);
-*/
   // Load template0x from file
   Serial.print(F("\nLoading templates from \n"));
-
   TPL = 0;
   Serial.println(template00);
   loadTemplateFile(template00);
-
   TPL = 1;
   Serial.println(template01);
   loadTemplateFile(template01);
-
   TPL = 2;
   Serial.println(template02);
   loadTemplateFile(template02);
-
   TPL = 3;
   Serial.println(template03);
   loadTemplateFile(template03);
-
   TPL = 4;  
   Serial.println(template04);
   loadTemplateFile(template04);
-
   TPL = 5;
   Serial.println(template05);
   loadTemplateFile(template05);
-
   TPL = 6;
   Serial.println(template06);
   loadTemplateFile(template06);
-
   TPL = 7;
   Serial.println(template07);
   loadTemplateFile(template07);
-
   TPL = 8;
   Serial.println(template08);
   loadTemplateFile(template08);
-
   TPL = 9;
   Serial.println(template09);
   loadTemplateFile(template09);
@@ -408,51 +367,39 @@ void setup()
     Serial.print(F("\nPrint "));
     Serial.println(secfile);
     printFile(secfile);
-  
     Serial.print(F("\nPrint "));
     Serial.println(configfile);
     printFile(configfile);
-
     Serial.print(F("\nPrint "));
     Serial.println(templatefile);
     printFile(templatefile);
-  
     Serial.print(F("\nPrint "));
     Serial.println(template00);
     printFile(template00);
-
     Serial.print(F("\nPrint "));
     Serial.println(template01);
     printFile(template01);
-
     Serial.print(F("\nPrint "));
     Serial.println(template02);
     printFile(template02);
-
     Serial.print(F("\nPrint "));
     Serial.println(template03);
     printFile(template03);
-
     Serial.print(F("\nPrint "));
     Serial.println(template04);
     printFile(template04);
-
     Serial.print(F("\nPrint "));
     Serial.println(template05);
     printFile(template05);
-
     Serial.print(F("\nPrint "));
     Serial.println(template06);
     printFile(template06);
-
     Serial.print(F("\nPrint "));
     Serial.println(template07);
     printFile(template07);
-
     Serial.print(F("\nPrint "));
     Serial.println(template08);
     printFile(template08);
-
     Serial.print(F("\nPrint "));
     Serial.println(template09);
     printFile(template09);
@@ -461,42 +408,21 @@ void setup()
   // Switch off Wemos D1 mini onboard LED
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
-  delay(200);
 
   Serial.println(F("\nRoc-MQTT-Display"));
+  Serial.print(F("Version "));
   Serial.println(config.VER);
-  Serial.println(F("FOR DEBUG INFORMATION set 'Enable debug messages' to 1 in CONFIGURATION"));
-  //Serial.print(F("\nCurrent MQTT broker IP-adress: "));
-  //Serial.println(config.MQTT_IP);
+  Serial.println(F("\nFOR DEBUG INFORMATION set 'Enable debug messages' to 1 in CONFIGURATION"));
   if (strlen(config.MQTT_IP) < 7) {
     Serial.println(F("\nWARNING: MQTT broker IP-adress is missing or incomplete in CONFIGURATION"));
   }
-  //Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
-  //Serial.println(config.WIFI_DEVICENAME);
   Serial.print(F("\n  Displays enabled: "));
   Serial.print(config.NUMDISP);
   Serial.println(F(" / 8"));
-  Serial.print(F("  Display size: "));
+  Serial.print(F("  Display pixel resolution: "));
   Serial.print(config.DISPWIDTH);
   Serial.print(F(" x "));
   Serial.println(config.DISPHEIGHT);
-
-  // Initialize all connected displays
-  if (config.MUX == 0){
-    tS1.setInterval(10 + config.UPDSPEED);
-    tS2.disable();
-    tS3.disable();
-    tS4.disable();
-    tS5.disable();
-    tS6.disable();
-    tS7.disable();
-    tS8.disable();
-  }
-
-  if(config.MUX > 0){
-    Wire.begin();
-  }
-  DisplayInit();
 
   // Optional functionalities of EspMQTTClient
   client.enableDebuggingMessages(config.MQTT_DEBUG);
@@ -504,15 +430,18 @@ void setup()
   client.setKeepAlive(config.MQTT_KEEPALIVE1);
   client.setMqttReconnectionAttemptDelay(config.MQTT_RECONDELAY);
   client.setWifiReconnectionAttemptDelay(config.WIFI_RECONDELAY);
+  //client.enableHTTPWebUpdater("/update");
+  //client.enableOTA();
+  //client.enableOTA(sec.OTA_PW, config.OTA_PORT);
 
   // Initialize NTP time client
-  configTime(config.NTP_TZ, config.NTP_SERVER);
+  configTzTime(config.NTP_TZ, config.NTP_SERVER);
 
   // OTA
   ArduinoOTA.setPort(config.OTA_PORT);
   ArduinoOTA.setHostname(config.OTA_HOSTNAME);
-  ArduinoOTA.setPassword(sec.OTA_PW);
-  ArduinoOTA.setPasswordHash(sec.OTA_HASH);
+  //ArduinoOTA.setPassword(sec.OTA_PW);
+  //ArduinoOTA.setPasswordHash(sec.OTA_HASH);
 
   ArduinoOTA.onStart([]() {
     String type;
@@ -521,7 +450,7 @@ void setup()
     } else { // U_FS
       type = "filesystem";
     }
-    // NOTE: if updating FS this would be the place to unmount FS using FS.end()
+    stopLittleFS();
     Serial.println("OTA Start updating " + type);
   });
   ArduinoOTA.onEnd([]() {
@@ -544,11 +473,6 @@ void setup()
       Serial.println(F("OTA End Failed"));
     }
   });
-  ArduinoOTA.begin();
-  //Serial.print(F("\nOTA Ready -> Port: "));
-  //Serial.print(config.OTA_HOSTNAME);
-  //Serial.print(F(" at "));
-  //Serial.println(WiFi.localIP());
 
   // Initialize WEBSERVER
   webserver.on("/", []() {             // Define the handling function for / path
@@ -587,7 +511,7 @@ void setup()
     handleTpl2Select();
   });
 
-webserver.on("/tpl2imp", []() {         // Define the handling function for the /tpl2imp path
+  webserver.on("/tpl2imp", []() {      // Define the handling function for the /tpl2imp path
     loadTpl2imp();
   });
 
@@ -637,20 +561,64 @@ webserver.on("/tpl2imp", []() {         // Define the handling function for the 
 
   webserver.on("/restart", []() {      // Define the handling function for the /restart path
     webserver.send(204);
-    unsigned long tn = 0;
-    if(millis() > tn + 300){
-      tn = millis();
-    }
+    yield();
     restartESP();
   });
 
-  webserver.on("/ota", []() {          // Define the handling function for the /ota path
+  webserver.on("/demo", []() {         // Define the handling function for the /demo path
     webserver.send(204);
-    unsigned long tn = 0;
-    if(millis() > tn + 500){
-      tn = millis();
+    if (config.DEMO == 0){
+      config.DEMO = 1;
+      demonum = 1;
+      tS10.enable();
+      Serial.println(F("\nDemo Mode ON"));
+      tS9.enable();
+      Serial.println(F("\nDemo Time ON"));
     }
-    stopLittleFS();
+    else{
+      config.DEMO = 0;
+      tS10.disable();
+      tS9.disable();
+      demonum = 1;
+    }
+  });
+
+  webserver.on("/update", []() {     // Define the handling function for the /update path
+    //webserver.send(204);
+    ArduinoOTA.begin();
+    loadUpdate("");
+  });
+
+  webserver.on("/update", HTTP_POST, []() {
+    //webserver.sendHeader("Connection", "close");
+    //webserver.send(204);
+    //loadUpdate("");
+    webserver.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+    yield();
+    ESP.restart();
+    }, []() {
+      //loadUpdate("");
+      HTTPUpload& upload = webserver.upload();
+      if (upload.status == UPLOAD_FILE_START) {
+        Serial.setDebugOutput(true);
+        Serial.printf("Update: %s\n", upload.filename.c_str());
+        //if (!Update.begin()) { //start with max available size
+          //Update.printError(Serial);
+        //}
+      } else if (upload.status == UPLOAD_FILE_WRITE) {
+        if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
+          Update.printError(Serial);
+        }
+      } else if (upload.status == UPLOAD_FILE_END) {
+        if (Update.end(true)) { //true to set the size to the current progress
+          Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+        } else {
+          Update.printError(Serial);
+        }
+        Serial.setDebugOutput(false);
+      } else {
+        Serial.printf("Update Failed Unexpectedly (likely broken connection): status=%d\n", upload.status);
+      }
   });
 
   webserver.onNotFound([]() {          // Define the handling function for Site Not Found response
@@ -658,20 +626,38 @@ webserver.on("/tpl2imp", []() {         // Define the handling function for the 
   });
 
   webserver.begin();                   // Start the webserver
-  Serial.println(F("\nWebserver started and listening for requests"));
+  Serial.println(F("\nWebserver started and listening for requests\n"));
 
-} // End of setup
+  // Initialize all connected displays
+  if (config.MUX == 0){
+    tS1.setInterval(65 + config.UPDSPEED);
+    tS2.disable();
+    tS3.disable();
+    tS4.disable();
+    tS5.disable();
+    tS6.disable();
+    tS7.disable();
+    tS8.disable();
+  }
+
+  if(config.MUX > 0){
+    Wire.begin();
+  }
+  DisplayInit();
+
+} // End of SETUP
 
 
 // Restart the controller
 void restartESP()
 {
   stopLittleFS();
+  yield();
   ESP.restart();
 }
 
 
-// Display Switch with I2C Display Multiplexer TCA9548A
+// Switch between Displays with I2C Multiplexer TCA9548A
 void DMUX(uint8_t port)
 {
   Wire.beginTransmission( config.MUX );  // TCA9548A default address is 0x70
@@ -687,7 +673,6 @@ void DisplayInit()
   for (uint8_t i = 0; i < config.NUMDISP; i++) {
     switch (i){
     case 0: tS1.enable();
-            //tS1.setInterval(10 + config.UPDSPEED);
             break;
     case 1: tS2.enable();
             break;
@@ -707,12 +692,23 @@ void DisplayInit()
     if (config.MUX > 0){
       DMUX(i);
     }
-    disp.clearBuffer();
+    //disp.setBusClock(400000);  // I2C bus speed, default 100000, changes might impact bus/display speed and reduce stability, experimental
+    //disp.clearBuffer();
+    //disp.clear();
     disp.firstPage();
     do {
       disp.begin();  // Initialize display i
       disp.setFlipMode(DPL_flip[i]);
-      //disp.setDisplayRotation(U8G2_R2);  // U8G2_R0, U8G2_R1, U8G2_R2, U8G2_R3, U8G2_MIRROR  DPL_rotation[i]
+      /*
+      if (DPL_flip[i] == 1){
+        Serial.println("Rotate display");
+        disp.setDisplayRotation(U8G2_R2);  // U8G2_R0, U8G2_R1, U8G2_R2, U8G2_R3, U8G2_MIRROR  DPL_rotation[i]
+      }
+      else {
+        Serial.println("Default display");
+        disp.setDisplayRotation(U8G2_R0);
+      }
+      */
       disp.setContrast(DPL_contrast[i]);
       //if (DPL_contrast[i] == 0){
       //  disp.setPowerSave(1);
@@ -728,7 +724,7 @@ void DisplayInit()
       disp.setCursor(0,15);
       disp.print(config.VER);
       disp.nextPage();
-      delay(500 + (config.STARTDELAY / 2));
+      delay(300 + (config.STARTDELAY / 2));
       disp.clearDisplay();
       disp.setFont(fontno[5]);
       disp.setCursor(0,7);
@@ -736,7 +732,7 @@ void DisplayInit()
       disp.setCursor(0,15);
       disp.print(config.WIFI_DEVICENAME);
       disp.nextPage();
-      delay(500 + (config.STARTDELAY / 2));
+      delay(300 + (config.STARTDELAY / 2));
       disp.clearDisplay();
       disp.setCursor(0,7);
       disp.print(F("Display: "));
@@ -744,10 +740,10 @@ void DisplayInit()
       disp.setCursor(0,15);
       disp.print(F("ID: "));
       disp.print(DPL_id[i]);
-      
+
       if (strlen(config.MQTT_IP) < 7) {
         disp.nextPage();
-        delay(500 + (config.STARTDELAY / 2));
+        delay(300 + (config.STARTDELAY / 2));
         disp.clearDisplay();
         disp.setCursor(0,7);
         disp.print(F("NO MQTT broker"));
@@ -764,6 +760,7 @@ void DisplayInit()
       Serial.println(DPL_id[i]);
     } while (disp.nextPage());
   }
+  Serial.println(F(""));
   delay(config.STARTDELAY);
 }
 
@@ -772,9 +769,15 @@ void DisplayInit()
 
 // *** Write to Display 1 ***
 void send2display1(void)
-{ 
+{
+  if (config.MQTT_DEBUG == 1){
+    Serial.print(F(" tS1: overrun = "));
+    Serial.println(tS1.getOverrun());
+    //Serial.print(F(", start delayed by "));
+    //Serial.println(tS1.getStartDelay());
+  }
   // Template number
-  uint8_t t = ZZA1_Template.toInt();
+  uint8_t t = ZZA1_Template.toInt();  //!!!!!!!!!!!!!!-> init, statt String direkt uint8_t
   if (t > 9){
     t = 0;
   }
@@ -788,7 +791,7 @@ void send2display1(void)
   }
   u8g2_uint_t x;
   disp.firstPage();
-  if (TPL_invert[t] == 1){
+  if (TPL_invert[t] == 1){  //!!!!!!!!!!!!!!-> init
     disp.sendF("c", 0x0a7);
   }
   else {
@@ -908,8 +911,10 @@ void send2display1(void)
     }
   }
 */
-  
+
   disp.nextPage();
+
+  // Screenshot
   if (config.PRINTBUF == 1){
     printBuffer();
     config.PRINTBUF = 0;
@@ -922,7 +927,7 @@ void send2display1(void)
 
 // *** Write to Display 2 ***
 void send2display2(void)
-{ 
+{
   // Template number
   uint8_t t = ZZA2_Template.toInt();
   if (t > 9){
@@ -1746,7 +1751,7 @@ void switchLogo(uint8_t t, String ZZA_Type)
   else if (ZZA_Type == logoId[19]){
     disp.drawXBM( TPL_5logox[t], TPL_5logoy[t], logow[19], logoh[19], logo19);
   }
-  
+
   /*switch (i){ 
     case 1: disp.drawXBM( TPL_6logox[t], TPL_6logoy[t], TPL_6logow[t], TPL_6logoh[t], logo1);
             break;
@@ -1772,7 +1777,8 @@ void switchLogo(uint8_t t, String ZZA_Type)
 
 
 // Enable ScreenSaver for all displays
-void screenSaver(int s){
+void screenSaver(int s)
+{
   for (uint8_t i = 0; i < config.NUMDISP; i++)
   {
     if (config.MUX == 112){
@@ -1791,15 +1797,62 @@ void screenSaver(int s){
 }
 
 
+// Share RMD configuration via MQTT with other devices in the network
+void sendConfiguration()
+{
+  String ConfigRMD = "";
+  JsonDocument doc;
+  doc["RMDCFG"] = config.WIFI_DEVICENAME;
+  doc["V"] = config.VER;
+  doc["I0"] = DPL_id[0];
+  doc["I1"] = DPL_id[1];
+  doc["I2"] = DPL_id[2];
+  doc["I3"] = DPL_id[3];
+  doc["I4"] = DPL_id[4];
+  doc["I5"] = DPL_id[5];
+  doc["I6"] = DPL_id[6];
+  doc["I7"] = DPL_id[7];
+  doc["T0"] = DPL_track[0];
+  doc["T1"] = DPL_track[1];
+  doc["T2"] = DPL_track[2];
+  doc["T3"] = DPL_track[3];
+  doc["T4"] = DPL_track[4];
+  doc["T5"] = DPL_track[5];
+  doc["T6"] = DPL_track[6];
+  doc["T7"] = DPL_track[7];
+  doc["S0"] = DPL_station[0];
+  doc["S1"] = DPL_station[1];
+  doc["S2"] = DPL_station[2];
+  doc["S3"] = DPL_station[3];
+  doc["S4"] = DPL_station[4];
+  doc["S5"] = DPL_station[5];
+  doc["S6"] = DPL_station[6];
+  doc["S7"] = DPL_station[7];
+  // Serialize JSON to variable
+  if (serializeJson(doc, ConfigRMD) == 0) {
+    Serial.println(F("Failed to write config json to variable"));
+  }
+  Serial.print(F("Configuration published for: "));
+  Serial.println(config.WIFI_DEVICENAME);
+  if (config.MQTT_DEBUG == 1){
+    Serial.println(ConfigRMD);
+  }
+  client.publish("rmnet/config", ConfigRMD, false);
+}
+
+
 // Write display buffer/screenshot to serial out
-void printBuffer(){
+void printBuffer()
+{
   Serial.println("\nScreenshot of display 1 as XBM image\n");
-  disp.writeBufferXBM(Serial);      // Write XBM image to serial out
+  disp.writeBufferXBM(Serial);     // Write XBM image to serial out
   Serial.println();
 }
 
 
-void updateTime() {
+// NTP time updater
+void updateTime()
+{
   time(&now);                         // read the current time
   localtime_r(&now, &tm);             // update the structure tm with the current time
 
@@ -1810,7 +1863,7 @@ void updateTime() {
     lastNTP = millis();
   }
   else {
-    ntptime = "no NTP data";
+    ntptime = "no NTP time";
   }
   //Serial.print(ntptime);
   //if (tm.tm_isdst == 1)                  // Daylight Saving Time flag
@@ -1820,7 +1873,9 @@ void updateTime() {
 }
 
 
-void runCmd(){
+// Update time and date variables in displayed messages
+void updVar()
+{
   ZZA1_Message = ZZA1_MessageO;
   ZZA1_Message.replace("{ntptime}", ntptime);
   ZZA1_Message.replace("{ntpdate}", ntpdate);
@@ -1903,20 +1958,116 @@ void runCmd(){
 }
 
 
+// Initialize/End Demo Mode
+void DemoModeOn()
+{
+  if (demonum >= 12){
+    config.DEMO = 0;
+    tS9.disable();
+    Serial.println(F("\nDemo Mode OFF"));
+    tS10.disable();
+    Serial.println(F("\nDemo Time OFF"));
+  }
+  else {
+    DemoMode();
+  }
+}
+
+
+// Initialize/End Demo Time
+void DemoTimeOn()
+{
+  String T1Demo = String("DEMO clock divider=\"1\" hour=\"18\" minute=\"12\" wday=\"5\" mday=\"11\" month=\"2\" year=\"2024\" time=\"1613151626\" temp=\"20\" ....");
+  T1Demo.replace("minute=\"12", "minute=\"" + String(demomin));
+  client.publish(config.MQTT_TOPIC1, T1Demo, false);
+  //Serial.println(T1Demo);
+  demomin = demomin + 1;
+  if (demomin > 35){
+    demomin = 12;
+  }
+}
+
+
+// Demo Mode
+void DemoMode()
+{
+  Serial.println(F("\nDemo Mode"));
+  String demomsg = "DEMO ZZAMSG#Targets#Template#Station#Track#Destination#Departure#Train#TrainType#Message###....";
+  switch (demonum){
+    // Demo Mode Message
+    case 1: demomsg = "DEMO ZZAMSG#Targets#T6#Demo Mode#########....";
+            demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
+            break;
+    // Normal train announcement
+    case 2: demomsg = "DEMO ZZAMSG#Targets#T0#Bhf01#Track#Hamburg-Hbf#08:17#ICE597#ICE####....";
+            demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]) + String(DPL_id[2]) + String(DPL_id[3]) + String(DPL_id[4]) + String(DPL_id[5]) + String(DPL_id[6]) + String(DPL_id[7]));
+            demomsg.replace("Track", String(DPL_track[0]));
+            break;
+    // Announcement with scroll message
+    case 3: demomsg = "DEMO ZZAMSG#Targets#T0#Bhf01#Track#Hamburg-Hbf#08:17#ICE 597#ICE#Abfahrt heute auf Gleis 4###....";
+            demomsg.replace("Targets", String(DPL_id[1]) + String(DPL_id[3]) + String(DPL_id[5]) + String(DPL_id[7]));
+            demomsg.replace("Track", String(DPL_track[1]));
+            break;
+    // Warning
+    case 4: demomsg = "DEMO ZZAMSG#Targets#T5#######Zugdurchfahrt###....";
+            demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
+            break;
+    // NTP Time
+    case 5: demomsg = "DEMO ZZAMSG#Targets#T4#######{ntptime}###....";
+            demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
+            break;
+    // Rocrail Time
+    case 6: demomsg = "DEMO ZZAMSG#Targets#T4#######{rrtime}###....";
+            demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
+            break;
+    // Message
+    case 7: demomsg = "DEMO ZZAMSG#Targets#T0#Bhf01#1#Köln-Bonn#10:22#RE7#RE#5min Verspätung - 5min delayed###....";
+            demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
+            break;
+    // Local train S-Bahn
+    case 8: demomsg = "DEMO ZZAMSG#Targets#T2#Bhf01#5#Stellingen#16:43#S21#S####....";
+            demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
+            break;
+    // Station Name
+    case 9: demomsg = "DEMO ZZAMSG#Targets#T6#Gartenstadt#########....";
+            demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
+            break;
+    // Scrolltext only
+    case 10: demomsg = "DEMO ZZAMSG#Targets#T9##2#####Ersatzfahrplan wg. Bahnstreik###....";
+             demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
+             break;
+    // Clear all displays
+    case 11: demomsg = "DEMO ZZAMSG#Targets###########....";
+             demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]) + String(DPL_id[2]) + String(DPL_id[3]) + String(DPL_id[4]) + String(DPL_id[5]) + String(DPL_id[6]) + String(DPL_id[7]));
+             break;
+  }
+  if (config.MQTT_DEBUG == 1){
+    Serial.print(F("\nDemo Message "));
+    Serial.print(demonum);
+    Serial.print(F(": "));
+    Serial.println(demomsg);
+  }
+  demonum +=1;
+  client.publish(config.MQTT_TOPIC2, demomsg, false);
+  //Serial.println(F("\nDemo Message published"));
+}
+
+
 // This function is called when WIFI and MQTT are connected
 void onConnectionEstablished()
 {
-  Serial.print(F("\nOTA Ready -> Port: "));
-  Serial.print(config.OTA_HOSTNAME);
-  Serial.print(F(" at "));
-  Serial.println(WiFi.localIP());
+  if (client.isWifiConnected() == true){
+    Serial.print(F("\nOTA Ready -> Port: "));
+    Serial.print(config.OTA_HOSTNAME);
+    Serial.print(F(" at "));
+    Serial.println(WiFi.localIP());
 
-  Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
-  Serial.println(config.WIFI_DEVICENAME);
-  Serial.println(F("                          or "));
-  Serial.print(F("                        http://"));
-  Serial.println(WiFi.localIP());
-  //Serial.println("\n");
+    Serial.print(F("\nFOR CONFIGURATION OPEN: http://"));
+    Serial.println(config.WIFI_DEVICENAME);
+    Serial.println(F("                          or "));
+    Serial.print(F("                        http://"));
+    Serial.println(WiFi.localIP());
+  }
 
   // Subscribe MQTT client to topic "rmnet" to test the broker connection and communicate with other RM modules
   if (client.isMqttConnected() == true){
@@ -1924,17 +2075,35 @@ void onConnectionEstablished()
   }
   // Subscribe MQTT client to topic: "rmnet/#"
   client.subscribe("rmnet/#", [](const String & payload0){
+    if (config.MQTT_DEBUG == 1){
+      Serial.println("Received message from rmnet:  " + payload0);
+    }
+    // Publish controller configuration on request
     if (payload0 == "sendrmdcfg"){
-      Serial.println(F("Publish configuration: "));
-      client.publish("rmnet/config", sendConfiguration(config), false);
+      Serial.println("Received message from rmnet:  " + payload0);
+      //Serial.println(F("Publish configuration: "));
+      //client.publish("rmnet/config", sendConfiguration(), false);
+      //sendConfiguration();
     }
   }, 1);
 
-  // Subscribe MQTT client to topic "rocrail/service/info/clock" to receive Rocrail time
-  client.subscribe(config.MQTT_TOPIC1, [](const String & payload1) {
-    //Serial.println(payload1);
-    // <clock divider="1" hour="18" minute="40" wday="5" mday="12" month="2" year="2021" time="1613151626" temp="20" bri="255" lux="0" pressure="0" humidity="0" cmd="sync"/>
-    if (payload1.indexOf("sync") < 1){
+  // Subscribe MQTT client to topic "rocrail/service/info/clock" to receive Rocrail time or Demo time
+  client.subscribe(config.MQTT_TOPIC1, [](const String & payload1in) {
+    //Serial.println(payload1in);
+    String payload1 = payload1in;
+    //Serial.println("Index of Sync1: " + String(payload1.indexOf("sync")));
+    // RR Example: <clock divider="1" hour="18" minute="40" wday="5" mday="12" month="2" year="2021" time="1613151626" temp="20" bri="255" lux="0" pressure="0" humidity="0" cmd="sync"/>
+    //Serial.println("config.DEMO: " + String(config.DEMO));
+    //Serial.println("Index of Sync2: " + String(payload1.indexOf("sync")));
+    //Serial.println("Index of DEMO: " + String(payload1.indexOf("DEMO")));
+    if (config.DEMO == 1 && payload1.indexOf("sync") > -1){
+      payload1 = "";
+      //Serial.println("payload1 removed, not DEMO: " + payload1);
+    }
+    else if (payload1.indexOf("sync") == -1 && payload1.indexOf("DEMO") == -1){
+      //Serial.println("Index of Sync2: " + String(payload1.indexOf("sync")));
+      //Serial.println("Index of DEMO: " + String(payload1.indexOf("DEMO")));
+      //Serial.println("No RR and no Demo: " + payload1);
       //rrtime = "00:00";
       rrtime = rrtimelast;
       //rrdate = "01.01.2000";
@@ -1967,7 +2136,7 @@ void onConnectionEstablished()
                 break;
         case 7: wd = "So";
                 break;
-      }
+        }
       String d = payload1.substring(payload1.indexOf("mday") + 6, payload1.indexOf("month") - 2);
       if (d.length() < 2){
         d = "0" + d;
@@ -1977,13 +2146,14 @@ void onConnectionEstablished()
         mo = "0" + mo;
       }
       String y = payload1.substring(payload1.indexOf("year") + 6, payload1.indexOf("time") - 2);
-    
+
       rrtime = h + ":" + m;
       rrtimelast = rrtime;
+      //Serial.println(rrtime);
       rrdate = d + "." + mo + "." + y;
       rrdatelast = rrdate;
     }
-    runCmd();
+    updVar();
   }, 1);
 
   // Subscribe MQTT client to topic "rocrail/service/info/tx" to receive messages sent by Rocrail text fields or other MQTT sources
@@ -2217,9 +2387,12 @@ void onConnectionEstablished()
 }
 
 
-// Main loop
-void loop()
+void coreLoop()
 {
+  if (config.MQTT_DEBUG == 1){
+    Serial.print(F(" tSc: overrun = "));
+    Serial.println(tSc.getOverrun());
+  }
   client.loop();             // WIFI, MQTT
 
   ArduinoOTA.handle();       // OTA
@@ -2231,6 +2404,11 @@ void loop()
   if ( millis() > (lastMsg + (config.SCREENSAVER * 60000)) && config.SCREENSAVER > 0 ){
     screenSaver(1);          // Activate ScreenSaver
   }
+}
 
-  ts.execute();              // TaskScheduler updating the displays
+
+// Main loop
+void loop()
+{
+  ts.execute();              // TaskScheduler run core components, update the displays, run demo mode
 }

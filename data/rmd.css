@@ -1,7 +1,7 @@
 /*
 Roc-MQTT-Display
-Version 1.10
-Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
+Version 1.12
+Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 */
 
@@ -83,6 +83,10 @@ input[type="radio"] + label {
   padding: 2px;
 }
 
+input[type="file"] {
+    font-size: 16px;
+}
+
 #tbl1 {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
@@ -100,7 +104,6 @@ input[type="radio"] + label {
 
 #tbl1 tr:nth-child(even){
   background-color: #f2f2f2;
-  tr:hover {background-color: #ddd;
   }
 
 #tbl1 th {

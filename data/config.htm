@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <!--
 Roc-MQTT-Display
-Version 1.10
-Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.
+Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 -->
 <html>
@@ -19,7 +18,10 @@ function buttonHome() {
  window.open('/','_self');
 }
 function buttonDownload() {
- window.open('/download?file=/rmdcfg.txt','_blank');
+    var link = document.createElement("a");
+    link.download = 'rmdcfg.txt';
+    link.href = '/download?file=/rmdcfg.txt';
+    link.click();
 }
 </script>
 <form action='/submitcfg' method='POST'>
@@ -38,20 +40,20 @@ function buttonDownload() {
 <tr><td>MQTT broker Port</td><td><input type='number' class='infield' name='f_MQTT_PORT' value='%MQTT_PORT%' title='MQTT broker Port, default: 1883 (read only)' size='6' maxlength='5' min='0' readonly ></td></tr>
 <tr><td>MQTT Message Size (byte)</td><td><input type='number' class='infield' name='f_MQTT_MSGSIZE' value='%MQTT_MSGSIZE%' title='Max. MQTT message size. Default: 256 bytes.' size='5' maxlength='4' min='128' ></td></tr>
 <tr><td>MQTT keep alive (sec)</td><td><input type='number' class='infield' name='f_MQTT_KEEPALIVE' value='%MQTT_KEEPALIVE%' title='MQTT keep alive. Default: 15 sec' size='5' maxlength='4' min='1' ></td></tr>
-<tr><td>MQTT time between reconnects (ms)</td><td><input type='number' class='infield' name='f_MQTT_RECONDELAY' value='%MQTT_RECONDELAY%' title='Delay between MQTT reconnection attempts. Default = 10000 ms' size='5' maxlength='4' min='10000' ></td></tr>
+<tr><td>MQTT time between reconnects (ms)</td><td><input type='number' class='infield' name='f_MQTT_RECONDELAY' value='%MQTT_RECONDELAY%' title='Delay between MQTT reconnection attempts. Default = 10000 ms' size='6' maxlength='5' min='10000' ></td></tr>
 <tr><td>MQTT Topic1</td><td><input type='text' class='infield' name='f_MQTT_TOPIC1' value='%MQTT_TOPIC1%' title='MQTT Topic1, default: rocrail/service/info/clock' size='51' maxlength='50' ></td></tr>
 <tr><td>MQTT Topic2</td><td><input type='text' class='infield' name='f_MQTT_TOPIC2' value='%MQTT_TOPIC2%' title='MQTT Topic2, default: rocrail/service/info/tx' size='51' maxlength='50' ></td></tr>
-<tr><td>MQTT alternative Delimiter</td><td><input type='text' class='infield' name='f_MQTT_DELIMITER' value='%MQTT_DELIMITER%' title='MQTT Delimiter, default: "" empty means # is expected as separator in messages. Add an alternative separator when your MQTT source cannot send # and requires another separator between fields, for example ";" or " , "' size='3' maxlength='3' ></td></tr>
-<tr><td>Enable debug messages</td><td><input type='number' class='infield' name='f_MQTT_DEBUG' value='%MQTT_DEBUG%' title='0=off, 1=show debug messages in serial monitor, default: 0' size='1' maxlength='1' min='0' max='1' ></td></tr>
+<tr><td>MQTT alternative Delimiter</td><td><input type='text' class='infield' name='f_MQTT_DELIMITER' value='%MQTT_DELIMITER%' title='MQTT Delimiter, default: "", empty means # is expected as separator in messages. Add an alternative separator when your MQTT source cannot send # and requires another separator between fields, for example ";" or " , "' size='3' maxlength='3' ></td></tr>
+<tr><td>Enable debug messages</td><td><input type='number' class='infield' name='f_MQTT_DEBUG' value='%MQTT_DEBUG%' title='0=off, 1=show debug messages in serial monitor, default: 0' size='5' maxlength='4' min='0' max='1' ></td></tr>
 <tr><td>I2C Multiplexer address</td><td><input type='text' class='infield' name='f_MUX' value='%MUX%' title='I2C Multiplexer address, default 112 (0x70), 0=one display connected without multiplexer, restart required' size='4' maxlength='4' > (%MUXHEX%)</td></tr>
 <tr><td>Number of connected displays</td><td><input type='number' class='infield' name='f_NUMDISP' value='%NUMDISP%' title='Number (1-8) of displays connected to this controller' size='5' maxlength='4' min='1' max='8' ></td></tr>
 <tr><td>Display Width</td><td><input type='number' class='infield' name='f_DISPWIDTH' value='%DISPWIDTH%' title='Display width in pixel (read only)' size='5' maxlength='5' readonly ></td></tr>
 <tr><td>Display Height</td><td><input type='number' class='infield' name='f_DISPHEIGHT' value='%DISPHEIGHT%' title='Display height in pixel (read only)' size='5' maxlength='5' readonly ></td></tr>
 <tr><td>Show start screens longer (ms)</td><td><input type='number' class='infield' name='f_STARTDELAY' value='%STARTDELAY%' title='Set during display installation e.g. to 4000 to show the start up screens longer with Version, Display-ID configuration link and controller name, 1-9999' size='5' maxlength='4' min='1' max='9999' ></td></tr>
-<tr><td>Display update intervall</td><td><input type='number' class='infield' name='f_UPDSPEED' value='%UPDSPEED%' title='Slow down display update intervall by increasing the number, e.g. 30 = base speed + 30ms' size='4' maxlength='3' min='0' max='100' ></td></tr>
+<tr><td>Display update intervall</td><td><input type='number' class='infield' name='f_UPDSPEED' value='%UPDSPEED%' title='Slow down display update intervall by increasing the number, e.g. 30 = base speed + 30ms' size='5' maxlength='4' min='0' max='1000' ></td></tr>
 <tr><td>Screensaver (min)</td><td><input type='number' class='infield' name='f_SCREENSAVER' value='%SCREENSAVER%' title='minutes without message received until screenSaver switches all displays into power save mode, 0=off' size='5' maxlength='4' min='0' max='600' ></td></tr>
-<tr><td>Screenshot Display 1</td><td><input type='number' class='infield' name='f_PRINTBUF' value='%PRINTBUF%' title='0=off, 1=print screenshot from buffer of display 1 to serial out as XBM image' size='1' maxlength='1' min='0' max='1' ></td></tr>
-<tr><td>Displays</td></tr>
+<tr><td>Screenshot Display 1</td><td><input type='number' class='infield' name='f_PRINTBUF' value='%PRINTBUF%' title='0=off, 1=print screenshot from buffer of display 1 to serial out as XBM image' size='5' maxlength='4' min='0' max='1' ></td></tr>
+<tr><td><b>Displays</b></td></tr>
 <tr><td>Display IDs</td><td><table id='tbl2'><tr>
 <td><input type='text' class='infield2' name='f_DPL_ID0' value='%DPL_ID0%' title='Name of display 1 connected to this controller, e.g. D01' size='4' maxlength='3' ></td>
 <td><input type='text' class='infield2' name='f_DPL_ID1' value='%DPL_ID1%' title='Name of display 2 connected to this controller, e.g. D02' size='4' maxlength='3' ></td>
@@ -73,49 +75,49 @@ function buttonDownload() {
 <td><input type='text' class='infield2' name='f_DPL_STATION07' value='%DPL_STATION07%' size='8' maxlength='7' ></td>
 </tr></table></td></tr>
 <tr><td>Track</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_TRACK0' value='%DPL_TRACK0%' title='Track Number, where this display is installed' size='4' maxlength='2' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK1' value='%DPL_TRACK1%' size='4' maxlength='2' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK2' value='%DPL_TRACK2%' size='4' maxlength='2' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK3' value='%DPL_TRACK3%' size='4' maxlength='2' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK4' value='%DPL_TRACK4%' size='4' maxlength='2' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK5' value='%DPL_TRACK5%' size='4' maxlength='2' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK6' value='%DPL_TRACK6%' size='4' maxlength='2' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK7' value='%DPL_TRACK7%' size='4' maxlength='2' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK0' value='%DPL_TRACK0%' title='Track Number, where this display is installed' size='4' maxlength='3' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK1' value='%DPL_TRACK1%' size='4' maxlength='3' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK2' value='%DPL_TRACK2%' size='4' maxlength='3' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK3' value='%DPL_TRACK3%' size='4' maxlength='3' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK4' value='%DPL_TRACK4%' size='4' maxlength='3' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK5' value='%DPL_TRACK5%' size='4' maxlength='3' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK6' value='%DPL_TRACK6%' size='4' maxlength='3' min='1' max='99' ></td>
+<td><input type='number' class='infield2' name='f_DPL_TRACK7' value='%DPL_TRACK7%' size='4' maxlength='3' min='1' max='99' ></td>
 </tr></table></td></tr>
 <tr><td>Flip</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_FLIP0' value='%DPL_FLIP0%' title='1 = Flip this display by 180&deg;' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP1' value='%DPL_FLIP1%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP2' value='%DPL_FLIP2%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP3' value='%DPL_FLIP3%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP4' value='%DPL_FLIP4%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP5' value='%DPL_FLIP5%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP6' value='%DPL_FLIP6%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_FLIP7' value='%DPL_FLIP7%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP0' value='%DPL_FLIP0%' title='1 = Flip this display by 180&deg;' size='3' maxlength='2' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP1' value='%DPL_FLIP1%' size='3' maxlength='2' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP2' value='%DPL_FLIP2%' size='3' maxlength='2' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP3' value='%DPL_FLIP3%' size='3' maxlength='2' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP4' value='%DPL_FLIP4%' size='3' maxlength='2' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP5' value='%DPL_FLIP5%' size='3' maxlength='2' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP6' value='%DPL_FLIP6%' size='3' maxlength='2' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_FLIP7' value='%DPL_FLIP7%' size='3' maxlength='2' min='0' max='1' ></td>
 </tr></table></td></tr>
-<tr><td>Contrast</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST0' value='%DPL_CONTRAST0%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST1' value='%DPL_CONTRAST1%' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST2' value='%DPL_CONTRAST2%' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST3' value='%DPL_CONTRAST3%' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST4' value='%DPL_CONTRAST4%' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST5' value='%DPL_CONTRAST5%' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST6' value='%DPL_CONTRAST6%' size='4' maxlength='4' min='0' max='255' ></td>
-<td><input type='number' class='infield2' name='f_DPL_CONTRAST7' value='%DPL_CONTRAST7%' size='4' maxlength='4' min='0' max='255' ></td>
+<tr><td>Brightness</td><td><table id='tbl2'><tr>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST0' value='%DPL_CONTRAST0%' title='0=off, 1=low ... 255=brightest' size='4' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST1' value='%DPL_CONTRAST1%' size='4' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST2' value='%DPL_CONTRAST2%' size='4' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST3' value='%DPL_CONTRAST3%' size='4' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST4' value='%DPL_CONTRAST4%' size='4' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST5' value='%DPL_CONTRAST5%' size='4' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST6' value='%DPL_CONTRAST6%' size='4' maxlength='3' min='0' max='255' ></td>
+<td><input type='number' class='infield2' name='f_DPL_CONTRAST7' value='%DPL_CONTRAST7%' size='4' maxlength='3' min='0' max='255' ></td>
 </tr></table></td></tr>
 <tr><td>Display Side</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_SIDE0' value='%DPL_SIDE0%' title='0=Side A <- track on left side, 1=Side B -> track on right side of the display' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE1' value='%DPL_SIDE1%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE2' value='%DPL_SIDE2%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE3' value='%DPL_SIDE3%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE4' value='%DPL_SIDE4%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE5' value='%DPL_SIDE5%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE6' value='%DPL_SIDE6%' size='4' maxlength='1' min='0' max='1' ></td>
-<td><input type='number' class='infield2' name='f_DPL_SIDE7' value='%DPL_SIDE7%' size='4' maxlength='1' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE0' value='%DPL_SIDE0%' title='0=Side A <- track on left side, 1=Side B -> track on right side of the display' size='4' maxlength='3' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE1' value='%DPL_SIDE1%' size='4' maxlength='3' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE2' value='%DPL_SIDE2%' size='4' maxlength='3' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE3' value='%DPL_SIDE3%' size='4' maxlength='3' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE4' value='%DPL_SIDE4%' size='4' maxlength='3' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE5' value='%DPL_SIDE5%' size='4' maxlength='3' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE6' value='%DPL_SIDE6%' size='4' maxlength='3' min='0' max='1' ></td>
+<td><input type='number' class='infield2' name='f_DPL_SIDE7' value='%DPL_SIDE7%' size='4' maxlength='3' min='0' max='1' ></td>
 </tr></table></td></tr>
 </table>
 </form>
 <footer>
-<p>Copyright (c) 2020-2023 Christian Heinrichs. All rights reserved.</p>
+<p>Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved. Version 1.12</p>
 <p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
 </footer>
 </body>
