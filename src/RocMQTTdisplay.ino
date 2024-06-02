@@ -90,10 +90,10 @@ using namespace std;
 //  Wemos D1 mini  ESP8266  SCL D1, SDA D2
 
 // ### 128x32 ### 0.91" OLED I2C Display with SSD1306 controller
-//U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE); // Most intensive testing done with this constructor
+U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE); // Most intensive testing done with this constructor
 
 // ### 128x32 ### 0.87" OLED I2C Display with SSD1316 controller (use this constructor for this project: https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter)
-U8G2_SSD1316_128X32_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+//U8G2_SSD1316_128X32_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 // ### 128x64 ### 0.96" OLED I2C Display with SSD1306 controller
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
