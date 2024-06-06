@@ -22,7 +22,7 @@ Donations are more than welcome and I will use them to buy new displays, control
 
 [![PayPal donate button](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)  
 
-The goal of this project is to provide simple to use and inexpensive displays to run in a Model Railroad environment.
+**The goal of this project is to provide simple to use and inexpensive displays for railroad stations to run in a Model Railroad environment.**  
 
 **Current features**  
 - Content and messages can be static or dynamic
