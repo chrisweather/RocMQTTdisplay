@@ -11,7 +11,7 @@ Several controllers can run in parallel so the total number of displays is not l
 A friend of mine was looking for an easy way to run displays with live data in his model railroad environment. Right after this conversation this project was born.
 Since then it's work in progress with already many nice features. If you want to share your experience with this code or have ideas for more features you are welcome to share them in the Issues or Discussions area. Have fun.
 
-### Roc-MQTT-Display Module 
+### Roc-MQTT-Display (RMD)  
 
 Latest Version 1.12  
 June 02, 2024 
@@ -24,6 +24,8 @@ Donations are more than welcome and I will use them to buy new displays, control
 
 **The goal of this project is to provide simple to use and inexpensive displays for railroad stations to run in a Model Railroad environment.**  
 
+<img src="doc/howitworks.png" width="80%" alt="How it works"/>  
+
 **Current features**  
 - Content and messages can be static or dynamic
 - Formatting is saved in templates so the user can focus on sending the right data to the display and just pick a template for formatting.
@@ -33,16 +35,16 @@ Donations are more than welcome and I will use them to buy new displays, control
 	* Up to 10 different Fonts
 	* Up to 10 Templates
 	* Up to 20 Logos
-- Scrolltext for static or dynamic content on all connected displays
+- Individual Scrolltext for static or dynamic content on all connected displays
 - Rocrail dynamic variables support
 - German Umlaut support
-- Clock/Date available for all displays (NTP time or Rocrail time)
+- Clock/Date available for all displays (NTP time or Railroad time)
 - Display rotation
 - Brightness controllable per display 
 - Screensaver
 - Tested with these displays: I2C Oled 128x32 0.87 and 0.91, 128x64, 64x48, 96x16, (64x32, 72x40)
 - Also works with 2x and 4x OLED Adapters from this project https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter
-- Webinterface for configuration
+- Webinterface for configuration via browser
 - Updates via OTA
 - Demo Mode
 
