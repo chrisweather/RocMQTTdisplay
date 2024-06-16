@@ -7,7 +7,7 @@
 -   Successfully tested and documented compatibility with the OLED Adaptors from this project: https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter
 -   Displays - Added constructor for 64x32 0.49" OLED I2C Display with SSD1316 controller. Not tested yet.
 -   Displays - Added constructor for 72x40 0.42" OLED I2C Display with SSD1316 controller. Not tested yet.
--   Added support for ESP32 boards (do NOT update "esp32" in Arduino IDE Boardmanager to version 3.0, this version has bugs that break WiFi code!)
+-   Added support for ESP32 boards (do NOT update "esp32" in Arduino IDE Boardmanager to version 3.x, this version has breaking changes that currently break the WiFi implementation!)
 -   Webinterface - Added Demo Mode, shows different display modes and content, ends automatically after one run through
 -   Webinterface - share statistics of hardware for future development focus
 -   Webinterface - Several improvements
