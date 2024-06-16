@@ -24,7 +24,7 @@ Donations are more than welcome and I will use them to buy new displays, control
 
 **The goal of this project is to provide simple to use and inexpensive displays for railroad stations to run in a Model Railroad environment.**  
 
-<img src="doc/howitworks.png" width="80%" alt="How it works"/>  
+<img src="doc/howitworks.png" width="80%" alt="How it works"/>
 
 **Current features**  
 - Content and messages can be static or dynamic
