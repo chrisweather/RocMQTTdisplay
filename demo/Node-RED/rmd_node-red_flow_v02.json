@@ -2,9 +2,9 @@
     {
         "id": "2d75cc5f.5ed6fc",
         "type": "tab",
-        "label": "Roc-MQTT-Display Test",
+        "label": "Roc-MQTT-Display Demo",
         "disabled": false,
-        "info": ""
+        "info": "See what Rocrail sends and send messages to displays like Rocrail would send it."
     },
     {
         "id": "9fb86b29.a68ad8",
@@ -25,10 +25,10 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "rocrail/service/info/tx",
-        "payload": "<text=\"ZZAMSG#D01D03#T4#Bhf01#6#####Zugdurchfahrt###\"/>",
+        "payload": "<\"ZZAMSG#D01D03#T4#Bhf01#6#####Zugdurchfahrt###\"/>",
         "payloadType": "str",
         "x": 210,
-        "y": 220,
+        "y": 320,
         "wires": [
             [
                 "727d65a3.da42c4"
@@ -41,11 +41,16 @@
         "z": "2d75cc5f.5ed6fc",
         "name": "ToRocMQTTdisplay",
         "topic": "rocrail/service/info/tx",
-        "qos": "0",
-        "retain": "false",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
         "broker": "fa5858ef.2dcb2",
         "x": 680,
-        "y": 300,
+        "y": 400,
         "wires": []
     },
     {
@@ -55,13 +60,16 @@
         "name": "Topic rocrail/service/info/tx",
         "topic": "rocrail/service/info/tx",
         "qos": "0",
-        "datatype": "auto",
+        "datatype": "auto-detect",
         "broker": "fa5858ef.2dcb2",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
         "x": 230,
-        "y": 100,
+        "y": 160,
         "wires": [
             [
-                "f5751c32.4ea4f8"
+                "34b3eb1392dd2a1d"
             ]
         ]
     },
@@ -69,17 +77,17 @@
         "id": "f5751c32.4ea4f8",
         "type": "debug",
         "z": "2d75cc5f.5ed6fc",
-        "name": "DebugOut",
+        "name": "Rocrail Clock",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
+        "complete": "true",
+        "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 630,
-        "y": 60,
+        "x": 650,
+        "y": 100,
         "wires": []
     },
     {
@@ -101,10 +109,10 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "rocrail/service/info/tx",
-        "payload": "<\"ZZAMSG#D01D02#T0#Bhf01#1#Köln-Bonn#10:22#IC 53#IC#5min Verspätung - 5min later###\"/>",
+        "payload": "<\"ZZAMSG#D01D02#T0#Bhf01#-#Köln-Bonn#10:22#IC 53#IC#5min Verspätung - 5min later###\"/>",
         "payloadType": "str",
         "x": 200,
-        "y": 280,
+        "y": 380,
         "wires": [
             [
                 "727d65a3.da42c4"
@@ -133,7 +141,7 @@
         "payload": "<\"ZZAMSG#D01#T0#Bhf01#1#Hamburg Hbf#23:05#ICE 359##Es ist {ntptime}  20°C###\"/>",
         "payloadType": "str",
         "x": 200,
-        "y": 340,
+        "y": 440,
         "wires": [
             [
                 "727d65a3.da42c4"
@@ -162,7 +170,7 @@
         "payload": "<\"ZZAMSG#D01#T6#Gartenstadt#########\"/>",
         "payloadType": "str",
         "x": 210,
-        "y": 400,
+        "y": 500,
         "wires": [
             [
                 "727d65a3.da42c4"
@@ -191,7 +199,7 @@
         "payload": "<\"ZZAMSG#D01D02#T2#Bhf01#1#Sternschanze#10:22#U2#U#5min Verspätung###\"/>",
         "payloadType": "str",
         "x": 190,
-        "y": 460,
+        "y": 560,
         "wires": [
             [
                 "727d65a3.da42c4"
@@ -205,10 +213,13 @@
         "name": "Topic rocrail/service/info/clock",
         "topic": "rocrail/service/info/clock",
         "qos": "0",
-        "datatype": "auto",
+        "datatype": "auto-detect",
         "broker": "fa5858ef.2dcb2",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
         "x": 240,
-        "y": 40,
+        "y": 100,
         "wires": [
             [
                 "f5751c32.4ea4f8"
@@ -237,12 +248,49 @@
         "payload": "<\"ZZAMSG#D01D02D03D04D05D06D07D08###########\"/>",
         "payloadType": "str",
         "x": 220,
-        "y": 520,
+        "y": 620,
         "wires": [
             [
                 "727d65a3.da42c4"
             ]
         ]
+    },
+    {
+        "id": "34b3eb1392dd2a1d",
+        "type": "debug",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Rocrail info/tx",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "ab6327e4213c5483",
+        "type": "comment",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Received messages from Rocrail",
+        "info": "## Received messages from Rocrail",
+        "x": 250,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "56ab3f5323b1dc98",
+        "type": "comment",
+        "z": "2d75cc5f.5ed6fc",
+        "name": "Send messages to Displays",
+        "info": "## Send messages to Displays",
+        "x": 240,
+        "y": 260,
+        "wires": []
     },
     {
         "id": "fa5858ef.2dcb2",
