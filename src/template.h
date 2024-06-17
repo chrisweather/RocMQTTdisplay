@@ -1,5 +1,5 @@
 // Roc-MQTT-Display TEMPLATES
-// Version 1.12
+// Version 1.13
 // Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -84,7 +84,7 @@ int TPL_6box2y[] =           {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 
 int TPL_6box2w[] =           { 127,  35,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,127
 int TPL_6box2h[] =           {  10,  10,   0,   0,   0,   0,   0,   0,   0,   0 };  // 0,31
 
-// TEMPLATES Part 1
+// FONTS & LOGOS
 // FONTS 0 - 9
 char fonts[10][40] = { "u8g2_font_7x13_tf", "u8g2_font_crox3hb_tf", "u8g2_font_9x15_tf", "u8g2_font_rosencrantz_nbp_tf", "u8g2_font_helvR08_tf", "u8g2_font_5x7_tf", "u8g2_font_6x10_tf", "u8g2_font_crox4hb_tf", "u8g2_font_crox1hb_tf", "u8g2_font_fur17_tf" };
 
@@ -107,69 +107,69 @@ char logoId[20][5] = { "DB", "ICE",  "IC",  "RE",  "RB",   "U",   "S",   "A", "S
 uint8_t logow[]    = {   17,    20,    11,    12,    12,    10,    12,    12,    15,    19,    20,    10,    10,    10,    10,    10,    10,    10,    10,    10 };  // logo width in pixel
 uint8_t logoh[]    = {   11,     9,     8,    10,    10,    10,    12,    12,    10,     8,     8,    10,    10,    10,    10,    10,    10,    10,    10,    10 };  // logo height in pixel
 
-//  Logo 0 - DB - Deutsche Bahn
+//  Logo 0 - DB - Deutsche Bahn, Germany
 unsigned char logo0[] = { 0xfe, 0xff, 0x00, 0x01, 0x00, 0x01, 0x7d, 0x3e, 0x01, 0xcd, 0x66, 0x01,
                           0xcd, 0x66, 0x01, 0xcd, 0x3e, 0x01, 0xcd, 0x66, 0x01, 0xcd, 0x66, 0x01,
                           0x7d, 0x3e, 0x01, 0x01, 0x00, 0x01, 0xfe, 0xff, 0x00 };                                 
 const int logo0size = sizeof(logo0)/sizeof(logo0[0]);  // size of logo array
 unsigned char (*pl0)[logo0size] = &logo0;              // pointer to logo
 
-//  Logo 1 - ICE - Intercity-Express
+//  Logo 1 - ICE - Intercity-Express, Germany
 unsigned char logo1[] = { 0x18, 0xcf, 0x0f, 0xdc, 0xcf, 0x0f, 0xcc, 0x60, 0x00, 0xec, 0x60, 0x00,
                           0x66, 0xe0, 0x03, 0x66, 0x30, 0x00, 0xe6, 0x30, 0x00, 0xe3, 0xf3, 0x03,
                           0xc3, 0xf3, 0x03 };
 const int logo1size = sizeof(logo1)/sizeof(logo1[0]);
 unsigned char (*pl1)[logo1size] = &logo1;
 
-//  Logo 2 - IC - Intercity
+//  Logo 2 - IC - Intercity, Germany
 unsigned char logo2[] = { 0x98, 0x07, 0xcc, 0x01, 0xec, 0x00, 0x66, 0x00, 0x66, 0x00, 0x66, 0x00,
                           0xe3, 0x00, 0xc3, 0x01 };
 const int logo2size = sizeof(logo2)/sizeof(logo2[0]);
 unsigned char (*pl2)[logo2size] = &logo2;
 
-//  Logo 3 - RE - Regional-Express
+//  Logo 3 - RE - Regional-Express, Germany
 unsigned char logo3[] = { 0xfe, 0x07, 0x03, 0x0c, 0xb9, 0x0b, 0xa9, 0x08, 0xbd, 0x09, 0x9d, 0x08,
                           0xd5, 0x08, 0xd5, 0x09, 0x03, 0x0c, 0xfe, 0x07 };
 const int logo3size = sizeof(logo3)/sizeof(logo3[0]);
 unsigned char (*pl3)[logo3size] = &logo3;
 
-//  Logo 4 - RB - Regionalbahn
+//  Logo 4 - RB - Regionalbahn, Germany
 unsigned char logo4[] = { 0xfe, 0x07, 0x03, 0x0c, 0xb9, 0x0b, 0xa9, 0x0a, 0xbd, 0x0b, 0x9d, 0x0a,
                           0xd5, 0x0a, 0xd5, 0x0b, 0x03, 0x0c, 0xfe, 0x07 };
 const int logo4size = sizeof(logo4)/sizeof(logo4[0]);
 unsigned char (*pl4)[logo4size] = &logo4;
 
-//  Logo 5 - U-Bahn - 
+//  Logo 5 - U - U-Bahn, Germany
 unsigned char logo5[] = { 0xff, 0x03, 0x33, 0x03, 0x33, 0x03, 0x33, 0x03, 0x33, 0x03, 0x33, 0x03,
                           0x33, 0x03, 0x33, 0x03, 0x87, 0x03, 0xff, 0x03 };
 const int logo5size = sizeof(logo5)/sizeof(logo5[0]);
 unsigned char (*pl5)[logo5size] = &logo5;
 
-//  Logo 6 - S-Bahn - 
+//  Logo 6 - S - S-Bahn, Germany
 unsigned char logo6[] = { 0xf0, 0x00, 0x9c, 0x03, 0x06, 0x06, 0xe2, 0x04, 0xe3, 0x0f, 0x87, 0x0f,
                           0x1f, 0x0e, 0x7f, 0x0c, 0xf3, 0x04, 0x62, 0x06, 0x0c, 0x07, 0xf8, 0x01 };
 const int logo6size = sizeof(logo6)/sizeof(logo6[0]);
 unsigned char (*pl6)[logo6size] = &logo6;
 
-//  Logo 7 - AKN - 
+//  Logo 7 - AKN - Germany
 unsigned char logo7[] = { 0xf0, 0x00, 0x9c, 0x03, 0x0e, 0x07, 0x0e, 0x07, 0x67, 0x0e, 0xe7, 0x0e,
                           0xf7, 0x0e, 0x03, 0x0c, 0xf3, 0x04, 0xfa, 0x05, 0xfe, 0x07, 0xf0, 0x01 };
 const int logo7size = sizeof(logo7)/sizeof(logo7[0]);
 unsigned char (*pl7)[logo7size] = &logo7;
 
-//  Logo 8 - SBB - Schweizerische Bundesbahnen
+//  Logo 8 - SBB - Schweizerische Bundesbahnen, Switzerland
 unsigned char logo8[] = { 0x00, 0x00, 0xb0, 0x06, 0x98, 0x0c, 0x8c, 0x18, 0xfe, 0x3f, 0xfe, 0x3f,
                           0x8c, 0x18, 0x98, 0x0c, 0xb0, 0x06, 0x00, 0x00 };
 const int logo8size = sizeof(logo8)/sizeof(logo8[0]);
 unsigned char (*pl8)[logo8size] = &logo8;
 
-//  Logo 9 - ÖBB - Österreichischen Bundesbahnen
+//  Logo 9 - ÖBB - Österreichischen Bundesbahnen, Austria
 unsigned char logo9[] = { 0x2c, 0xcf, 0x03, 0x36, 0x59, 0x06, 0x53, 0x59, 0x06, 0x41, 0xcf, 0x03,
                           0x41, 0x59, 0x06, 0x63, 0x59, 0x06, 0x36, 0x59, 0x06, 0x1c, 0xcf, 0x03 };
 const int logo9size = sizeof(logo9)/sizeof(logo9[0]);
 unsigned char (*pl9)[logo9size] = &logo9;
 
-//  Logo 10 - NS - Nederlandse Spoorwegen
+//  Logo 10 - NS - Nederlandse Spoorwegen, The Netherlands
 unsigned char logo10[] = { 0xf8, 0xc3, 0x01, 0xfc, 0x87, 0x03, 0x0e, 0x0e, 0x07, 0xff, 0xf8, 0x07,
                            0xfe, 0xf1, 0x0f, 0x0e, 0x07, 0x07, 0x1c, 0xfe, 0x03, 0x38, 0xfc, 0x01 };
 const int logo10size = sizeof(logo10)/sizeof(logo10[0]);

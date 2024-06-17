@@ -1,18 +1,18 @@
 /*########################################################################################
                              Roc-MQTT-Display
 Dynamic Passenger Information for Model Railroad Stations controlled by Rocrail or other 
-sources via MQTT. A Wemos D1 mini ESP32 or ESP8266 and a TCA9548A I2C Multiplexer can drive up to 
-eight I2C OLED displays. Several microcontrollers can run parallel so the total number 
+sources via MQTT. An ESP32 or ESP8266 and a TCA9548A I2C Multiplexer can drive up to 
+eight I2C OLED displays. Several microcontrollers can run in parallel so the total number 
 of displays is not limited.
 
-Version 1.12  June 2, 2024
+Version 1.13  June 17, 2024
 
 Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 https://github.com/chrisweather/RocMQTTdisplay
 
 ##########################################################################################
 
-Message Format sent from Rocrail text fields or other sources via MQTT
+Message Format that must be sent by Rocrail text fields, Node-RED or other sources via MQTT.
 More details and examples in the Wiki 
 https://github.com/chrisweather/RocMQTTdisplay/wiki
 ######################################################################
@@ -40,14 +40,14 @@ https://github.com/chrisweather/RocMQTTdisplay/wiki
                      Example 2: ZZAMSG#D01#T0#Bhf01#1#####%lcid%###
 
                      For dynamic time use:
-                     NTP time:     ZZAMSG#D01#T0#Bhf01#1#####{ntptime}###
-                     Rocrail time: ZZAMSG#D01#T0#Bhf01#1#####{rrtime}###
+                     NTP Time:      ZZAMSG#D01#T0#Bhf01#1#####{ntptime}###
+                     Railroad Time: ZZAMSG#D01#T0#Bhf01#1#####{rrtime}###
 
                      Clear Display D01 and D02
                      Example 3: ZZAMSG#D01D02###########
 
     Example 4: ZZAMSG#D01#T0#Hamburg-Hbf#1#Bonn#10:22#ICE 597#ICE####
-    Example 5: ZZAMSG#D01#T1#Bhf01#1#Köln-Bonn#10:22#ICE 597#ICE#5min Verspätung###
+    Example 5: ZZAMSG#D01#T1#Bhf01#2#Köln-Bonn#10:22#ICE 597#ICE#5min Verspätung###
     Example 6: ZZAMSG#D01D02#T0#Station01#1#Bonn#10:22#IC 56#IC#5min delayed###
 
     Example 7: Stationname: ZZAMSG#D01#T6#Bogenhausen#########
@@ -90,10 +90,10 @@ using namespace std;
 //  Wemos D1 mini  ESP8266  SCL D1, SDA D2
 
 // ### 128x32 ### 0.91" OLED I2C Display with SSD1306 controller
-U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE); // Most intensive testing done with this constructor
+//U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE); // Most intensive testing done with this constructor
 
 // ### 128x32 ### 0.87" OLED I2C Display with SSD1316 controller (use this constructor for this project: https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter)
-//U8G2_SSD1316_128X32_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+U8G2_SSD1316_128X32_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 // ### 128x64 ### 0.96" OLED I2C Display with SSD1306 controller
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
@@ -103,6 +103,7 @@ U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE); // Most int
 
 // ### 96x16 ### 0.69" OLED I2C Display with SSD1306 controller
 //U8G2_SSD1306_96X16_ER_2_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
+//U8G2_SSD1306_96X16_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
 
 // ### 72x40 ### 0.42" OLED I2C Display with SSD1306 controller
 //U8G2_SSD1306_72X40_ER_F_HW_I2C disp(U8G2_R0, U8X8_PIN_NONE);
@@ -124,14 +125,14 @@ u8g2_uint_t offset5 = 0;
 u8g2_uint_t offset6 = 0;
 u8g2_uint_t offset7 = 0;
 u8g2_uint_t offset8 = 0;
-u8g2_uint_t width1 = 0;   // pixel width of the scrolling text (must be < 128 unless U8G2_16BIT is defined, max display 240x240, https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#16-bit-mode)
-u8g2_uint_t width2 = 0;
-u8g2_uint_t width3 = 0;
-u8g2_uint_t width4 = 0;
-u8g2_uint_t width5 = 0;
-u8g2_uint_t width6 = 0;
-u8g2_uint_t width7 = 0;
-u8g2_uint_t width8 = 0;
+u8g2_uint_t width1 =  0;  // pixel width of the scrolling text (must be < 128 unless U8G2_16BIT is defined, max display 240x240, https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#16-bit-mode)
+u8g2_uint_t width2 =  0;
+u8g2_uint_t width3 =  0;
+u8g2_uint_t width4 =  0;
+u8g2_uint_t width5 =  0;
+u8g2_uint_t width6 =  0;
+u8g2_uint_t width7 =  0;
+u8g2_uint_t width8 =  0;
 
 // Define TaskScheduler 
 Scheduler ts;
@@ -149,6 +150,7 @@ void send2display7();
 void send2display8();
 void DemoModeOn();
 void DemoTimeOn();
+void updVar();
 
 // TaskScheduler - Tasks
 Task tSc(100, TASK_FOREVER, &coreLoop, &ts, true);                         // Core Loop
@@ -163,24 +165,25 @@ Task tS7(60 + config.UPDSPEED, TASK_FOREVER, &send2display7, &ts, false);  // Di
 Task tS8(60 + config.UPDSPEED, TASK_FOREVER, &send2display8, &ts, false);  // Display 8
 Task tS9(8000, 15, &DemoModeOn, &ts, false);                               // Demo Mode
 Task tS10(2000, TASK_FOREVER, &DemoTimeOn, &ts, false);                    // Demo Time
+Task tS11(10000, TASK_FOREVER, &updVar, &ts, false);                       // NTP Time/Date only, when no railroad time available
 
 // Define WIFI/MQTT Client
 EspMQTTClient client(sec.WIFI_SSID, sec.WIFI_PW, config.MQTT_IP, sec.MQTT_USER, sec.MQTT_PW, config.WIFI_DEVICENAME, config.MQTT_PORT);
 
 // Define global variables
-unsigned long lastMsg = 0;        // ScreenSaver
-unsigned long lastNTP = 0;        // NTP
+unsigned long lastMsg = 0;         // ScreenSaver
+unsigned long lastNTP = 0;         // NTP
 time_t now;
 tm tm;
-uint8_t demonum = 1;              // Demo Mode
-uint8_t demomin = 12;
-String ntptime = "00:00";         // NTP
-String ntpdate = "dd.mm.yyyy";  
-String rrtime = "00:00";          // Rail Time
+uint8_t demonum =   1;             // Demo Mode
+uint8_t demomin =   12;
+String ntptime =    "00:00";       // NTP Time/Date
+String ntpdate =    "01.01.2000";  
+String rrtime =     "00:00";       // Railroad Time/Date
 String rrtimelast = "00:00";
-String rrdate =  "dd.mm.yyyy";
+String rrdate =     "01.01.2000";
 String rrdatelast = "01.01.2000";
-String RMDcfg = "";               // RMnet
+String RMDcfg =     "";            // RMnet
 
 String ZZA1_Targets =     "";
 String ZZA1_Template =    "";
@@ -693,22 +696,12 @@ void DisplayInit()
       DMUX(i);
     }
     //disp.setBusClock(400000);  // I2C bus speed, default 100000, changes might impact bus/display speed and reduce stability, experimental
-    //disp.clearBuffer();
-    //disp.clear();
+
+    disp.begin();
     disp.firstPage();
     do {
-      disp.begin();  // Initialize display i
+      //disp.begin();  // Initialize display i
       disp.setFlipMode(DPL_flip[i]);
-      /*
-      if (DPL_flip[i] == 1){
-        Serial.println("Rotate display");
-        disp.setDisplayRotation(U8G2_R2);  // U8G2_R0, U8G2_R1, U8G2_R2, U8G2_R3, U8G2_MIRROR  DPL_rotation[i]
-      }
-      else {
-        Serial.println("Default display");
-        disp.setDisplayRotation(U8G2_R0);
-      }
-      */
       disp.setContrast(DPL_contrast[i]);
       //if (DPL_contrast[i] == 0){
       //  disp.setPowerSave(1);
@@ -716,6 +709,7 @@ void DisplayInit()
       //else {
       //  disp.setPowerSave(0);
       //}
+      //disp.nextPage();
       disp.enableUTF8Print();
       disp.setFont(fontno[5]);
       disp.setFontMode(0);
@@ -724,7 +718,7 @@ void DisplayInit()
       disp.setCursor(0,15);
       disp.print(config.VER);
       disp.nextPage();
-      delay(300 + (config.STARTDELAY / 2));
+      delay(100 + (config.STARTDELAY / 2));
       disp.clearDisplay();
       disp.setFont(fontno[5]);
       disp.setCursor(0,7);
@@ -732,7 +726,7 @@ void DisplayInit()
       disp.setCursor(0,15);
       disp.print(config.WIFI_DEVICENAME);
       disp.nextPage();
-      delay(300 + (config.STARTDELAY / 2));
+      delay(100 + (config.STARTDELAY / 2));
       disp.clearDisplay();
       disp.setCursor(0,7);
       disp.print(F("Display: "));
@@ -743,7 +737,7 @@ void DisplayInit()
 
       if (strlen(config.MQTT_IP) < 7) {
         disp.nextPage();
-        delay(300 + (config.STARTDELAY / 2));
+        delay(100 + (config.STARTDELAY / 2));
         disp.clearDisplay();
         disp.setCursor(0,7);
         disp.print(F("NO MQTT broker"));
@@ -791,13 +785,13 @@ void send2display1(void)
   }
   u8g2_uint_t x;
   disp.firstPage();
-  if (TPL_invert[t] == 1){  //!!!!!!!!!!!!!!-> init
+  if (TPL_invert[t] == 1){
     disp.sendF("c", 0x0a7);
   }
   else {
     disp.sendF("c", 0x0a6);
   }
-  //disp.setContrast(DPL_contrast[0]);
+  disp.setFlipMode(DPL_flip[0]);
   // Message
   // *** Message only ***
   if (TPL_6scroll[t] != 1){
@@ -948,6 +942,7 @@ void send2display2(void)
   else {
     disp.sendF("c", 0x0a6);
   }
+  disp.setFlipMode(DPL_flip[1]);
   //disp.setContrast(DPL_contrast[1]);
   // Message
   // *** Message only ***
@@ -1058,6 +1053,7 @@ void send2display3(void)
   else {
     disp.sendF("c", 0x0a6);
   }
+  disp.setFlipMode(DPL_flip[2]);
   //disp.setContrast(DPL_contrast[2]);
   // Message
   // *** Message only ***
@@ -1167,6 +1163,7 @@ void send2display4(void)
   else {
     disp.sendF("c", 0x0a6);
   }
+  disp.setFlipMode(DPL_flip[3]);
   //disp.setContrast(DPL_contrast[3]);
   // Message
   // *** Message only ***
@@ -1276,6 +1273,7 @@ void send2display5(void)
   else {
     disp.sendF("c", 0x0a6);
   }
+  disp.setFlipMode(DPL_flip[4]);
   //disp.setContrast(DPL_contrast[4]);
   // Message
   // *** Message only ***
@@ -1385,6 +1383,7 @@ void send2display6(void)
   else {
     disp.sendF("c", 0x0a6);
   }
+  disp.setFlipMode(DPL_flip[5]);
   //disp.setContrast(DPL_contrast[5]);
   // Message
   // *** Message only ***
@@ -1494,6 +1493,7 @@ void send2display7(void)
   else {
     disp.sendF("c", 0x0a6);
   }
+  disp.setFlipMode(DPL_flip[6]);
   //disp.setContrast(DPL_contrast[6]);
   // Message
   // *** Message only ***
@@ -1603,6 +1603,7 @@ void send2display8(void)
   else {
     disp.sendF("c", 0x0a6);
   }
+  disp.setFlipMode(DPL_flip[7]);
   //disp.setContrast(DPL_contrast[7]);
   // Message
   // *** Message only ***
@@ -1876,6 +1877,10 @@ void updateTime()
 // Update time and date variables in displayed messages
 void updVar()
 {
+  if(strlen(config.MQTT_TOPIC1) == 0){
+    rrtime = ntptime;
+    rrdate = ntpdate;
+  }
   ZZA1_Message = ZZA1_MessageO;
   ZZA1_Message.replace("{ntptime}", ntptime);
   ZZA1_Message.replace("{ntpdate}", ntpdate);
@@ -1980,7 +1985,6 @@ void DemoTimeOn()
   String T1Demo = String("DEMO clock divider=\"1\" hour=\"18\" minute=\"12\" wday=\"5\" mday=\"11\" month=\"2\" year=\"2024\" time=\"1613151626\" temp=\"20\" ....");
   T1Demo.replace("minute=\"12", "minute=\"" + String(demomin));
   client.publish(config.MQTT_TOPIC1, T1Demo, false);
-  //Serial.println(T1Demo);
   demomin = demomin + 1;
   if (demomin > 35){
     demomin = 12;
@@ -2016,7 +2020,7 @@ void DemoMode()
     case 5: demomsg = "DEMO ZZAMSG#Targets#T4#######{ntptime}###....";
             demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
             break;
-    // Rocrail Time
+    // Railroad Time
     case 6: demomsg = "DEMO ZZAMSG#Targets#T4#######{rrtime}###....";
             demomsg.replace("Targets", String(DPL_id[0]) + String(DPL_id[1]));
             break;
@@ -2049,7 +2053,6 @@ void DemoMode()
   }
   demonum +=1;
   client.publish(config.MQTT_TOPIC2, demomsg, false);
-  //Serial.println(F("\nDemo Message published"));
 }
 
 
@@ -2068,8 +2071,14 @@ void onConnectionEstablished()
     Serial.print(F("                        http://"));
     Serial.println(WiFi.localIP());
   }
+  else {
+    while (client.isWifiConnected() != true) {
+      Serial.print(F("."));
+      delay(500);
+    }
+  }
 
-  // Subscribe MQTT client to topic "rmnet" to test the broker connection and communicate with other RM modules
+  // Subscribe MQTT to topic "rmnet" to test the broker connection and communicate with other RM modules
   if (client.isMqttConnected() == true){
     Serial.println((String)"\nMQTT broker successfully connected at " + config.MQTT_IP + ":" + config.MQTT_PORT + "\n");
   }
@@ -2087,76 +2096,82 @@ void onConnectionEstablished()
     }
   }, 1);
 
-  // Subscribe MQTT client to topic "rocrail/service/info/clock" to receive Rocrail time or Demo time
-  client.subscribe(config.MQTT_TOPIC1, [](const String & payload1in) {
-    //Serial.println(payload1in);
-    String payload1 = payload1in;
-    //Serial.println("Index of Sync1: " + String(payload1.indexOf("sync")));
-    // RR Example: <clock divider="1" hour="18" minute="40" wday="5" mday="12" month="2" year="2021" time="1613151626" temp="20" bri="255" lux="0" pressure="0" humidity="0" cmd="sync"/>
-    //Serial.println("config.DEMO: " + String(config.DEMO));
-    //Serial.println("Index of Sync2: " + String(payload1.indexOf("sync")));
-    //Serial.println("Index of DEMO: " + String(payload1.indexOf("DEMO")));
-    if (config.DEMO == 1 && payload1.indexOf("sync") > -1){
-      payload1 = "";
-      //Serial.println("payload1 removed, not DEMO: " + payload1);
-    }
-    else if (payload1.indexOf("sync") == -1 && payload1.indexOf("DEMO") == -1){
+  // Subscribe to MQTT TOPIC1 to receive Model Railroad Time or Demo Time, default topic "rocrail/service/info/clock"
+  if(strlen(config.MQTT_TOPIC1) != 0){
+    tS11.disable();  //disable NTP Time only mode
+    client.subscribe(config.MQTT_TOPIC1, [](const String & payload1in) {
+      //Serial.println(payload1in);
+      String payload1 = payload1in;
+      //Serial.println("Index of Sync1: " + String(payload1.indexOf("sync")));
+      // RR Example: <clock divider="1" hour="18" minute="40" wday="5" mday="12" month="2" year="2021" time="1613151626" temp="20" bri="255" lux="0" pressure="0" humidity="0" cmd="sync"/>
+      //Serial.println("config.DEMO: " + String(config.DEMO));
       //Serial.println("Index of Sync2: " + String(payload1.indexOf("sync")));
       //Serial.println("Index of DEMO: " + String(payload1.indexOf("DEMO")));
-      //Serial.println("No RR and no Demo: " + payload1);
-      //rrtime = "00:00";
-      rrtime = rrtimelast;
-      //rrdate = "01.01.2000";
-      rrdate = rrdatelast;
-    }
-    else
-    {
-      String h = payload1.substring(payload1.indexOf("hour") + 6, payload1.indexOf("minute") - 2);
-      if (h.length() < 2){
-        h = "0" + h;
+      if (config.DEMO == 1 && payload1.indexOf("sync") > -1){
+        payload1 = "";
+        //Serial.println("payload1 removed, not DEMO: " + payload1);
       }
-      String m = payload1.substring(payload1.indexOf("minute") + 8, payload1.indexOf("wday") - 2);
-      if (m.length() < 2){
-        m = "0" + m;
+      else if (payload1.indexOf("sync") == -1 && payload1.indexOf("DEMO") == -1){
+        //Serial.println("Index of Sync2: " + String(payload1.indexOf("sync")));
+        //Serial.println("Index of DEMO: " + String(payload1.indexOf("DEMO")));
+        //Serial.println("No RR and no Demo: " + payload1);
+        //rrtime = "00:00";
+        rrtime = rrtimelast;
+        //rrdate = "01.01.2000";
+        rrdate = rrdatelast;
       }
-      uint8_t w = (payload1.substring(payload1.indexOf("wday") + 6, payload1.indexOf("mday") - 2)).toInt();
-      String wd = "";
-      switch (w) {
-        case 1: wd = "Mo";
-                break;
-        case 2: wd = "Di";
-                break;
-        case 3: wd = "Mi";
-                break;
-        case 4: wd = "Do";
-                break;
-        case 5: wd = "Fr";
-                break;
-        case 6: wd = "Sa";
-                break;
-        case 7: wd = "So";
-                break;
+      else
+      {
+        String h = payload1.substring(payload1.indexOf("hour") + 6, payload1.indexOf("minute") - 2);
+        if (h.length() < 2){
+          h = "0" + h;
         }
-      String d = payload1.substring(payload1.indexOf("mday") + 6, payload1.indexOf("month") - 2);
-      if (d.length() < 2){
-        d = "0" + d;
+        String m = payload1.substring(payload1.indexOf("minute") + 8, payload1.indexOf("wday") - 2);
+        if (m.length() < 2){
+          m = "0" + m;
+        }
+        uint8_t w = (payload1.substring(payload1.indexOf("wday") + 6, payload1.indexOf("mday") - 2)).toInt();
+        String wd = "";
+        switch (w) {
+          case 1: wd = "Mo";
+                  break;
+          case 2: wd = "Di";
+                  break;
+          case 3: wd = "Mi";
+                  break;
+          case 4: wd = "Do";
+                  break;
+          case 5: wd = "Fr";
+                  break;
+          case 6: wd = "Sa";
+                  break;
+          case 7: wd = "So";
+                  break;
+          }
+        String d = payload1.substring(payload1.indexOf("mday") + 6, payload1.indexOf("month") - 2);
+        if (d.length() < 2){
+          d = "0" + d;
+        }
+        String mo = payload1.substring(payload1.indexOf("month") + 7, payload1.indexOf("year") - 2);
+        if (mo.length() < 2){
+          mo = "0" + mo;
+        }
+        String y = payload1.substring(payload1.indexOf("year") + 6, payload1.indexOf("time") - 2);
+  
+        rrtime = h + ":" + m;
+        rrtimelast = rrtime;
+        rrdate = d + "." + mo + "." + y;
+        rrdatelast = rrdate;
       }
-      String mo = payload1.substring(payload1.indexOf("month") + 7, payload1.indexOf("year") - 2);
-      if (mo.length() < 2){
-        mo = "0" + mo;
-      }
-      String y = payload1.substring(payload1.indexOf("year") + 6, payload1.indexOf("time") - 2);
+      updVar();
+    }, 1);
+  }
+  else {
+    Serial.println(F("MQTT Topic1 is empty, no model railroad time availabe!\nOnly {ntptime} can be used in messages to show current time on displays"));
+    tS11.enable();  // enable NTP Time/Date only mode when no railroad time is available
+  }
 
-      rrtime = h + ":" + m;
-      rrtimelast = rrtime;
-      //Serial.println(rrtime);
-      rrdate = d + "." + mo + "." + y;
-      rrdatelast = rrdate;
-    }
-    updVar();
-  }, 1);
-
-  // Subscribe MQTT client to topic "rocrail/service/info/tx" to receive messages sent by Rocrail text fields or other MQTT sources
+  // Subscribe to MQTT TOPIC2 to receive messages sent by Model Railroad system text fields or other MQTT sources, default topic "rocrail/service/info/tx"
   client.subscribe(config.MQTT_TOPIC2, [](const String & payload2) {
     String pld = payload2.substring(payload2.indexOf("ZZAMSG"), payload2.length() - 4);
     if (config.MQTT_DEBUG == 1){
@@ -2192,7 +2207,15 @@ void onConnectionEstablished()
         ZZA1_Targets = pld.substring(start01, start02 -1);
         ZZA1_Template = pld.substring(start02 + 1, start03 -1);
         ZZA1_Station = pld.substring(start03, start04 -1);
-        ZZA1_Track = pld.substring(start04, start05 -1);
+        if(pld.substring(start04, start05 -1) == "-"){
+          ZZA1_Track = DPL_track[0];
+        }
+        else if (pld.substring(start04, start05 -1) == ""){
+          ZZA1_Track = "";
+        }
+        else {
+          ZZA1_Track = pld.substring(start04, start05 -1);
+        }
         ZZA1_Destination = pld.substring(start05, start06 -1);
         ZZA1_DepartureO = pld.substring(start06, start07 -1);
         ZZA1_Departure = ZZA1_DepartureO;
@@ -2216,7 +2239,15 @@ void onConnectionEstablished()
         ZZA2_Targets = pld.substring(start01, start02 -1);
         ZZA2_Template = pld.substring(start02 + 1, start03 -1);
         ZZA2_Station = pld.substring(start03, start04 -1);
-        ZZA2_Track = pld.substring(start04, start05 -1);
+        if(pld.substring(start04, start05 -1) == "-"){
+          ZZA2_Track = DPL_track[1];
+        }
+        else if (pld.substring(start04, start05 -1) == ""){
+          ZZA2_Track = "";
+        }
+        else {
+          ZZA2_Track = pld.substring(start04, start05 -1);
+        }
         ZZA2_Destination = pld.substring(start05, start06 -1);
         ZZA2_DepartureO = pld.substring(start06, start07 -1);
         ZZA2_Departure = ZZA2_DepartureO;
@@ -2240,7 +2271,15 @@ void onConnectionEstablished()
         ZZA3_Targets = pld.substring(start01, start02 -1);
         ZZA3_Template = pld.substring(start02 + 1, start03 -1);
         ZZA3_Station = pld.substring(start03, start04 -1);
-        ZZA3_Track = pld.substring(start04, start05 -1);
+        if(pld.substring(start04, start05 -1) == "-"){
+          ZZA3_Track = DPL_track[2];
+        }
+        else if (pld.substring(start04, start05 -1) == ""){
+          ZZA3_Track = "";
+        }
+        else {
+          ZZA3_Track = pld.substring(start04, start05 -1);
+        }
         ZZA3_Destination = pld.substring(start05, start06 -1);
         ZZA3_DepartureO = pld.substring(start06, start07 -1);
         ZZA3_Departure = ZZA3_DepartureO;
@@ -2264,7 +2303,15 @@ void onConnectionEstablished()
         ZZA4_Targets = pld.substring(start01, start02 -1);
         ZZA4_Template = pld.substring(start02 + 1, start03 -1);
         ZZA4_Station = pld.substring(start03, start04 -1);
-        ZZA4_Track = pld.substring(start04, start05 -1);
+        if(pld.substring(start04, start05 -1) == "-"){
+          ZZA4_Track = DPL_track[3];
+        }
+        else if (pld.substring(start04, start05 -1) == ""){
+          ZZA4_Track = "";
+        }
+        else {
+          ZZA4_Track = pld.substring(start04, start05 -1);
+        }
         ZZA4_Destination = pld.substring(start05, start06 -1);
         ZZA4_DepartureO = pld.substring(start06, start07 -1);
         ZZA4_Departure = ZZA4_DepartureO;
@@ -2288,7 +2335,15 @@ void onConnectionEstablished()
         ZZA5_Targets = pld.substring(start01, start02 -1);
         ZZA5_Template = pld.substring(start02 + 1, start03 -1);
         ZZA5_Station = pld.substring(start03, start04 -1);
-        ZZA5_Track = pld.substring(start04, start05 -1);
+        if(pld.substring(start04, start05 -1) == "-"){
+          ZZA5_Track = DPL_track[4];
+        }
+        else if (pld.substring(start04, start05 -1) == ""){
+          ZZA5_Track = "";
+        }
+        else {
+          ZZA5_Track = pld.substring(start04, start05 -1);
+        }
         ZZA5_Destination = pld.substring(start05, start06 -1);
         ZZA5_DepartureO = pld.substring(start06, start07 -1);
         ZZA5_Departure = ZZA5_DepartureO;
@@ -2312,7 +2367,15 @@ void onConnectionEstablished()
         ZZA6_Targets = pld.substring(start01, start02 -1);
         ZZA6_Template = pld.substring(start02 + 1, start03 -1);
         ZZA6_Station = pld.substring(start03, start04 -1);
-        ZZA6_Track = pld.substring(start04, start05 -1);
+        if(pld.substring(start04, start05 -1) == "-"){
+          ZZA6_Track = DPL_track[5];
+        }
+        else if (pld.substring(start04, start05 -1) == ""){
+          ZZA6_Track = "";
+        }
+        else {
+          ZZA6_Track = pld.substring(start04, start05 -1);
+        }
         ZZA6_Destination = pld.substring(start05, start06 -1);
         ZZA6_DepartureO = pld.substring(start06, start07 -1);
         ZZA6_Departure = ZZA6_DepartureO;
@@ -2336,7 +2399,15 @@ void onConnectionEstablished()
         ZZA7_Targets = pld.substring(start01, start02 -1);
         ZZA7_Template = pld.substring(start02 + 1, start03 -1);
         ZZA7_Station = pld.substring(start03, start04 -1);
-        ZZA7_Track = pld.substring(start04, start05 -1);
+        if(pld.substring(start04, start05 -1) == "-"){
+          ZZA7_Track = DPL_track[6];
+        }
+        else if (pld.substring(start04, start05 -1) == ""){
+          ZZA7_Track = "";
+        }
+        else {
+          ZZA7_Track = pld.substring(start04, start05 -1);
+        }
         ZZA7_Destination = pld.substring(start05, start06 -1);
         ZZA7_DepartureO = pld.substring(start06, start07 -1);
         ZZA7_Departure = ZZA7_DepartureO;
@@ -2360,7 +2431,15 @@ void onConnectionEstablished()
         ZZA8_Targets = pld.substring(start01, start02 -1);
         ZZA8_Template = pld.substring(start02 + 1, start03 -1);
         ZZA8_Station = pld.substring(start03, start04 -1);
-        ZZA8_Track = pld.substring(start04, start05 -1);
+        if(pld.substring(start04, start05 -1) == "-"){
+          ZZA8_Track = DPL_track[7];
+        }
+        else if (pld.substring(start04, start05 -1) == ""){
+          ZZA8_Track = "";
+        }
+        else {
+          ZZA8_Track = pld.substring(start04, start05 -1);
+        }
         ZZA8_Destination = pld.substring(start05, start06 -1);
         ZZA8_DepartureO = pld.substring(start06, start07 -1);
         ZZA8_Departure = ZZA8_DepartureO;

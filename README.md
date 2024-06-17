@@ -7,25 +7,27 @@ All rights reserved.
 Dynamic Passenger Information system for Model Railroad Stations controlled by Rocrail, Node-RED or any other program that can send MQTT messages.
 Wireless communication with Rocrail, Node-RED or other sources via MQTT messages.
 An ESP32 or Lolin/Wemos D1 mini ESP8266 controller and a TCA9548A I2C Multiplexer can drive up to eight I2C OLED displays. 
-Several controllers can run in parallel so the total number of displays is not limited.  
+Several controllers can run in parallel so the total number of displays is not limited.<br/><br/>
+
 A friend of mine was looking for an easy way to run displays with live data in his model railroad environment. Right after this conversation this project was born.
-Since then it's work in progress with already many nice features. If you want to share your experience with this code or have ideas for more features you are welcome to share them in the Issues or Discussions area. Have fun.
+Since then it's work in progress with already many nice features. If you want to share your experience with this code or have ideas for more features you are welcome to share them in the GitHub Issues area.  
+Have fun.  
 
-### Roc-MQTT-Display (RMD)  
+### Roc-MQTT-Display (RMD) 
 
-Latest Version 1.12  
-June 02, 2024 
+Latest Version 1.13  
+June 17, 2024 
 
 Thank you for your interest in the Roc-MQTT-Display project.
-If you like the project please Star it here on GitHub and consider donating if you want to support further development.
+If you like the project please give it a Star here on GitHub and consider donating if you want to support further development.
 Donations are more than welcome and I will use them to buy new displays, controllers and sensors for development and testing and of course for a lot of coffee... :-)
 
 [![PayPal donate button](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=XC7T2ECBQYNJ2)  
 
-**The goal of this project is to provide simple to use and inexpensive displays for railroad stations to run in a Model Railroad environment.**  
+**The goal of this project is to provide simple to use and inexpensive displays for model railroad stations to run in a Model Railroad environment.**  
 
-<img src="doc/howitworks.png" width="80%" alt="How it works"/>
-
+<img src="doc/howitworks.png" width="80%" alt="How it works"/>  
+  
 **Current features**  
 - Content and messages can be static or dynamic
 - Formatting is saved in templates so the user can focus on sending the right data to the display and just pick a template for formatting.
@@ -51,11 +53,11 @@ Donations are more than welcome and I will use them to buy new displays, control
 Architecture, Hard- and Software Requirements, Installation and Configuration are documented in the [**Wiki**](https://github.com/chrisweather/RocMQTTdisplay/wiki).
 
 Several more ideas and features are on the to do list.
-Please share your experience, bugs and ideas for improvements via GitHub Issues function in English or Deutsch.  
+Please share your experience and ideas for improvements via GitHub Issues function in English or Deutsch.  
 
-<img src="doc/InAction1.jpg" width="80%" alt="Trainstation with display"/>
-Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing.  
+<img src="doc/InAction1.jpg" width="80%" alt="Trainstation with display"/>  
+Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing!<br/><br/>
 
 This project is also compatible now with the great display adaptors from this project [MobaLedLib 0.87" OLED-Adapter](https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter).  
-Here you can find [**4 displays in action**](https://github.com/chrisweather/RocMQTTdisplay/assets/23246503/4d15ef67-ca1c-4e37-88cf-b6d6ea18246c).  
+Here you can find [**4 displays in action**](https://github.com/chrisweather/RocMQTTdisplay/assets/23246503/4d15ef67-ca1c-4e37-88cf-b6d6ea18246c). 
 Based on the OLED-Adapter with four 0.87" 128x32 displays.  

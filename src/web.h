@@ -1,5 +1,5 @@
 // Roc-MQTT-Display WEBSERVER
-// Version 1.12
+// Version 1.13
 // Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -197,14 +197,14 @@ void handleCfgSubmit()
       if (webserver.argName(i) == "f_DPL_STATION05") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[5], sizeof(DPL_station[5])); }
       if (webserver.argName(i) == "f_DPL_STATION06") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[6], sizeof(DPL_station[6])); }
       if (webserver.argName(i) == "f_DPL_STATION07") { webserver.arg(webserver.argName(i)).toCharArray(DPL_station[7], sizeof(DPL_station[7])); }
-      if (webserver.argName(i) == "f_DPL_TRACK0") { DPL_track[0] = webserver.arg(webserver.argName(i)).toInt(); }
-      if (webserver.argName(i) == "f_DPL_TRACK1") { DPL_track[1] = webserver.arg(webserver.argName(i)).toInt(); }
-      if (webserver.argName(i) == "f_DPL_TRACK2") { DPL_track[2] = webserver.arg(webserver.argName(i)).toInt(); }
-      if (webserver.argName(i) == "f_DPL_TRACK3") { DPL_track[3] = webserver.arg(webserver.argName(i)).toInt(); }
-      if (webserver.argName(i) == "f_DPL_TRACK4") { DPL_track[4] = webserver.arg(webserver.argName(i)).toInt(); }
-      if (webserver.argName(i) == "f_DPL_TRACK5") { DPL_track[5] = webserver.arg(webserver.argName(i)).toInt(); }
-      if (webserver.argName(i) == "f_DPL_TRACK6") { DPL_track[6] = webserver.arg(webserver.argName(i)).toInt(); }
-      if (webserver.argName(i) == "f_DPL_TRACK7") { DPL_track[7] = webserver.arg(webserver.argName(i)).toInt(); }
+      if (webserver.argName(i) == "f_DPL_TRACK0") { webserver.arg(webserver.argName(i)).toCharArray(DPL_track[0], sizeof(DPL_track[0])); }
+      if (webserver.argName(i) == "f_DPL_TRACK1") { webserver.arg(webserver.argName(i)).toCharArray(DPL_track[1], sizeof(DPL_track[1])); }
+      if (webserver.argName(i) == "f_DPL_TRACK2") { webserver.arg(webserver.argName(i)).toCharArray(DPL_track[2], sizeof(DPL_track[2])); }
+      if (webserver.argName(i) == "f_DPL_TRACK3") { webserver.arg(webserver.argName(i)).toCharArray(DPL_track[3], sizeof(DPL_track[3])); }
+      if (webserver.argName(i) == "f_DPL_TRACK4") { webserver.arg(webserver.argName(i)).toCharArray(DPL_track[4], sizeof(DPL_track[4])); }
+      if (webserver.argName(i) == "f_DPL_TRACK5") { webserver.arg(webserver.argName(i)).toCharArray(DPL_track[5], sizeof(DPL_track[5])); }
+      if (webserver.argName(i) == "f_DPL_TRACK6") { webserver.arg(webserver.argName(i)).toCharArray(DPL_track[6], sizeof(DPL_track[6])); }
+      if (webserver.argName(i) == "f_DPL_TRACK7") { webserver.arg(webserver.argName(i)).toCharArray(DPL_track[7], sizeof(DPL_track[7])); }
       if (webserver.argName(i) == "f_DPL_FLIP0") { DPL_flip[0] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_DPL_FLIP1") { DPL_flip[1] = webserver.arg(webserver.argName(i)).toInt(); }
       if (webserver.argName(i) == "f_DPL_FLIP2") { DPL_flip[2] = webserver.arg(webserver.argName(i)).toInt(); }
@@ -696,34 +696,6 @@ void handleSecSubmit()
   }
 }
 
-/*
-// Statistics
-void handleStats()
-{
-  #if defined(ESP8266)
-    HTTPClient http;
-    String tmt = "mo="+String(ESP.getChipId())+"&ma="+String(WiFi.macAddress())+"&ds="+config.DISPWIDTH+"x"+config.DISPHEIGHT+"&dn="+config.NUMDISP+"&ve=v"+config.VER;
-    Serial.println(ESP.getChipId());
-    Serial.println(WiFi.macAddress() + "-ESP8266-" + config.VER);
-  #elif defined(ESP32)
-    HTTPClient http;
-    String tmt = "mo="+String(ESP.getChipModel())+"&ma="+String(WiFi.macAddress())+"&ds="+config.DISPWIDTH+"x"+config.DISPHEIGHT+"&dn="+config.NUMDISP+"&ve=v"+config.VER;
-    Serial.println(String(ESP.getChipModel()));
-    //Serial.println(String(ESP.getEfuseMac()));
-  #endif
-    Serial.println(WiFi.macAddress());
-    Serial.println(tmt);
-  String statsSrv = "https://heini.zone/rmd/stats.php?";
-  //HTTPClient http;
-  //http.begin(statsSrv + tmt);
-  http.begin(client, statsSrv + tmt);
-  int httpResp = http.GET();
-  if(httpResp > 0) {
-    Serial.printf("HTTP GET response: %d\n", httpResp);
-  }
-  http.end();
-}
-*/
 
 // UPDATE
 void loadUpdate(String updstatus)

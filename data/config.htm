@@ -30,10 +30,10 @@ function buttonDownload() {
 <input type='submit' class='button' title='Save settings' value='Save'>
 </br></br>
 <table id='tbl1'>
-<tr><td>WIFI Devicename</td><td><input type='text' class='infield' name='f_WIFI_DEVICENAME' value='%WIFI_DEVICENAME%' title='Name of this controller in your Wifi network' size='19' maxlength='18' ></td></tr>
+<tr><td>WIFI Devicename</td><td><input type='text' class='infield' name='f_WIFI_DEVICENAME' value='%WIFI_DEVICENAME%' title='Name of this controller in your Wifi network, should be unique' size='19' maxlength='18' ></td></tr>
 <tr><td>WIFI reconnect delay (ms)</td><td><input type='number' class='infield' name='f_WIFI_RECONDELAY' value='%WIFI_RECONDELAY%' title='Wait x ms until reconnect attempt in case of connection loss' size='7' maxlength='6' min='5000' ></td></tr>
 <tr><td>OTA Hostname</td><td><input type='text' class='infield' name='f_OTA_HOSTNAME' value='%OTA_HOSTNAME%' title='Name of this controller for OTA' size='19' maxlength='18' ></td></tr>
-<tr><td>OTA Port</td><td><input type='number' class='infield' name='f_OTA_PORT' value='%OTA_PORT%' title='OTA port, default: 8266' size='6' maxlength='5' min='0' ></td></tr>
+<tr><td>OTA Port</td><td><input type='number' class='infield' name='f_OTA_PORT' value='%OTA_PORT%' title='OTA port, default: ESP32: 3232, ESP8266: 8266' size='6' readonly ></td></tr>
 <tr><td><a href='https://www.pool.ntp.org/zone/europe' target='_blank'>NTP Time Server pool</td><td><input type='text' class='infield' name='f_NTP_SERVER' value='%NTP_SERVER%' title='Set the NTP Server Pool you want to check for the correct time. See https://www.pool.ntp.org/zone/europe for details.' size='51' maxlength='50' ></td></tr>
 <tr><td><a href='https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv' target='_blank'>NTP Timezone and DST</td><td><input type='text' class='infield' name='f_NTP_TZ' value='%NTP_TZ%' title='Time Zone settings, see https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv for more details.' size='51' maxlength='50' ></td></tr>
 <tr><td>MQTT broker IP-address</td><td><input type='text' class='infield' name='f_MQTT_IP' value='%MQTT_IP%' title='IP-address of your MQTT broker' size='17' maxlength='16' ></td></tr>
@@ -47,8 +47,8 @@ function buttonDownload() {
 <tr><td>Enable debug messages</td><td><input type='number' class='infield' name='f_MQTT_DEBUG' value='%MQTT_DEBUG%' title='0=off, 1=show debug messages in serial monitor, default: 0' size='5' maxlength='4' min='0' max='1' ></td></tr>
 <tr><td>I2C Multiplexer address</td><td><input type='text' class='infield' name='f_MUX' value='%MUX%' title='I2C Multiplexer address, default 112 (0x70), 0=one display connected without multiplexer, restart required' size='4' maxlength='4' > (%MUXHEX%)</td></tr>
 <tr><td>Number of connected displays</td><td><input type='number' class='infield' name='f_NUMDISP' value='%NUMDISP%' title='Number (1-8) of displays connected to this controller' size='5' maxlength='4' min='1' max='8' ></td></tr>
-<tr><td>Display Width</td><td><input type='number' class='infield' name='f_DISPWIDTH' value='%DISPWIDTH%' title='Display width in pixel (read only)' size='5' maxlength='5' readonly ></td></tr>
-<tr><td>Display Height</td><td><input type='number' class='infield' name='f_DISPHEIGHT' value='%DISPHEIGHT%' title='Display height in pixel (read only)' size='5' maxlength='5' readonly ></td></tr>
+<tr><td>Display Width</td><td><input type='number' class='infield' name='f_DISPWIDTH' value='%DISPWIDTH%' title='Display width in pixel (read only)' readonly ></td></tr>
+<tr><td>Display Height</td><td><input type='number' class='infield' name='f_DISPHEIGHT' value='%DISPHEIGHT%' title='Display height in pixel (read only)' readonly ></td></tr>
 <tr><td>Show start screens longer (ms)</td><td><input type='number' class='infield' name='f_STARTDELAY' value='%STARTDELAY%' title='Set during display installation e.g. to 4000 to show the start up screens longer with Version, Display-ID configuration link and controller name, 1-9999' size='5' maxlength='4' min='1' max='9999' ></td></tr>
 <tr><td>Display update intervall</td><td><input type='number' class='infield' name='f_UPDSPEED' value='%UPDSPEED%' title='Slow down display update intervall by increasing the number, e.g. 30 = base speed + 30ms' size='5' maxlength='4' min='0' max='1000' ></td></tr>
 <tr><td>Screensaver (min)</td><td><input type='number' class='infield' name='f_SCREENSAVER' value='%SCREENSAVER%' title='minutes without message received until screenSaver switches all displays into power save mode, 0=off' size='5' maxlength='4' min='0' max='600' ></td></tr>
@@ -65,7 +65,7 @@ function buttonDownload() {
 <td><input type='text' class='infield2' name='f_DPL_ID7' value='%DPL_ID7%' title='Name of display 8 connected to this controller, e.g. D08' size='4' maxlength='3' ></td>
 </tr></table></td></tr>
 <tr><td>Station</td><td><table id='tbl2'><tr>
-<td><input type='text' class='infield2' name='f_DPL_STATION00' value='%DPL_STATION00%' title='Station, where this display is installed' size='8' maxlength='7' ></td>
+<td><input type='text' class='infield2' name='f_DPL_STATION00' value='%DPL_STATION00%' title='Position where this display is installed' size='8' maxlength='7' ></td>
 <td><input type='text' class='infield2' name='f_DPL_STATION01' value='%DPL_STATION01%' size='8' maxlength='7' ></td>
 <td><input type='text' class='infield2' name='f_DPL_STATION02' value='%DPL_STATION02%' size='8' maxlength='7' ></td>
 <td><input type='text' class='infield2' name='f_DPL_STATION03' value='%DPL_STATION03%' size='8' maxlength='7' ></td>
@@ -75,14 +75,14 @@ function buttonDownload() {
 <td><input type='text' class='infield2' name='f_DPL_STATION07' value='%DPL_STATION07%' size='8' maxlength='7' ></td>
 </tr></table></td></tr>
 <tr><td>Track</td><td><table id='tbl2'><tr>
-<td><input type='number' class='infield2' name='f_DPL_TRACK0' value='%DPL_TRACK0%' title='Track Number, where this display is installed' size='4' maxlength='3' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK1' value='%DPL_TRACK1%' size='4' maxlength='3' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK2' value='%DPL_TRACK2%' size='4' maxlength='3' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK3' value='%DPL_TRACK3%' size='4' maxlength='3' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK4' value='%DPL_TRACK4%' size='4' maxlength='3' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK5' value='%DPL_TRACK5%' size='4' maxlength='3' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK6' value='%DPL_TRACK6%' size='4' maxlength='3' min='1' max='99' ></td>
-<td><input type='number' class='infield2' name='f_DPL_TRACK7' value='%DPL_TRACK7%' size='4' maxlength='3' min='1' max='99' ></td>
+<td><input type='text' class='infield2' name='f_DPL_TRACK0' value='%DPL_TRACK0%' title='Track Number, where this display is installed' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_TRACK1' value='%DPL_TRACK1%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_TRACK2' value='%DPL_TRACK2%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_TRACK3' value='%DPL_TRACK3%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_TRACK4' value='%DPL_TRACK4%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_TRACK5' value='%DPL_TRACK5%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_TRACK6' value='%DPL_TRACK6%' size='4' maxlength='3' ></td>
+<td><input type='text' class='infield2' name='f_DPL_TRACK7' value='%DPL_TRACK7%' size='4' maxlength='3' ></td>
 </tr></table></td></tr>
 <tr><td>Flip</td><td><table id='tbl2'><tr>
 <td><input type='number' class='infield2' name='f_DPL_FLIP0' value='%DPL_FLIP0%' title='1 = Flip this display by 180&deg;' size='3' maxlength='2' min='0' max='1' ></td>
@@ -117,7 +117,7 @@ function buttonDownload() {
 </table>
 </form>
 <footer>
-<p>Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved. Version 1.12</p>
+<p>Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved. Version 1.13</p>
 <p><a href='https://github.com/chrisweather/RocMQTTdisplay' target='_blank'>https://github.com/chrisweather/RocMQTTdisplay</a></p>
 </footer>
 </body>

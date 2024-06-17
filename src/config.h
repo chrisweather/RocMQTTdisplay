@@ -1,5 +1,5 @@
 // Roc-MQTT-Display CONFIGURATION
-// Version 1.12
+// Version 1.13
 // Copyright (c) 2020-2024 Christian Heinrichs. All rights reserved.
 // https://github.com/chrisweather/RocMQTTdisplay
 
@@ -26,7 +26,7 @@ struct Sec {
 Sec sec;                           // global sec object
 
 struct Config {
-  const char* VER = "1.12";
+  const char* VER = "1.13";
   uint8_t  DEMO = 0;               // Demo mode, 0 = off
 // WIFI
   char     WIFI_DEVICENAME[19];    // Unique Controller Device Name for WiFi network
@@ -44,8 +44,8 @@ struct Config {
   uint16_t MQTT_KEEPALIVE1;        // MQTT keep alive, default = 15 sec, min = 1 sec
   uint16_t MQTT_RECONDELAY;        // Delay between MQTT reconnection attempts, default = 15000 ms
   uint8_t  MQTT_DEBUG;             // Enable MQTT debugging messages sent to serial output, 0=off, 1=on
-  char     MQTT_TOPIC1[50];        // MQTT Topic 1, default = "rocrail/service/info/clock"
-  char     MQTT_TOPIC2[50];        // MQTT Topic 1, default = "rocrail/service/info/tx"
+  char     MQTT_TOPIC1[50];        // MQTT Topic 1, Railroad Time, default = "rocrail/service/info/clock"
+  char     MQTT_TOPIC2[50];        // MQTT Topic 1, Railroad Messages, default = "rocrail/service/info/tx"
   char     MQTT_DELIMITER[5];      // MQTT delimiter (e.g. ";" or " , " for message payload, will be replaced by "#" before processing. Default: "#"
 // DISPLAYS
   //uint8_t  DISPSIZE = 0;           // 0=128x32, 1=128x64, 2=64x48, 3=96x16, 4=80x160, default = 0
@@ -64,10 +64,10 @@ Config config;
 //                              Disp1, Disp2, Disp3, Disp4, Disp5, Disp6, Disp7, Disp8
 char     DPL_id[8][4] =       { "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08" };  // ID's of Displays 1-8 connected to this controller, e.g. D01...D99
 char     DPL_station[8][12] = {    "",    "",    "",    "",    "",    "",    "",    "" };  // Station, where the display is installed, e.g. Hamburg, Köln, Amsterd, Wien, ...
-uint8_t  DPL_track[] =        {     1,     1,     1,     1,     1,     1,     1,     1 };  // 1...99  track, where the display is installed, e.g. 1...99
-uint8_t  DPL_flip[] =         {     0,     1,     1,     0,     0,     1,     1,     0 };  // 0,1  180 degree hardware based rotation of the internal frame buffer when 1
+char     DPL_track[8][4] =    {     1,     1,     1,     1,     1,     1,     1,     1 };  // 1...99, 1a, 1b track, where the display is installed
+uint8_t  DPL_flip[] =         {     0,     0,     0,     0,     0,     0,     0,     0 };  // 0,1  180 degree hardware based rotation of the internal frame buffer when 1
 uint8_t  DPL_contrast[] =     {    50,    50,    50,    50,    50,    50,    50,    50 };  // 0-255  0=display off (works with some displays only), default = 1, 255 max brightness, change requires reboot
-uint8_t  DPL_side[] =         {     1,     0,     0,     1,     1,     0,     0,     1 };  // 0,1  0=Side A, 1=Side B
+uint8_t  DPL_side[] =         {     0,     0,     0,     0,     0,     0,     0,     0 };  // 0,1  0=Side A, 1=Side B
 
 const char *secfile      = "/rmdsec.txt";      // 8.3 filename
 const char *configfile   = "/rmdcfg.txt";
@@ -146,14 +146,14 @@ void loadConfiguration(const char *configfile, Config &config)
   strlcpy(DPL_station[5], doc["DPL_STATION05"] | "", sizeof(DPL_station[5]));
   strlcpy(DPL_station[6], doc["DPL_STATION06"] | "", sizeof(DPL_station[6]));
   strlcpy(DPL_station[7], doc["DPL_STATION07"] | "", sizeof(DPL_station[7]));
-  DPL_track[0] = doc["DPL_TRACK0"] | 1;
-  DPL_track[1] = doc["DPL_TRACK1"] | 1;
-  DPL_track[2] = doc["DPL_TRACK2"] | 1;
-  DPL_track[3] = doc["DPL_TRACK3"] | 1;
-  DPL_track[4] = doc["DPL_TRACK4"] | 1;
-  DPL_track[5] = doc["DPL_TRACK5"] | 1;
-  DPL_track[6] = doc["DPL_TRACK6"] | 1;
-  DPL_track[7] = doc["DPL_TRACK7"] | 1;
+  strlcpy(DPL_track[0], doc["DPL_TRACK0"] | "1", sizeof(DPL_track[0]));
+  strlcpy(DPL_track[1], doc["DPL_TRACK1"] | "1", sizeof(DPL_track[1]));
+  strlcpy(DPL_track[2], doc["DPL_TRACK2"] | "1", sizeof(DPL_track[2]));
+  strlcpy(DPL_track[3], doc["DPL_TRACK3"] | "1", sizeof(DPL_track[3]));
+  strlcpy(DPL_track[4], doc["DPL_TRACK4"] | "1", sizeof(DPL_track[4]));
+  strlcpy(DPL_track[5], doc["DPL_TRACK5"] | "1", sizeof(DPL_track[5]));
+  strlcpy(DPL_track[6], doc["DPL_TRACK6"] | "1", sizeof(DPL_track[6]));
+  strlcpy(DPL_track[7], doc["DPL_TRACK7"] | "1", sizeof(DPL_track[7]));
   DPL_flip[0] = doc["DPL_FLIP0"] | 0;
   DPL_flip[1] = doc["DPL_FLIP1"] | 0;
   DPL_flip[2] = doc["DPL_FLIP2"] | 0;
@@ -162,14 +162,14 @@ void loadConfiguration(const char *configfile, Config &config)
   DPL_flip[5] = doc["DPL_FLIP5"] | 0;
   DPL_flip[6] = doc["DPL_FLIP6"] | 0;
   DPL_flip[7] = doc["DPL_FLIP7"] | 0;
-  DPL_contrast[0] = doc["DPL_CONTRAST0"] | 1;
-  DPL_contrast[1] = doc["DPL_CONTRAST1"] | 1;
-  DPL_contrast[2] = doc["DPL_CONTRAST2"] | 1;
-  DPL_contrast[3] = doc["DPL_CONTRAST3"] | 1;
-  DPL_contrast[4] = doc["DPL_CONTRAST4"] | 1;
-  DPL_contrast[5] = doc["DPL_CONTRAST5"] | 1;
-  DPL_contrast[6] = doc["DPL_CONTRAST6"] | 1;
-  DPL_contrast[7] = doc["DPL_CONTRAST7"] | 1;
+  DPL_contrast[0] = doc["DPL_CONTRAST0"] | 50;
+  DPL_contrast[1] = doc["DPL_CONTRAST1"] | 50;
+  DPL_contrast[2] = doc["DPL_CONTRAST2"] | 50;
+  DPL_contrast[3] = doc["DPL_CONTRAST3"] | 50;
+  DPL_contrast[4] = doc["DPL_CONTRAST4"] | 50;
+  DPL_contrast[5] = doc["DPL_CONTRAST5"] | 50;
+  DPL_contrast[6] = doc["DPL_CONTRAST6"] | 50;
+  DPL_contrast[7] = doc["DPL_CONTRAST7"] | 50;
   DPL_side[0] = doc["DPL_SIDE0"] | 0;
   DPL_side[1] = doc["DPL_SIDE1"] | 0;
   DPL_side[2] = doc["DPL_SIDE2"] | 0;
