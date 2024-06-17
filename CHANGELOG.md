@@ -1,15 +1,5 @@
 ## Roc-MQTT-Display Changelog
 
-### Roc-MQTT-Display release 1.13
-2024-06-17 - tested with Arduino IDE 1.8.19 with latest versions of included libraries 
-
--   Fixes - for Issue #35, some displays didn't show all content when flipped
--   Configuration - When MQTT Topic1 is empty (no railrod software clock messages), NTP time/date will be shown on displays for {rrtime} and {rrdate} variables
--   Configuration - Track field can also contain characters now, e.g. 1a, 12b, ...
--   Configuration - Track field in MQTT message can be empty = no track number, a track number e.g. "1" or "2a", when track field contains "-" = the track number from RMD configuration will be used
--   Webinterface - Several improvements
--   Wiki - Content updated, German installation guide improved
-
 ### Roc-MQTT-Display release 1.12
 2024-06-02 - tested with Arduino IDE 1.8.19 with latest versions of included libraries 
 
@@ -17,7 +7,7 @@
 -   Successfully tested and documented compatibility with the OLED Adaptors from this project: https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter
 -   Displays - Added constructor for 64x32 0.49" OLED I2C Display with SSD1316 controller. Not tested yet.
 -   Displays - Added constructor for 72x40 0.42" OLED I2C Display with SSD1316 controller. Not tested yet.
--   Added support for ESP32 boards (**do NOT update "esp32" in Arduino IDE Boardmanager to version 3.x, use 2.0.17 instead. 3.x version has breaking changes that currently break the WiFi implementation!**)
+-   Added support for ESP32 boards (do NOT update "esp32" in Arduino IDE Boardmanager to version 3.x, this version has breaking changes that currently break the WiFi implementation!)
 -   Webinterface - Added Demo Mode, shows different display modes and content, ends automatically after one run through
 -   Webinterface - share statistics of hardware for future development focus
 -   Webinterface - Several improvements
