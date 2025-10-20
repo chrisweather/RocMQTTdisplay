@@ -58,6 +58,6 @@ Please share your experience and ideas for improvements via GitHub Issues functi
 <img src="doc/InAction1.jpg" width="80%" alt="Trainstation with display"/>  
 Roc-MQTT-Display in action in Volkers model railroad installation. Thanks for sharing!<br/><br/>
 
-This project is also compatible now with the great display adaptors from this project [MobaLedLib 0.87" OLED-Adapter](https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter).  
+This project is also compatible now with the great display adaptors from the [MobaLedLib 0.87" OLED-Adapter](https://wiki.mobaledlib.de/anleitungen/oled/oled-adapter) project.  
 Here you can find [**4 displays in action**](https://github.com/chrisweather/RocMQTTdisplay/assets/23246503/4d15ef67-ca1c-4e37-88cf-b6d6ea18246c). 
-Based on the OLED-Adapter with four 0.87" 128x32 displays.  
+Based on the OLED-Adapter with four 0.87" 128x32 displays. More details in the [**Wiki**](https://github.com/chrisweather/RocMQTTdisplay/wiki).  
