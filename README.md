@@ -1,6 +1,6 @@
 # Roc-MQTT-Display
 
-Copyright (c) 2020-2025 Christian Heinrichs.
+Copyright (c) 2020-2026 Christian Heinrichs.
 All rights reserved.
 
 
